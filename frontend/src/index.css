@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-primary: #0f172a; /* Slate 900 */
+  --color-accent: #d97706; /* Amber 600 */
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Hide Google Translate Banner and Widget */
+body {
+  top: 0px !important; 
+}
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+#google_translate_element {
+  display: none !important;
+}
+.goog-tooltip {
+  display: none !important;
+}
+.goog-tooltip:hover {
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important; 
+  box-shadow: none !important;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc; /* Slate 50 */
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+    @apply transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100;
+  }
+}
