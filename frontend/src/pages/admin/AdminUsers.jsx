@@ -186,7 +186,7 @@ const AdminUsers = () => {
     } catch (error) {
       setAddMessage({ type: 'error', text: error.response?.data?.message || 'Creation failed' });
     } finally {
-      setIsDeleting(false);
+      setIsAdding(false);
     }
   };
 
@@ -237,17 +237,20 @@ const AdminUsers = () => {
   };
 
   const filteredUsers = users.filter(u => {
-    const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!u) return false;
+    const safeName = u?.name || '';
+    const safeEmail = u?.email || '';
+    const matchesSearch = safeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      safeEmail.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = roleFilter === 'all' || u.role === roleFilter;
     return matchesSearch && matchesRole;
   });
 
   const stats = {
     total: users.length,
-    admins: users.filter(u => u.role === 'admin').length,
-    customers: users.filter(u => u.role === 'user').length,
-    google: users.filter(u => u.googleId).length,
+    admins: users.filter(u => u && u.role === 'admin').length,
+    customers: users.filter(u => u && u.role === 'user').length,
+    google: users.filter(u => u && u.googleId).length,
   };
 
   return (
@@ -394,7 +397,7 @@ const AdminUsers = () => {
                           {u.profile_pic ? (
                             <img src={u.profile_pic} alt={u.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                           ) : (
-                            <span className="text-slate-500 font-bold">{u.name.charAt(0).toUpperCase()}</span>
+                            <span className="text-slate-500 font-bold">{(u.name || 'User').charAt(0).toUpperCase()}</span>
                           )}
                         </div>
                         <div>
@@ -414,7 +417,7 @@ const AdminUsers = () => {
                         : 'bg-slate-100 text-slate-700 border border-slate-200'
                         }`}>
                         {u.role === 'admin' ? <Shield className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
-                        {u.role.charAt(0).toUpperCase() + u.role.slice(1)}
+                        {(u.role || 'user').charAt(0).toUpperCase() + (u.role || 'user').slice(1)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -429,7 +432,7 @@ const AdminUsers = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
-                      {new Date(u.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
@@ -489,7 +492,7 @@ const AdminUsers = () => {
                   {viewingUser.profile_pic ? (
                     <img src={viewingUser.profile_pic} alt={viewingUser.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   ) : (
-                    viewingUser.name.charAt(0).toUpperCase()
+                    (viewingUser.name || 'User').charAt(0).toUpperCase()
                   )}
                 </div>
                 <div>
@@ -498,7 +501,7 @@ const AdminUsers = () => {
                   <div className="flex items-center gap-2 mt-2">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${viewingUser.role === 'admin' ? 'bg-indigo-100 text-indigo-700' : 'bg-amber-100 text-amber-700'}`}>
                       {viewingUser.role === 'admin' ? <Shield className="w-3 h-3" /> : <User className="w-3 h-3" />}
-                      {viewingUser.role.charAt(0).toUpperCase() + viewingUser.role.slice(1)}
+                      {(viewingUser.role || 'user').charAt(0).toUpperCase() + (viewingUser.role || 'user').slice(1)}
                     </span>
                     {viewingUser.googleId ? (
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">🔵 Google</span>
@@ -797,7 +800,7 @@ const AdminUsers = () => {
                       <img src={editFormData.profile_pic} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-slate-400">
-                        {editFormData.name.charAt(0).toUpperCase()}
+                        {(editFormData.name || 'User').charAt(0).toUpperCase()}
                       </div>
                     )}
                     <label className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white">
@@ -881,59 +884,7 @@ const AdminUsers = () => {
         </div>
       )}
 
-      {/* ---- DELETE CONFIRMATION MODAL ---- */}
-      {deletingUser && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl w-full max-w-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-red-50 dark:bg-red-900/20">
-              <h2 className="text-xl font-bold text-red-700 dark:text-red-400 flex items-center gap-2">
-                <Trash2 className="w-5 h-5" /> Delete User
-              </h2>
-              <button onClick={() => setDeletingUser(null)} className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
 
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                You are about to permanently delete <strong className="text-slate-900 dark:text-white">{deletingUser.name}</strong>. This action cannot be undone.
-              </p>
-
-              <div className="bg-slate-50 dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Type this code to confirm</p>
-                <div className="text-2xl font-black text-slate-900 dark:text-white tracking-[0.5em] select-none">
-                  {captchaCode}
-                </div>
-              </div>
-
-              <input
-                type="text"
-                value={captchaInput}
-                onChange={(e) => setCaptchaInput(e.target.value.toUpperCase())}
-                placeholder="Enter code"
-                maxLength={4}
-                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white text-center text-lg font-black tracking-widest focus:border-red-400 focus:ring-2 focus:ring-red-100 outline-none"
-              />
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setDeletingUser(null)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={confirmDeleteUser}
-                  disabled={captchaInput !== captchaCode || isDeleting}
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-red-600 font-bold text-white hover:bg-red-700 transition-colors disabled:opacity-40"
-                >
-                  {isDeleting ? 'Deleting...' : 'Delete User'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ---- DELETE ADDRESS CONFIRMATION MODAL ---- */}
       {addressToDelete && (
@@ -1102,6 +1053,17 @@ const AdminUsers = () => {
         </div>
       )}
 
+      {/* ---- ADMIN DELETE MODAL ---- */}
+      <AdminDeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setUserToDelete(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        itemName={userToDelete === 'bulk' ? 'Selected Users' : (userToDelete?.name || 'User')}
+        isBulk={userToDelete === 'bulk'}
+      />
     </div>
   );
 };
