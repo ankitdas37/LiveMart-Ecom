@@ -10,7 +10,10 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data } = await axios.get('/api/dashboard/stats');
+        const adminInfo = JSON.parse(localStorage.getItem('adminInfo') || 'null');
+        const { data } = await axios.get('/api/dashboard/stats', {
+          headers: { Authorization: `Bearer ${adminInfo?.token}` }
+        });
         setStats(data);
       } catch (error) {
         console.error('Failed to fetch dashboard stats', error);
@@ -102,10 +105,22 @@ const AdminDashboard = () => {
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500 mb-1">Emails Sent</p>
-              <h3 className="text-3xl font-bold text-slate-900">{stats.totalEmailsSent || 0}</h3>
+              <p className="text-sm font-medium text-slate-500 mb-1">Emails Sent (Today)</p>
+              <h3 className="text-3xl font-bold text-slate-900">{stats.todayEmailsCount || 0}</h3>
             </div>
             <div className="w-12 h-12 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center">
+              <Mail className="w-6 h-6" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-slate-500 mb-1">Emails Sent (Total)</p>
+              <h3 className="text-3xl font-bold text-slate-900">{stats.totalEmailsSent || 0}</h3>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-pink-100 text-pink-700 flex items-center justify-center">
               <Mail className="w-6 h-6" />
             </div>
           </div>
@@ -202,6 +217,42 @@ const AdminDashboard = () => {
                 <tr>
                   <td colSpan="6" className="px-6 py-8 text-center text-slate-500">
                     No orders placed yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Today's Emails Table */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-8">
+        <div className="px-6 py-5 border-b border-slate-200 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">Today's Emails Sent</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-slate-600">
+            <thead className="bg-slate-50 text-slate-900 font-medium border-b border-slate-200">
+              <tr>
+                <th className="px-6 py-4">User Email</th>
+                <th className="px-6 py-4">Subject</th>
+                <th className="px-6 py-4">Time Sent</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {stats.todayEmails && stats.todayEmails.map((email) => (
+                <tr key={email.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">{email.toEmail}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">{email.subject}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
+                    {new Date(email.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </td>
+                </tr>
+              ))}
+              {(!stats.todayEmails || stats.todayEmails.length === 0) && (
+                <tr>
+                  <td colSpan="3" className="px-6 py-8 text-center text-slate-500">
+                    No emails sent today.
                   </td>
                 </tr>
               )}

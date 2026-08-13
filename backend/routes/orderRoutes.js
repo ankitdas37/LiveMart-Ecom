@@ -8,25 +8,31 @@ const {
   updateOrderDetails, 
   deleteOrder,
   requestItemReturn,
-  updateItemReturnStatus 
+  updateItemReturnStatus,
+  bulkDeleteOrders,
+  getOrderById
 } = require('../controllers/orderController');
-router.route('/')
-  .post(createOrder)
-  .get(getOrders);
 
-router.delete('/bulk', require('../controllers/orderController').bulkDeleteOrders);
+const { protect, admin } = require('../middleware/authMiddleware');
 
-router.route('/track/:id')
-  .get(trackOrder);
+// Public: Create order (guest or logged-in), Track order by ID
+router.post('/', createOrder);
+router.get('/track/:id', trackOrder);
 
-router.route('/:id')
-  .put(updateOrderDetails)
-  .delete(deleteOrder);
+// User: Get single order details (must own the order)
+router.get('/:id', protect, getOrderById);
 
-router.route('/:id/status')
-  .put(updateOrderStatus);
+// Admin only: List ALL orders, bulk delete
+router.get('/', protect, admin, getOrders);
+router.delete('/bulk', protect, admin, bulkDeleteOrders);
 
-router.post('/:orderId/item/:itemId/return', requestItemReturn);
-router.put('/admin/:orderId/item/:itemId/return-status', updateItemReturnStatus);
+// Admin only: Update status, update details, delete a single order
+router.put('/:id/status', protect, admin, updateOrderStatus);
+router.put('/:id', protect, admin, updateOrderDetails);
+router.delete('/:id', protect, admin, deleteOrder);
+
+// Return requests: user initiates, admin resolves
+router.post('/:orderId/item/:itemId/return', protect, requestItemReturn);
+router.put('/admin/:orderId/item/:itemId/return-status', protect, admin, updateItemReturnStatus);
 
 module.exports = router;

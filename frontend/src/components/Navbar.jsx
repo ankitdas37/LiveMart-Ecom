@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRight, Package, Shield, Heart, HelpCircle, Activity, MessageSquare, Clock, Settings, Bell, Globe } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRight, Package, Shield, Heart, HelpCircle, Activity, MessageSquare, Clock, Settings, Bell, Globe, Grid, Sparkles, Tag } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import axios from 'axios';
@@ -17,6 +17,7 @@ const Navbar = () => {
   const searchRef = useRef(null);
   const deliveryModalRef = useRef(null);
   const profileRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const { user, logout } = useContext(AuthContext);
   const { itemCount } = useContext(CartContext);
@@ -28,6 +29,12 @@ const Navbar = () => {
   const [pincode, setPincode] = useState('');
   const [deliveryMessage, setDeliveryMessage] = useState(null);
   const [savedPincode, setSavedPincode] = useState(localStorage.getItem('savedPincode') || '');
+
+  useEffect(() => {
+    const handleOpenDeliveryModal = () => setIsDeliveryModalOpen(true);
+    window.addEventListener('openDeliveryModal', handleOpenDeliveryModal);
+    return () => window.removeEventListener('openDeliveryModal', handleOpenDeliveryModal);
+  }, []);
 
   const checkDelivery = async (e) => {
     e.preventDefault();
@@ -62,10 +69,6 @@ const Navbar = () => {
           setDeliveryMessage({ type: 'success', text: msgText });
           localStorage.setItem('savedPincode', pincode);
           setSavedPincode(pincode);
-          setTimeout(() => {
-            setIsDeliveryModalOpen(false);
-            setDeliveryMessage(null);
-          }, 3500);
         }
       } catch (error) {
         setDeliveryMessage({ type: 'error', text: error.response?.data?.message || 'Sorry, we do not deliver to this pincode.' });
@@ -196,6 +199,9 @@ const Navbar = () => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setIsProfileOpen(false);
       }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -203,7 +209,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm py-3 border-b border-slate-100 dark:border-slate-800' : 'bg-transparent py-5'}`}>
+    <nav ref={mobileMenuRef} className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-sm py-3 border-b border-slate-100 dark:border-slate-800' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
@@ -488,76 +494,37 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-slate-100">
-          <div className="px-4 pt-2 pb-6 space-y-1">
-            <Link to="/" className="block px-3 py-2 text-base font-medium hover:bg-slate-50 hover:text-amber-600">Home</Link>
-            <Link to="/shop" className="block px-3 py-2 text-base font-medium hover:bg-slate-50 hover:text-amber-600">Shop</Link>
-            <Link to="/about" className="block px-3 py-2 text-base font-medium hover:bg-slate-50 hover:text-amber-600">About</Link>
-            <Link to="/contact" className="block px-3 py-2 text-base font-medium hover:bg-slate-50 hover:text-amber-600">Contact</Link>
-            <Link to="/track-order" className="block px-3 py-2 text-base font-medium hover:bg-slate-50 hover:text-amber-600">Track Order</Link>
+        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-slate-100 max-h-[calc(100vh-70px)] overflow-y-auto">
+          <div className="pt-2 pb-6">
 
-            <button
-              onClick={() => { setIsDeliveryModalOpen(true); setIsMobileMenuOpen(false); }}
-              className="w-full text-left px-3 py-2 text-base font-medium text-amber-600 hover:bg-amber-50 flex items-center"
-            >
-              <MapPin className="w-5 h-5 mr-2" />
-              {savedPincode ? `Deliver to ${savedPincode}` : 'Check Delivery Location'}
-            </button>
-
-            <Link to="/admin" className="block px-3 py-2 text-base font-medium text-amber-600 hover:bg-amber-50">Admin Login</Link>
+            {/* Services Section */}
+            <div className="border-t border-slate-100 py-2">
+              <div className="px-6 pb-2 pt-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Services</div>
+              <Link to="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-3 flex items-center text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors font-medium">
+                <Truck className="w-5 h-5 mr-4 text-slate-400" />
+                Track Order
+              </Link>
+              <button
+                onClick={() => { setIsDeliveryModalOpen(true); setIsMobileMenuOpen(false); }}
+                className="w-full text-left px-6 py-3 flex items-center text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors font-medium"
+              >
+                <MapPin className="w-5 h-5 mr-4 text-slate-400" />
+                <span className="truncate">{savedPincode ? `Deliver to ${savedPincode}` : 'Check Delivery Location'}</span>
+              </button>
+              <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-3 flex items-center text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors font-medium">
+                <Shield className="w-5 h-5 mr-4 text-slate-400" />
+                Admin Panel
+              </Link>
+            </div>
 
             {user ? (
               <div className="mt-4 pt-4 border-t border-slate-200">
-                <div className="px-4 pb-3 text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center">
-                  <User className="w-4 h-4 mr-2" />
+                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 text-base font-bold text-slate-700 hover:text-amber-600 uppercase tracking-wider flex items-center transition-colors">
+                  <User className="w-5 h-5 mr-3 text-slate-400" />
                   {user.name}'s Account
-                </div>
-                
-                {/* Account Settings */}
-                <Link to="/profile?tab=edit" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><User className="w-5 h-5 mr-3 text-slate-400" /> Edit Profile</span>
-                </Link>
-                <Link to="/profile?tab=address" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><MapPin className="w-5 h-5 mr-3 text-slate-400" /> Saved Addresses</span>
-                </Link>
-                <Link to="/profile?tab=devices" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Settings className="w-5 h-5 mr-3 text-slate-400" /> Manage Devices</span>
-                </Link>
-                <Link to="/profile?tab=notifications" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Bell className="w-5 h-5 mr-3 text-slate-400" /> Notifications</span>
-                </Link>
-                <Link to="/profile?tab=language" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Globe className="w-5 h-5 mr-3 text-slate-400" /> Language</span>
-                </Link>
-                
-                {/* My Activity */}
-                <div className="mt-2 mb-2 border-t border-slate-100"></div>
-                <Link to="/profile?tab=orders" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Package className="w-5 h-5 mr-3 text-slate-400" /> My Orders</span>
-                </Link>
-                <Link to="/profile?tab=wishlist" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Heart className="w-5 h-5 mr-3 text-slate-400" /> Wishlist</span>
-                </Link>
-                <Link to="/profile?tab=reviews" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Activity className="w-5 h-5 mr-3 text-slate-400" /> My Reviews & Activity</span>
-                </Link>
-                <Link to="/profile?tab=recent" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Clock className="w-5 h-5 mr-3 text-slate-400" /> Recent Product Views</span>
-                </Link>
-                
-                {/* Support */}
-                <div className="mt-2 mb-2 border-t border-slate-100"></div>
-                <Link to="/profile?tab=help" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><HelpCircle className="w-5 h-5 mr-3 text-slate-400" /> Help Center</span>
-                </Link>
-                <Link to="/profile?tab=feedback" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><MessageSquare className="w-5 h-5 mr-3 text-slate-400" /> Feedback, Terms & FAQs</span>
-                </Link>
-                <Link to="/profile?tab=privacy" onClick={() => setIsMobileMenuOpen(false)} className="block px-4 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600">
-                  <span className="flex items-center"><Shield className="w-5 h-5 mr-3 text-slate-400" /> Privacy Center & Account Data</span>
                 </Link>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 px-2">
+                <div className="mt-2 pt-2 border-t border-slate-100 px-2">
                   <button
                     onClick={() => { setIsMobileMenuOpen(false); logoutHandler(); }}
                     className="w-full text-left px-4 py-3 text-base font-bold text-red-500 hover:bg-red-50 flex items-center rounded-xl transition-colors"

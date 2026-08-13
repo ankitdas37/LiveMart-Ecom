@@ -7,19 +7,17 @@ const {
   updatePincode,
   deletePincode
 } = require('../controllers/pincodeController');
-
-// You should normally add protect, admin middlewares here for POST/PUT/DELETE
-// e.g. .post(protect, admin, createPincode)
+const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/')
-  .get(getPincodes)
-  .post(createPincode);
+  .get(getPincodes) // Public can view pincodes (or maybe this is admin only, but usually public to see what's available)
+  .post(protect, admin, createPincode);
 
 router.route('/check/:pincode')
-  .get(checkPincode);
+  .get(checkPincode); // Public to check if their pincode is serviceable
 
 router.route('/:id')
-  .put(updatePincode)
-  .delete(deletePincode);
+  .put(protect, admin, updatePincode)
+  .delete(protect, admin, deletePincode);
 
 module.exports = router;

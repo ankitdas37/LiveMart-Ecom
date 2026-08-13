@@ -4,12 +4,12 @@ const { parseRequestData } = require('../utils/requestParser');
 const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || 'dummy-client-id');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Helper function to generate JWT
 const generateToken = (id, sessionId) => {
-  return jwt.sign({ id, sessionId }, process.env.JWT_SECRET || 'secret123', {
-    expiresIn: '30d',
+  return jwt.sign({ id, sessionId }, process.env.JWT_SECRET, {
+    expiresIn: '7d',
   });
 };
 
@@ -100,7 +100,7 @@ exports.sendSignupOTP = async (req, res) => {
 
     const userExists = await User.findOne({ where: { email } });
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'This account is already registered. Please go to the Sign In page.' });
     }
 
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -110,10 +110,7 @@ exports.sendSignupOTP = async (req, res) => {
     await OTP.destroy({ where: { email } });
     await OTP.create({ email, otp: otpCode, expiresAt });
 
-    // Always log OTP to console for easy testing
-    console.log('\n==============================================');
-    console.log(`🔑 SIGNUP OTP FOR ${email}: ${otpCode}`);
-    console.log('==============================================\n');
+    // OTP generated and will be sent via email. Removed console.log to prevent OTP exposure in logs.
 
     // Build a beautiful HTML email
     const htmlBody = `
@@ -171,25 +168,21 @@ exports.sendSignupOTP = async (req, res) => {
 </body>
 </html>`;
 
-    // Attempt to send email, but never crash if it fails
-    try {
-      await sendEmail({
-        email,
-        subject: 'LiveMart – Verify your email address',
-        message: `Your signup verification code is: ${otpCode}. It expires in 10 minutes.`,
-        html: htmlBody,
-      });
-      res.status(200).json({ message: 'OTP sent to your email' });
-    } catch (emailError) {
+    // Send email asynchronously in the background to speed up frontend response
+    sendEmail({
+      email,
+      subject: 'LiveMart – Verify your email address',
+      message: `Your signup verification code is: ${otpCode}. It expires in 10 minutes.`,
+      html: htmlBody,
+    }).catch(emailError => {
       console.error('Email sending failed (OTP still valid):', emailError.message);
-      // OTP was saved — still let user proceed (they can check console in dev)
-      res.status(200).json({
-        message: 'OTP generated. Email delivery may be delayed — check your inbox or contact support.',
-      });
-    }
+    });
+
+    // Return immediately
+    res.status(200).json({ message: 'OTP sent to your email' });
   } catch (error) {
     console.error('Send OTP error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -258,7 +251,7 @@ exports.registerUser = async (req, res) => {
     }
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -274,7 +267,7 @@ exports.googleAuth = async (req, res) => {
     try {
       ticket = await client.verifyIdToken({
         idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID || 'dummy-client-id',
+        audience: process.env.GOOGLE_CLIENT_ID,
       });
     } catch (err) {
       // If validation fails, it might be due to dummy client id. Return 401.
@@ -289,7 +282,7 @@ exports.googleAuth = async (req, res) => {
 
     if (isLogin) {
       if (!user) {
-        return res.status(401).json({ message: 'User does not exist. Please register first.' });
+        return res.status(401).json({ message: 'This account is not registered. Please go to the Sign Up page to create a new account.' });
       }
       if (!user.googleId) {
         // Link account if they registered with email previously
@@ -307,11 +300,9 @@ exports.googleAuth = async (req, res) => {
           profile_pic: picture,
         });
         isNewUser = true;
-      } else if (!user.googleId) {
-        // If user exists but no googleId, link the account
-        user.googleId = googleId;
-        if (!user.profile_pic) user.profile_pic = picture;
-        await user.save();
+      } else {
+        // User exists, but they are trying to signup. Reject it.
+        return res.status(400).json({ message: 'This account is already registered. Please go to the Sign In page.' });
       }
     }
 
@@ -345,7 +336,7 @@ exports.googleAuth = async (req, res) => {
     });
   } catch (error) {
     console.error('Google Auth error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -370,7 +361,7 @@ exports.loginUser = async (req, res) => {
         ...reqData,
         status: 'Failed'
       });
-      return res.status(401).json({ message: 'User does not exist. Please register first.' });
+      return res.status(401).json({ message: 'This account is not registered. Please go to the Sign Up page to create a new account.' });
     }
 
     if (!user.password) {
@@ -420,7 +411,7 @@ exports.loginUser = async (req, res) => {
     }
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -434,7 +425,8 @@ exports.forgotPassword = async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(404).json({ message: 'This email is not registered with us.' });
+      // Return same message whether email exists or not — prevents email enumeration
+      return res.status(200).json({ message: 'If this email is registered, an OTP has been sent.' });
     }
 
     // Generate 6-digit numeric OTP
@@ -448,10 +440,7 @@ exports.forgotPassword = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
     await user.save();
 
-    // Print OTP to console for free testing without email setup
-    console.log(`\n\n==========================================`);
-    console.log(`🔑 PASSWORD RESET OTP FOR ${email}: ${resetOTP}`);
-    console.log(`==========================================\n\n`);
+    // OTP sent via email. Removed console.log to prevent OTP exposure in logs.
 
     const htmlBody = `
     <div style="font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; max-width: 500px; margin: 0 auto;">
@@ -480,7 +469,7 @@ exports.forgotPassword = async (req, res) => {
     }
   } catch (error) {
     console.error('Forgot password error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -524,7 +513,7 @@ exports.resetPassword = async (req, res) => {
     res.status(200).json({ message: 'Password reset successful. Please login with your new password.' });
   } catch (error) {
     console.error('Reset password error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

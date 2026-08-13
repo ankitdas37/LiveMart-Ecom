@@ -1,11 +1,15 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import ProductCard from '../components/ProductCard';
-import { Search, SlidersHorizontal, RefreshCw } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { Search, SlidersHorizontal, RefreshCw, ArrowLeft, ShoppingCart, ChevronDown, Percent, Grid } from 'lucide-react';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-
+import { CartContext } from '../context/CartContext';
 
 const Shop = () => {
+  const navigate = useNavigate();
+  const { cartItems } = useContext(CartContext);
+  const cartItemCount = cartItems ? cartItems.reduce((total, item) => total + (item.quantity || 1), 0) : 0;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   const initialCategory = searchParams.get('category') || 'all';
@@ -102,8 +106,82 @@ const Shop = () => {
   }, [searchQuery, activeCategory, maxPrice, sortBy, products]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex flex-col lg:flex-row gap-8">
+    <div className="w-full">
+      {/* Mobile Custom Header (Visible only on md:hidden) */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-[#dce7fc] pb-0 shadow-sm pt-4 transition-transform">
+        {/* Top Row: Back, Search, Cart */}
+        <div className="flex items-center px-4 gap-3 pb-3">
+          <button onClick={() => navigate(-1)} className="text-slate-700 p-1">
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Search for products"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (e.target.value) {
+                  setSearchParams({ q: e.target.value });
+                } else {
+                  setSearchParams({});
+                }
+              }}
+              className="w-full bg-white rounded-full py-2.5 pl-10 pr-4 text-sm focus:outline-none shadow-sm text-slate-800 placeholder-slate-400 border border-slate-200"
+            />
+          </div>
+
+          <Link to="/cart" className="relative text-slate-800 p-1">
+            <ShoppingCart className="w-6 h-6" />
+            {cartItemCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-[#dce7fc]">
+                {cartItemCount}
+              </span>
+            )}
+          </Link>
+        </div>
+
+        {/* Second Row: Filters/Scrollable Tabs */}
+        <div className="bg-white py-2.5 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 gap-2.5 items-center">
+            
+            {/* Sort Button */}
+            <button className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shrink-0 shadow-sm hover:bg-slate-50 transition-colors">
+              <span className="text-[13px] font-medium text-slate-700">Sort</span>
+              <ChevronDown className="w-4 h-4 text-slate-500" />
+            </button>
+            
+            {/* Filter Button */}
+            <button className="flex items-center gap-2 bg-slate-200/80 border border-slate-300 rounded-xl px-3 py-1.5 shrink-0 shadow-sm">
+              <div className="bg-black text-white text-[11px] font-bold w-4 h-4 flex items-center justify-center rounded-[4px]">
+                1
+              </div>
+              <span className="text-[13px] font-medium text-slate-800">Filter</span>
+              <SlidersHorizontal className="w-4 h-4 text-slate-800" />
+            </button>
+            
+            {/* Top Discounts */}
+            <button className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shrink-0 shadow-sm hover:bg-slate-50 transition-colors">
+              <div className="bg-orange-100 rounded-full p-0.5">
+                <Percent className="w-3.5 h-3.5 text-green-600" />
+              </div>
+              <span className="text-[13px] font-medium text-slate-700">Top Discounts</span>
+            </button>
+            
+            {/* Menu */}
+            <button className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shrink-0 shadow-sm hover:bg-slate-50 transition-colors">
+              <Grid className="w-4 h-4 text-blue-600" />
+              <span className="text-[13px] font-medium text-slate-700">Menu</span>
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-36 md:pt-12">
+        <div className="flex flex-col lg:flex-row gap-8">
         
         {/* Sidebar Filters */}
         <div className="w-full lg:w-72 shrink-0">
@@ -161,7 +239,7 @@ const Shop = () => {
         <div className="flex-1">
           
           {/* Top Bar (Search & Sort) */}
-          <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 transition-colors duration-300">
+          <div className="hidden md:flex bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm mb-6 flex-col sm:flex-row justify-between items-center gap-4 transition-colors duration-300">
             
             {/* Search */}
             <div className="relative w-full sm:w-96">
@@ -220,28 +298,39 @@ const Shop = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm py-20 px-4 text-center transition-colors duration-300">
-              <Search className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-6" />
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Product Not Found</h3>
-              <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
-                We couldn't find any products matching your search for <span className="font-semibold text-slate-700 dark:text-slate-300">"{searchQuery}"</span>. 
-                Would you like to browse our full catalog instead?
-              </p>
-              <button 
-                onClick={() => {
-                  setSearchQuery('');
-                  setSearchParams({});
-                  setActiveCategory('all');
-                  setMaxPrice(1000);
-                }}
-                className="px-8 py-3 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition-colors shadow-sm"
-              >
-                Browse All Products
-              </button>
+            <div className="space-y-8">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm py-16 px-4 text-center transition-colors duration-300">
+                <Search className="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Product Not Found</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto">
+                  We couldn't find any products matching your search for <span className="font-semibold text-slate-700 dark:text-slate-300">"{searchQuery}"</span>. 
+                </p>
+                <button 
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchParams({});
+                    setActiveCategory('all');
+                    setMaxPrice(5000);
+                  }}
+                  className="px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
+                >
+                  Clear Filters
+                </button>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Recommended for you</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {products.slice(0, 6).map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </div>
             </div>
           )}
           
         </div>
+      </div>
       </div>
     </div>
   );

@@ -146,14 +146,16 @@ const TrackOrder = () => {
               )}
               <h1 className="text-3xl font-black text-slate-900">Order Details</h1>
             </div>
-            <button 
-              onClick={handleDownloadInvoice}
-              disabled={isLoading}
-              className="flex items-center gap-2 bg-white border-2 border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-sm"
-            >
-              {isLoading ? <div className="w-5 h-5 border-2 border-slate-300 border-t-indigo-600 rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
-              {isLoading ? 'Generating...' : 'Download Invoice'}
-            </button>
+            {orderData.customer_name && (
+              <button 
+                onClick={handleDownloadInvoice}
+                disabled={isLoading}
+                className="flex items-center gap-2 bg-white border-2 border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-sm"
+              >
+                {isLoading ? <div className="w-5 h-5 border-2 border-slate-300 border-t-indigo-600 rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
+                {isLoading ? 'Generating...' : 'Download Invoice'}
+              </button>
+            )}
           </div>
         )}
 
@@ -188,7 +190,7 @@ const TrackOrder = () => {
                     Order ID
                   </p>
                   <h2 className="text-base md:text-xl font-black text-white leading-tight group-hover:text-rose-300 transition-colors duration-300 break-all">
-                    #{'LIVEMART' + orderData.id.toString().padStart(6, '0')}
+                    {orderData.orderId ? (orderData.orderId.startsWith('#') ? orderData.orderId : `#${orderData.orderId}`) : `#{'LIVEMART' + orderData.id?.toString().padStart(6, '0')}`}
                   </h2>
                 </div>
 
@@ -426,9 +428,9 @@ const TrackOrder = () => {
                 <div className="space-y-2 text-sm text-slate-600 mb-6">
                   <p><span className="font-medium text-slate-900">Name:</span> {orderData.customer_name}</p>
                   <p><span className="font-medium text-slate-900">Email:</span> {orderData.customer_email || 'Not provided'}</p>
-                  <p><span className="font-medium text-slate-900">Phone:</span> {orderData.customer_phone ? '*'.repeat(Math.max(0, String(orderData.customer_phone).length - 2)) + String(orderData.customer_phone).slice(-2) : 'N/A'}</p>
-                  <p><span className="font-medium text-slate-900">Address:</span> {orderData.customer_address} {orderData.landmark ? `, Landmark: ${orderData.landmark}` : ''}</p>
-                  <p><span className="font-medium text-slate-900">City/Pincode:</span> {orderData.city}, {orderData.district}, {orderData.pincode}</p>
+                  <p><span className="font-medium text-slate-900">Phone:</span> {orderData.customer_phone || 'N/A'}</p>
+                  <p><span className="font-medium text-slate-900">Address:</span> {orderData.customer_address ? `${orderData.customer_address}${orderData.landmark ? `, Landmark: ${orderData.landmark}` : ''}` : 'Not provided'}</p>
+                  <p><span className="font-medium text-slate-900">City/Pincode:</span> {orderData.city}, {orderData.district ? `${orderData.district}, ` : ''}{orderData.pincode}</p>
                 </div>
                 
                 <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -445,22 +447,22 @@ const TrackOrder = () => {
               <div>
                 <h3 className="font-bold text-slate-900 mb-4 border-b pb-2 flex justify-between items-center">
                   <span>Order Summary</span>
-                  <span className="text-sm font-normal text-slate-500">{orderData.OrderItems?.length || 0} items</span>
+                  <span className="text-sm font-normal text-slate-500">{(orderData.items || orderData.OrderItems || []).length} items</span>
                 </h3>
                 <div className="space-y-4">
-                  {(orderData.OrderItems || []).map(item => (
-                    <div key={item.id} className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm transition-all hover:border-amber-200">
+                  {(orderData.items || orderData.OrderItems || []).map((item, idx) => (
+                    <div key={item.id || idx} className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm transition-all hover:border-amber-200">
                       <div className="flex items-center space-x-4">
-                        <Link to={`/product/${item.product_id}`} className="shrink-0 relative group">
-                          <img src={(item.Product?.images && item.Product.images[0]) ? item.Product.images[0] : 'https://via.placeholder.com/60'} alt={item.Product?.title || 'Product'} className="w-16 h-16 rounded-lg object-cover border border-slate-100" />
+                        <Link to={item.product_id ? `/product/${item.product_id}` : '#'} className="shrink-0 relative group">
+                          <img src={item.productImage || (item.Product?.images && item.Product.images[0]) || 'https://via.placeholder.com/60'} alt={item.productTitle || item.Product?.title || 'Product'} className="w-16 h-16 rounded-lg object-cover border border-slate-100" />
                           <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <ExternalLink className="w-5 h-5 text-white" />
                           </div>
                         </Link>
                         
                         <div className="flex-1 min-w-0">
-                          <Link to={`/product/${item.product_id}`} className="text-sm font-bold text-slate-900 truncate block hover:text-amber-600 transition-colors">
-                            {item.Product?.title || 'Product'}
+                          <Link to={item.product_id ? `/product/${item.product_id}` : '#'} className="text-sm font-bold text-slate-900 truncate block hover:text-amber-600 transition-colors">
+                            {item.productTitle || item.Product?.title || 'Product'}
                           </Link>
                           <p className="text-xs text-slate-500 mt-1">Qty: {item.quantity} × ₹{item.price}</p>
                           
@@ -468,7 +470,7 @@ const TrackOrder = () => {
                           {orderData.status === 'Delivered' && (
                             <button 
                               onClick={() => {
-                                setReviewProduct(item.Product);
+                                setReviewProduct(item.Product || { title: item.productTitle, images: [item.productImage] });
                                 setIsReviewModalOpen(true);
                               }}
                               className="mt-2 text-xs font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1 transition-colors"
@@ -489,8 +491,14 @@ const TrackOrder = () => {
                   <div className="pt-4 mt-2 space-y-2 bg-slate-100/50 p-4 rounded-xl border border-slate-100">
                     <div className="flex justify-between text-sm text-slate-600 font-medium">
                       <span>Subtotal</span>
-                      <span>₹{(orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0).toFixed(2)}</span>
+                      <span>₹{((orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)).toFixed(2)}</span>
                     </div>
+                    {Number(orderData.total_amount || 0) - (((orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)) - Number(orderData.discountAmount || 0)) > 0.01 && (
+                      <div className="flex justify-between text-sm text-slate-600 font-medium">
+                        <span>Shipping & Extra Charges</span>
+                        <span>₹{(Number(orderData.total_amount) - (((orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)) - Number(orderData.discountAmount || 0))).toFixed(2)}</span>
+                      </div>
+                    )}
                     {(orderData.discountAmount || 0) > 0 && (
                       <div className="flex justify-between text-sm text-emerald-600 font-bold">
                         <span>Discount {orderData.couponCode ? `(${orderData.couponCode})` : ''}</span>
@@ -499,7 +507,7 @@ const TrackOrder = () => {
                     )}
                     <div className="flex justify-between items-center font-black text-xl text-slate-900 pt-3 border-t border-slate-200 mt-3">
                       <span>Total Paid</span>
-                      <span className="text-indigo-600">₹{Number(orderData.total_amount).toFixed(2)}</span>
+                      <span className="text-indigo-600">₹{Number(orderData.total_amount || (orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>

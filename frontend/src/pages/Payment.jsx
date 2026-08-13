@@ -89,9 +89,7 @@ const Payment = () => {
 
     try {
       setIsUploadingReceipt(true);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
       setPaymentReceiptUrl(res.data.url);
     } catch (error) {
       console.error('Upload error:', error);

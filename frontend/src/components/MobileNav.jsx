@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Grid, ShoppingCart, User } from 'lucide-react';
+import { Home, Grid, ShoppingCart, User, Info } from 'lucide-react';
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
@@ -17,6 +17,7 @@ const MobileNav = () => {
   const navItems = [
     { name: 'Home', path: '/', icon: Home },
     { name: 'Shop', path: '/shop', icon: Grid },
+    { name: 'About', path: '/about', icon: Info },
     { name: 'Cart', path: '/cart', icon: ShoppingCart, badge: itemCount },
     { name: 'Profile', path: user ? '/profile' : '/login', icon: User },
   ];

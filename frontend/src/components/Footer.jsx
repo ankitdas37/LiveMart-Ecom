@@ -1,5 +1,27 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+const GithubIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.03c3.15-.38 6.5-1.4 6.5-7a4.6 4.6 0 0 0-1.2-3.21 4.3 4.3 0 0 0-.12-3.17s-1-.31-3.2 1.18a11 11 0 0 0-6 0c-2.2-1.49-3.2-1.18-3.2-1.18a4.3 4.3 0 0 0-.12 3.17 4.6 4.6 0 0 0-1.2 3.21c0 5.6 3.35 6.6 6.5 7a4.8 4.8 0 0 0-1 3.03V22"></path>
+    <path d="M9 20c-5 1.5-5-2.5-7-3"></path>
+  </svg>
+);
+
+const TwitterIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+  </svg>
+);
+
+const InstagramIcon = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+  </svg>
+);
 
 const Footer = () => {
   const location = useLocation();
@@ -24,9 +46,15 @@ const Footer = () => {
               Your one-stop shop for the best biscuits, Kurkure, delicious cakes, and crunchy snacks. Freshness delivered to your door.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-slate-400 hover:text-white transition-colors font-bold text-sm">FB</a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors font-bold text-sm">TW</a>
-              <a href="#" className="text-slate-400 hover:text-white transition-colors font-bold text-sm">IG</a>
+              <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
+                <GithubIcon className="w-5 h-5" />
+              </a>
+              <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
+                <TwitterIcon className="w-5 h-5" />
+              </a>
+              <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
+                <InstagramIcon className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
@@ -35,7 +63,6 @@ const Footer = () => {
             <h4 className="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Quick Links</h4>
             <ul className="space-y-3">
               <li><Link to="/shop" className="hover:text-white transition-colors text-sm">Shop All</Link></li>
-              <li><Link to="/categories/new" className="hover:text-white transition-colors text-sm">New Arrivals</Link></li>
               <li><Link to="/categories/bestsellers" className="hover:text-white transition-colors text-sm">Best Sellers</Link></li>
               <li><Link to="/about" className="hover:text-white transition-colors text-sm">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors text-sm">Contact</Link></li>
@@ -48,7 +75,11 @@ const Footer = () => {
             <ul className="space-y-3">
               <li><a href="#" className="hover:text-white transition-colors text-sm">FAQ</a></li>
               <li><a href="#" className="hover:text-white transition-colors text-sm">Shipping & Returns</a></li>
-              <li><a href="#" className="hover:text-white transition-colors text-sm">Track Order</a></li>
+              <li>
+                <a href="#" onClick={(e) => { e.preventDefault(); toast('Coming Soon!', { icon: '🚀' }); }} className="hover:text-white transition-colors text-sm">
+                  Track Order
+                </a>
+              </li>
               <li><a href="#" className="hover:text-white transition-colors text-sm">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-white transition-colors text-sm">Terms of Service</a></li>
             </ul>
@@ -60,15 +91,15 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
-                <span className="text-sm">123 Commerce St.<br />New York, NY 10001</span>
+                <span className="text-sm">Online.<br />Hooghly, West Bengal</span>
               </li>
               <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                <span className="text-sm">+1 (555) 123-4567</span>
+                <a href="tel:+919876543210" className="text-sm hover:text-white transition-colors">+91 9876543210</a>
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                <span className="text-sm">support@aurastore.com</span>
+                <a href="mailto:livemart.support@gmail.com" className="text-sm hover:text-white transition-colors">livemart.support@gmail.com</a>
               </li>
             </ul>
           </div>
@@ -79,9 +110,15 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} <span className="text-white">Live</span><span className="text-[#FF8C00]">Mart</span>. All rights reserved.
           </p>
           <div className="flex space-x-4">
-            <div className="h-6 w-10 bg-slate-800 rounded"></div>
-            <div className="h-6 w-10 bg-slate-800 rounded"></div>
-            <div className="h-6 w-10 bg-slate-800 rounded"></div>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded flex items-center justify-center">
+              <GithubIcon className="w-4 h-4" />
+            </a>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded flex items-center justify-center">
+              <TwitterIcon className="w-4 h-4" />
+            </a>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded flex items-center justify-center">
+              <InstagramIcon className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </div>

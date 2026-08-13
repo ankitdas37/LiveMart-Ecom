@@ -10,7 +10,7 @@ const protect = async (req, res, next) => {
   ) {
     try {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // Session validation
       if (decoded.sessionId) {
@@ -25,6 +25,9 @@ const protect = async (req, res, next) => {
           await session.save();
         }
         req.sessionId = decoded.sessionId;
+      } else {
+        // Enforce session tracking by rejecting old tokens without sessionId
+        return res.status(401).json({ message: 'Session expired or revoked. Please login again.' });
       }
 
       req.user = await User.findByPk(decoded.id, {

@@ -124,9 +124,7 @@ const AdminCategories = () => {
 
     try {
       setIsUploading(true);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
       setFormData(prev => ({ ...prev, image_url: res.data.url }));
       toast.success('Image uploaded successfully!');
     } catch (error) {

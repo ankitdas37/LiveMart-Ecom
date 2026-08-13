@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronLeft, ChevronRight, Circle, CircleDot } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, ChevronLeft, ChevronRight, Circle, CircleDot, Search, MapPin, Truck, Camera, Mic, Home as HomeIcon, ChevronDown, Sparkles } from 'lucide-react';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,6 +15,14 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
+
+  // Mobile Search State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [showCameraAlert, setShowCameraAlert] = useState(false);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -37,7 +46,7 @@ const Home = () => {
         
         // Filter published categories
         const activeCategories = catRes.data.filter(c => c.is_published && !c.is_paused);
-        setCategories(activeCategories.slice(0, 4)); // Show up to 4 categories on home
+        setCategories(activeCategories); // Store all categories for mobile horizontal scroll
         
         // Filter published products and get top 4 bestsellers
         const availableProducts = prodRes.data.filter(p => p.is_published && !p.is_paused);
@@ -103,10 +112,214 @@ const Home = () => {
     button2Link: "/shop"
   };
 
+  useEffect(() => {
+    if (searchQuery.trim().length >= 1) {
+      setIsSearching(true);
+      const fetchSearchResults = async () => {
+        try {
+           const res = await axios.get('/api/products');
+           const published = res.data.filter(p => p.is_published && !p.is_paused);
+           const q = searchQuery.toLowerCase().trim();
+           const matchedProducts = published.filter(p =>
+             p.title?.toLowerCase().includes(q) ||
+             p.description?.toLowerCase().includes(q) ||
+             p.sku?.toLowerCase().includes(q) ||
+             p.category?.toLowerCase().includes(q)
+           ).slice(0, 5);
+           setSearchResults(matchedProducts);
+        } catch (error) {
+           console.error("Failed to search products", error);
+        } finally {
+           setIsSearching(false);
+        }
+      };
+      const debounceTimer = setTimeout(fetchSearchResults, 300);
+      return () => clearTimeout(debounceTimer);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResults([]);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const startVoiceSearch = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert("Your browser does not support Voice Search.");
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setSearchQuery(transcript);
+      // Optional: automatically navigate after setting query
+      // navigate(`/shop?search=${transcript}`); 
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Voice search error", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
+
   const activeSlide = heroSlides.length > 0 ? heroSlides[currentSlide] : defaultSlide;
 
   return (
     <div className="w-full">
+      {/* Mobile Sub-Header (Flipkart Style) */}
+      <div className="md:hidden bg-gradient-to-b from-orange-100 to-white dark:from-slate-900 dark:to-slate-900 pt-3 pb-2 px-3 space-y-3">
+        
+        {/* Top Row: Address, Track, and Points */}
+        <div className="flex justify-between items-center gap-2">
+          <button 
+            onClick={() => window.dispatchEvent(new Event('openDeliveryModal'))}
+            className="flex-1 flex items-center bg-white/60 dark:bg-slate-800/60 backdrop-blur-md rounded-lg py-1.5 px-2 border border-orange-200/50 dark:border-slate-700 min-w-0"
+          >
+            <HomeIcon className="w-4 h-4 text-slate-800 dark:text-slate-200 mr-1.5 flex-shrink-0" />
+            <div className="flex items-center overflow-hidden min-w-0">
+              <span className="text-[11px] font-extrabold text-slate-800 dark:text-slate-200 mr-1 shrink-0">HOME</span>
+              <span className="text-[11px] text-slate-600 dark:text-slate-400 truncate">
+                {localStorage.getItem('savedPincode') || 'Select Delivery Location'}
+              </span>
+            </div>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-500 ml-1 flex-shrink-0" />
+          </button>
+          
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link 
+              to="/track-order" 
+              className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm shadow-blue-500/30 rounded-lg py-1.5 px-2.5 transition-transform active:scale-95"
+            >
+              <Truck className="w-3 h-3 mr-1" />
+              <span className="text-[10px] font-extrabold tracking-wide uppercase">Track</span>
+            </Link>
+
+
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div ref={searchRef} className="relative z-[60]">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery) navigate(`/shop?search=${searchQuery}`);
+            }} 
+            className="relative"
+          >
+            <Search className="absolute left-3 top-2.5 w-5 h-5 text-slate-600 dark:text-slate-400" />
+            <input 
+              type="text" 
+              name="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products..." 
+              className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl py-2.5 pl-10 pr-20 text-sm focus:outline-none shadow-sm border border-slate-200 dark:border-slate-700" 
+              autoComplete="off"
+            />
+            <div className="absolute right-3 top-2.5 flex space-x-3 text-slate-400">
+              <button 
+                type="button" 
+                onClick={() => setShowCameraAlert(true)}
+                className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors focus:outline-none"
+              >
+                <Camera className="w-5 h-5" />
+              </button>
+              <button 
+                type="button"
+                onClick={startVoiceSearch}
+                className={`transition-colors focus:outline-none flex items-center justify-center ${isListening ? 'text-red-500 animate-pulse' : 'hover:text-slate-600 dark:hover:text-slate-300'}`}
+              >
+                <Mic className="w-5 h-5" />
+                {isListening && <span className="absolute w-6 h-6 rounded-full bg-red-500/20 animate-ping"></span>}
+              </button>
+            </div>
+          </form>
+
+          {/* Search Dropdown */}
+          {searchQuery.trim().length >= 1 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-900 shadow-2xl border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden z-[60]">
+              <div className="max-h-80 overflow-y-auto">
+                {isSearching ? (
+                  <div className="p-4 text-center text-xs text-slate-500">Searching...</div>
+                ) : searchResults.length > 0 ? (
+                  <div className="py-2">
+                    {searchResults.map((product) => (
+                      <Link
+                        key={product.id}
+                        to={`/product/${product.id}`}
+                        className="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                        onClick={() => setSearchQuery('')}
+                      >
+                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800">
+                          <img src={product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/100x100?text=No+Image'} alt={product.title} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-medium text-slate-900 dark:text-white truncate">{product.title}</h4>
+                          <span className="text-xs font-bold text-amber-600 dark:text-amber-500">₹{product.price}</span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-xs text-slate-500">No products found for "{searchQuery}"</div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Categories Horizontal Scroll */}
+        <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-x-6 py-2 px-1">
+          {/* Static 'For You' Category */}
+          <Link to="/shop" className="flex flex-col items-center min-w-max space-y-1">
+            <div className="w-12 h-12 bg-[#fed7aa] dark:bg-slate-700 rounded-xl flex items-center justify-center border border-orange-300 dark:border-slate-600 shadow-sm relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-orange-300/50 to-transparent"></div>
+                <CircleDot className="w-6 h-6 text-orange-700 dark:text-orange-400 relative z-10" />
+            </div>
+            <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200">For You</span>
+            <div className="w-6 h-0.5 bg-slate-800 dark:bg-white rounded-full mt-0.5"></div>
+          </Link>
+          
+          {categories.map(cat => (
+            <Link key={cat.id} to={`/shop?category=${cat.id}`} className="flex flex-col items-center min-w-max space-y-1 pt-0.5">
+              <div className="w-11 h-11 bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
+                {cat.image_url ? (
+                  <img src={cat.image_url} alt={cat.name} className="w-9 h-9 object-contain mix-blend-multiply dark:mix-blend-normal" />
+                ) : (
+                  <Circle className="w-6 h-6 text-slate-400" />
+                )}
+              </div>
+              <span className="text-[10px] font-medium text-slate-700 dark:text-slate-300">{cat.name}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section 
         className="relative h-[85vh] bg-slate-900 flex items-center overflow-hidden group"
@@ -220,17 +433,18 @@ const Home = () => {
             </div>
           ) : categories.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {categories.map((cat) => (
+              {categories.slice(0, 4).map((cat) => (
                 <Link key={cat.id} to={`/shop?category=${cat.id}`} className="group relative h-[400px] rounded-2xl overflow-hidden">
                   <img 
                     src={cat.image_url || "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
                     alt={cat.name} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
-                  <div className="absolute bottom-8 left-8">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent flex flex-col justify-end p-8">
                     <h3 className="text-2xl font-bold text-white mb-2">{cat.name}</h3>
-                    <span className="text-amber-300 group-hover:text-amber-200 transition-colors flex items-center font-medium">Explore <ArrowRight className="w-4 h-4 ml-1" /></span>
+                    <div className="flex items-center text-amber-400 font-medium group-hover:text-amber-300 transition-colors">
+                      Explore Collection <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -272,6 +486,29 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Visual Search Coming Soon Modal */}
+      {showCameraAlert && (
+        <div className="fixed inset-0 z-[100] flex flex-col justify-end sm:justify-center items-center bg-slate-900/40 backdrop-blur-sm px-4 pb-4 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 w-full sm:max-w-sm rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300">
+            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Camera className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white text-center mb-2">
+              Visual Search
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400 text-center mb-6 text-sm">
+              We're working hard to bring AI-powered visual search to you. Soon you'll be able to snap a photo to find matching products instantly!
+            </p>
+            <button 
+              onClick={() => setShowCameraAlert(false)}
+              className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-3.5 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

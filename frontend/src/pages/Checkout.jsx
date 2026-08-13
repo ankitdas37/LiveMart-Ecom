@@ -1,9 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, MapPin, AlertCircle, ShieldCheck, Tag, Truck } from 'lucide-react';
+import { ArrowLeft, Trash2, MapPin, AlertCircle, ShieldCheck, Tag, Truck, CheckCircle2 } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const WB_DISTRICTS = [
   "Hooghly",
@@ -49,9 +50,13 @@ const COUNTRIES = [
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, cartTotal, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
+  const { cartItems, cartTotal, removeFromCart, updateQuantity, clearCart, cartLoading } = useContext(CartContext);
   const { user } = useContext(AuthContext);
-  
+
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [isAddressesLoading, setIsAddressesLoading] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('checkoutFormData');
     if (saved) {
@@ -76,9 +81,8 @@ const Checkout = () => {
     };
   });
 
-  useEffect(() => {
-    localStorage.setItem('checkoutFormData', JSON.stringify(formData));
-  }, [formData]);
+  // Note: Checkout form data is NOT persisted to localStorage because it contains PII
+  // (name, phone, address). Form auto-fills from saved addresses instead.
 
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [locationStatus, setLocationStatus] = useState(''); // 'requesting', 'success', 'error'
@@ -113,12 +117,111 @@ const Checkout = () => {
     }
   }, [isCodAvailable]);
 
+  // Redirect to register if not logged in
+  useEffect(() => {
+    if (!user) {
+      toast('Oops! First register to place an order 🥰', {
+        icon: '✨',
+        duration: 3000,
+        style: {
+          borderRadius: '16px',
+          background: '#fdf2f8',
+          color: '#db2777',
+          border: '1px solid #fbcfe8',
+          padding: '16px',
+          fontWeight: '500'
+        },
+      });
+      setTimeout(() => {
+        navigate('/signup');
+      }, 1500); // Give them time to read the cute popup
+    }
+  }, [user, navigate]);
+
   // Pre-fill email if user is logged in
   useEffect(() => {
     if (user && user.email) {
       setFormData(prev => ({ ...prev, email: user.email }));
     }
   }, [user]);
+
+  // Fetch Saved Addresses
+  useEffect(() => {
+    if (user) {
+      const fetchAddresses = async () => {
+        setIsAddressesLoading(true);
+        try {
+          const { data } = await axios.get('/api/users/addresses', { headers: { Authorization: `Bearer ${user.token}` } });
+          setSavedAddresses(data);
+          if (data && data.length > 0) {
+            const defaultAddr = data.find(a => a.is_default) || data[0];
+            setSelectedAddressId(defaultAddr.id);
+            setFormData(prev => ({
+              ...prev,
+              name: defaultAddr.fullName || user.name || '',
+              phone: defaultAddr.phone || '',
+              alt_phone: defaultAddr.altPhone || '',
+              address: defaultAddr.street || '',
+              district: defaultAddr.district || 'Hooghly',
+              city: defaultAddr.city || '',
+              landmark: defaultAddr.landmark || '',
+              pincode: defaultAddr.pincode || '',
+              country: defaultAddr.country || 'India',
+            }));
+          } else {
+            setSelectedAddressId(null);
+          }
+        } catch (error) {
+          console.error('Failed to load saved addresses', error);
+        } finally {
+          setIsAddressesLoading(false);
+        }
+      };
+      fetchAddresses();
+    }
+  }, [user]);
+
+  const handleSelectAddress = (addr) => {
+    setSelectedAddressId(addr.id);
+    setFormData(prev => ({
+      ...prev,
+      name: addr.fullName || user?.name || '',
+      phone: addr.phone || '',
+      alt_phone: addr.altPhone || '',
+      address: addr.street || '',
+      district: addr.district || 'Hooghly',
+      city: addr.city || '',
+      landmark: addr.landmark || '',
+      pincode: addr.pincode || '',
+      country: addr.country || 'India',
+    }));
+
+    if (addr.location_lat && addr.location_lng) {
+      setLocation({ lat: addr.location_lat, lng: addr.location_lng });
+      setLocationStatus('success');
+    } else {
+      setLocation({ lat: null, lng: null });
+      setLocationStatus('idle');
+    }
+  };
+
+  const handleAddNewAddress = () => {
+    setSelectedAddressId(null);
+    setFormData(prev => ({
+      ...prev,
+      name: user?.name || '',
+      phone: user?.phone || '',
+      alt_phone: '',
+      address: '',
+      district: 'Hooghly',
+      city: '',
+      landmark: '',
+      pincode: '',
+      country: 'India',
+    }));
+    setLocation({ lat: null, lng: null });
+    setLocationStatus('idle');
+  };
 
   useEffect(() => {
     const fetchCouponsAndSettings = async () => {
@@ -128,10 +231,10 @@ const Checkout = () => {
           axios.get('/api/settings').catch(() => ({ data: {} })),
           axios.get('/api/extracharges/active').catch(() => ({ data: [] }))
         ]);
-        
+
         setAvailableCoupons(couponsRes.data || []);
         setActiveExtraCharges(chargesRes.data || []);
-        
+
         if (settingsRes.data && settingsRes.data.SHIPPING_CHARGE !== undefined) {
           setShippingCharge(parseFloat(settingsRes.data.SHIPPING_CHARGE));
         }
@@ -161,13 +264,17 @@ const Checkout = () => {
             }
           } else {
             setPincodeStatus('error');
-            setPincodeMessage(res.data.message || 'Sorry, we do not deliver to this pincode.');
+            const msg = res.data.message || 'Sorry, we do not deliver to this pincode.';
+            setPincodeMessage(msg);
             setEstimatedDeliveryDays(null);
+            if (selectedAddressId !== null) toast.error(msg);
           }
         } catch (error) {
           setPincodeStatus('error');
-          setPincodeMessage(error.response?.data?.message || 'Sorry, we do not deliver to this pincode.');
+          const msg = error.response?.data?.message || 'Sorry, we do not deliver to this pincode.';
+          setPincodeMessage(msg);
           setEstimatedDeliveryDays(null);
+          if (selectedAddressId !== null) toast.error(msg);
         }
       } else {
         setPincodeStatus('idle');
@@ -175,26 +282,26 @@ const Checkout = () => {
         setEstimatedDeliveryDays(null);
       }
     };
-    
+
     const timeoutId = setTimeout(() => {
       checkPincode();
     }, 500);
-    
+
     return () => clearTimeout(timeoutId);
   }, [formData.pincode]);
 
   const handleApplyCoupon = async (codeToApply = couponCode) => {
     if (!codeToApply.trim()) return;
-    
+
     setIsApplyingCoupon(true);
     setCouponError('');
-    
+
     try {
       const { data } = await axios.post('/api/coupons/validate', {
         code: codeToApply,
         cartValue: cartTotal
       });
-      
+
       setAppliedCoupon({
         ...data.coupon,
         calculatedDiscount: parseFloat(data.discountAmount)
@@ -217,15 +324,13 @@ const Checkout = () => {
   const handleReceiptUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     const uploadData = new FormData();
     uploadData.append('image', file);
-    
+
     try {
       setIsUploadingReceipt(true);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
       setPaymentReceiptUrl(res.data.url);
     } catch (error) {
       console.error('Upload error:', error);
@@ -237,7 +342,7 @@ const Checkout = () => {
 
   const handleChange = (e) => {
     let { name, value } = e.target;
-    
+
     // Real-time stripping of invalid characters
     if (name === 'phone' || name === 'alt_phone') {
       value = value.replace(/\D/g, '').slice(0, 10); // Only digits, max 10
@@ -247,10 +352,10 @@ const Checkout = () => {
     }
 
     setFormData({ ...formData, [name]: value });
-    
+
     // Real-time validation
     const errors = { ...formErrors };
-    
+
     if (name === 'phone' || name === 'alt_phone') {
       if (value.length > 0 && (!/^[6-9]\d{9}$/.test(value) || value.length < 10)) {
         errors[name] = "Please enter a valid 10-digit Indian mobile number starting with 6-9.";
@@ -270,7 +375,7 @@ const Checkout = () => {
     if (name !== 'phone' && name !== 'alt_phone' && name !== 'pincode') {
       delete errors[name];
     }
-    
+
     setFormErrors(errors);
   };
 
@@ -282,34 +387,34 @@ const Checkout = () => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           setLocation({ lat, lng });
-          
+
           try {
             const res = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
             if (res.data && res.data.address) {
               const address = res.data.address;
-              
+
               setFormData(prev => {
                 const newForm = { ...prev };
-                
+
                 const roadParts = [address.road, address.suburb, address.neighbourhood].filter(Boolean);
                 if (roadParts.length > 0) newForm.address = roadParts.join(', ');
-                
+
                 const city = address.city || address.town || address.village || address.state_district;
                 if (city) newForm.city = city.replace(' District', '');
-                
+
                 if (address.state_district) {
                   const dist = address.state_district.replace(' District', '');
                   const matchedDist = WB_DISTRICTS.find(d => d.toLowerCase() === dist.toLowerCase());
                   if (matchedDist) newForm.district = matchedDist;
                 }
-                
+
                 if (address.postcode) newForm.pincode = address.postcode.replace(/\D/g, '').slice(0, 6);
-                
+
                 if (address.country) {
                   const matchedCountry = COUNTRIES.find(c => c.toLowerCase() === address.country.toLowerCase());
                   if (matchedCountry) newForm.country = matchedCountry;
                 }
-                
+
                 return newForm;
               });
             }
@@ -330,10 +435,10 @@ const Checkout = () => {
 
   const validateForm = () => {
     const errors = {};
-    
+
     // Indian Mobile Number: 10 digits starting with 6-9
     const mobileRegex = /^[6-9]\d{9}$/;
-    
+
     if (!mobileRegex.test(formData.phone)) {
       errors.phone = "Please enter a valid 10-digit Indian mobile number (e.g. 9876543210).";
     }
@@ -359,7 +464,7 @@ const Checkout = () => {
 
   const calculateShipping = () => {
     if (cartItems.length === 0) return 0;
-    
+
     let totalSpecificShipping = 0;
     let hasGlobalShippingItems = false;
 
@@ -379,7 +484,7 @@ const Checkout = () => {
     cartItems.forEach(item => {
       let charges = item.extra_charges;
       if (typeof charges === 'string') {
-        try { charges = JSON.parse(charges); } catch(e) { charges = []; }
+        try { charges = JSON.parse(charges); } catch (e) { charges = []; }
       }
       if (charges && Array.isArray(charges)) {
         charges.forEach(chargeId => {
@@ -413,20 +518,22 @@ const Checkout = () => {
   const totalSaved = calculateTotalSaved();
 
   const getExpectedDeliveryDate = () => {
+    if (pincodeStatus === 'error') return "Not Available";
+    
     const minDate = new Date();
     const maxDate = new Date();
-    
+
     if (estimatedDeliveryDays !== null) {
       if (estimatedDeliveryDays === 1) return "Tomorrow";
       if (estimatedDeliveryDays === 0) return "Today (Same Day)";
-      
+
       minDate.setDate(minDate.getDate() + Math.max(1, estimatedDeliveryDays - 1));
       maxDate.setDate(maxDate.getDate() + estimatedDeliveryDays + 1);
     } else {
       minDate.setDate(minDate.getDate() + 3);
       maxDate.setDate(maxDate.getDate() + 5);
     }
-    
+
     const options = { month: 'short', day: 'numeric' };
     return `${minDate.toLocaleDateString('en-US', options)} - ${maxDate.toLocaleDateString('en-US', options)}`;
   };
@@ -434,7 +541,7 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitMessage(null);
-    
+
     if (cartItems.length === 0) {
       setSubmitMessage({ type: 'error', text: 'Your cart is empty!' });
       return;
@@ -445,18 +552,18 @@ const Checkout = () => {
     }
 
     setIsSubmitting(true);
-    
+
     try {
       const pinRes = await axios.get(`/api/pincodes/check/${formData.pincode}`);
       if (!pinRes.data.serviceable) {
-         setSubmitMessage({ type: 'error', text: pinRes.data.message || 'Sorry, we do not deliver to this pincode.' });
-         setIsSubmitting(false);
-         return;
+        setSubmitMessage({ type: 'error', text: pinRes.data.message || 'Sorry, we do not deliver to this pincode.' });
+        setIsSubmitting(false);
+        return;
       }
     } catch (error) {
-       setSubmitMessage({ type: 'error', text: error.response?.data?.message || 'Sorry, we do not deliver to this pincode.' });
-       setIsSubmitting(false);
-       return;
+      setSubmitMessage({ type: 'error', text: error.response?.data?.message || 'Sorry, we do not deliver to this pincode.' });
+      setIsSubmitting(false);
+      return;
     }
 
     const orderPayload = {
@@ -498,14 +605,24 @@ const Checkout = () => {
 
 
 
+  // Show loading spinner while cart is being fetched from DB on refresh
+  if (cartLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
+        <p className="text-slate-500 font-medium">Loading your cart...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Checkout Form */}
         <div className="lg:w-2/3">
           <div className="flex items-center space-x-4 mb-8">
-            <button 
-              onClick={() => navigate(-1)} 
+            <button
+              onClick={() => navigate(-1)}
               className="p-2 rounded-full hover:bg-slate-200 text-slate-600 transition-colors"
               aria-label="Go back"
             >
@@ -522,110 +639,179 @@ const Checkout = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
-            {/* Contact Information */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <h2 className="text-xl font-semibold mb-4 border-b pb-4">Contact Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
-                  {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
+
+            {/* Select Saved Address */}
+            {user && savedAddresses.length > 0 && (
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h2 className="text-xl font-semibold mb-4 border-b pb-4">Select Delivery Address</h2>
+                {isAddressesLoading ? (
+                  <div className="text-slate-500 animate-pulse">Loading saved addresses...</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {savedAddresses.map(addr => (
+                      <div
+                        key={addr.id}
+                        onClick={() => handleSelectAddress(addr)}
+                        className={`p-4 border rounded-xl cursor-pointer transition-all ${selectedAddressId === addr.id
+                            ? 'border-amber-500 bg-amber-50 ring-1 ring-amber-500'
+                            : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'
+                          }`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <span className="inline-block px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded uppercase">
+                            {addr.addressType || 'Home'}
+                          </span>
+                          {selectedAddressId === addr.id && (
+                            <span className="text-amber-600"><CheckCircle2 className="w-5 h-5" /></span>
+                          )}
+                        </div>
+                        <h4 className="font-bold text-slate-900">{addr.fullName}</h4>
+                        <p className="text-sm text-slate-600 mt-1 line-clamp-2">{addr.street}, {addr.city}, {addr.district}</p>
+                        <p className="text-sm text-slate-600 font-medium mt-1">PIN: {addr.pincode}</p>
+                        <p className="text-sm text-slate-500 mt-1 flex items-center">
+                          📞 {addr.phone}
+                        </p>
+                        {selectedAddressId === addr.id && pincodeStatus === 'error' && (
+                          <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-xs flex items-center font-medium">
+                            <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                            {pincodeMessage || "Delivery not available"}
+                          </div>
+                        )}
+                        {selectedAddressId === addr.id && pincodeStatus === 'success' && (
+                          <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-green-700 text-xs flex items-center font-medium">
+                            <ShieldCheck className="w-3.5 h-3.5 mr-1" />
+                            {pincodeMessage}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    <div
+                      onClick={handleAddNewAddress}
+                      className={`p-4 border border-dashed rounded-xl cursor-pointer flex flex-col items-center justify-center min-h-[140px] transition-all ${selectedAddressId === null
+                          ? 'border-amber-500 bg-amber-50 text-amber-700'
+                          : 'border-slate-300 text-slate-500 hover:border-amber-400 hover:text-amber-600 hover:bg-slate-50'
+                        }`}
+                    >
+                      <span className="text-2xl mb-2">+</span>
+                      <span className="font-medium">Enter Manually / Add New</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {selectedAddressId === null && (
+              <div className="space-y-6">
+                {/* Contact Information */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <h2 className="text-xl font-semibold mb-4 border-b pb-4">Contact Information</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
+                      <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                      {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        readOnly={!!user}
+                        className={`w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${!!user ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-white'}`}
+                      />
+                      {!!user && <p className="text-xs text-amber-600 mt-1">Logged in as {user.email}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number *</label>
+                      <input type="text" name="phone" placeholder="10-digit number" value={formData.phone} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.phone ? 'border-red-500' : 'border-slate-200'}`} />
+                      {formErrors.phone && <p className="text-red-500 text-xs mt-1">{formErrors.phone}</p>}
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Alternative Mobile Number (Optional)</label>
+                      <input type="text" name="alt_phone" placeholder="10-digit number" value={formData.alt_phone} onChange={handleChange} className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.alt_phone ? 'border-red-500' : 'border-slate-200'}`} />
+                      {formErrors.alt_phone && <p className="text-red-500 text-xs mt-1">{formErrors.alt_phone}</p>}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
-                  <input 
-                    type="email" 
-                    name="email" 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
-                    readOnly={!!user}
-                    className={`w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${!!user ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-white'}`} 
-                  />
-                  {!!user && <p className="text-xs text-amber-600 mt-1">Logged in as {user.email}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number *</label>
-                  <input type="text" name="phone" placeholder="10-digit number" value={formData.phone} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.phone ? 'border-red-500' : 'border-slate-200'}`} />
-                  {formErrors.phone && <p className="text-red-500 text-xs mt-1">{formErrors.phone}</p>}
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Alternative Mobile Number (Optional)</label>
-                  <input type="text" name="alt_phone" placeholder="10-digit number" value={formData.alt_phone} onChange={handleChange} className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.alt_phone ? 'border-red-500' : 'border-slate-200'}`} />
-                  {formErrors.alt_phone && <p className="text-red-500 text-xs mt-1">{formErrors.alt_phone}</p>}
+
+                {/* Shipping Address */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                  <div className="flex justify-between items-center mb-4 border-b pb-4">
+                    <h2 className="text-xl font-semibold">Shipping Address</h2>
+                    <button
+                      type="button"
+                      onClick={requestLocation}
+                      className={`text-sm flex items-center px-3 py-1.5 rounded-lg border transition-colors ${locationStatus === 'success' ? 'bg-green-50 text-green-700 border-green-200' :
+                          locationStatus === 'requesting' ? 'bg-slate-100 text-slate-500 border-slate-200' :
+                            'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50'
+                        }`}
+                    >
+                      <MapPin className="w-4 h-4 mr-1.5" />
+                      {locationStatus === 'success' ? 'Location Acquired' :
+                        locationStatus === 'requesting' ? 'Requesting...' :
+                          locationStatus === 'error' ? 'Location Failed - Try Again' : 'Use Current Location'}
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Full Address *</label>
+                      <input type="text" name="address" placeholder="House/Flat No, Building, Street" value={formData.address} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                      {formErrors.address && <p className="text-red-500 text-xs mt-1">{formErrors.address}</p>}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">District *</label>
+                        <select name="district" value={formData.district} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white">
+                          {WB_DISTRICTS.map(dist => (
+                            <option key={dist} value={dist}>{dist}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">City/Area/Police station *</label>
+                        <input type="text" name="city" value={formData.city} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                        {formErrors.city && <p className="text-red-500 text-xs mt-1">{formErrors.city}</p>}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Landmark (Optional)</label>
+                        <input type="text" name="landmark" placeholder="Near famous place, temple, etc." value={formData.landmark} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Pin Code *</label>
+                        <input type="text" name="pincode" placeholder="6-digit pin code" value={formData.pincode} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.pincode || pincodeStatus === 'error' ? 'border-red-500' : pincodeStatus === 'success' ? 'border-green-500' : 'border-slate-200'}`} />
+                        {formErrors.pincode && <p className="text-red-500 text-xs mt-1">{formErrors.pincode}</p>}
+                        {!formErrors.pincode && pincodeStatus === 'checking' && <p className="text-amber-600 text-xs mt-1">Checking delivery availability...</p>}
+                        {!formErrors.pincode && pincodeStatus === 'success' && <p className="text-green-600 text-xs mt-1 flex items-center"><ShieldCheck className="w-3 h-3 mr-1" /> {pincodeMessage}</p>}
+                        {!formErrors.pincode && pincodeStatus === 'error' && <p className="text-red-500 text-xs mt-1 flex items-center"><AlertCircle className="w-3 h-3 mr-1" /> {pincodeMessage}</p>}
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Country *</label>
+                      <select name="country" value={formData.country} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white">
+                        {COUNTRIES.map(country => (
+                          <option key={country} value={country}>{country}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Shipping Address */}
+            {/* Order Notes (Always visible) */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <div className="flex justify-between items-center mb-4 border-b pb-4">
-                <h2 className="text-xl font-semibold">Shipping Address</h2>
-                <button 
-                  type="button" 
-                  onClick={requestLocation}
-                  className={`text-sm flex items-center px-3 py-1.5 rounded-lg border transition-colors ${
-                    locationStatus === 'success' ? 'bg-green-50 text-green-700 border-green-200' :
-                    locationStatus === 'requesting' ? 'bg-slate-100 text-slate-500 border-slate-200' :
-                    'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50'
-                  }`}
-                >
-                  <MapPin className="w-4 h-4 mr-1.5" />
-                  {locationStatus === 'success' ? 'Location Acquired' : 
-                   locationStatus === 'requesting' ? 'Requesting...' : 
-                   locationStatus === 'error' ? 'Location Failed - Try Again' : 'Use Current Location'}
-                </button>
-              </div>
-
+              <h2 className="text-xl font-semibold mb-4 border-b pb-4">Additional Information</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Full Address *</label>
-                  <input type="text" name="address" placeholder="House/Flat No, Building, Street" value={formData.address} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
-                  {formErrors.address && <p className="text-red-500 text-xs mt-1">{formErrors.address}</p>}
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">District *</label>
-                    <select name="district" value={formData.district} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white">
-                      {WB_DISTRICTS.map(dist => (
-                        <option key={dist} value={dist}>{dist}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">City/Area/Police station *</label>
-                    <input type="text" name="city" value={formData.city} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
-                    {formErrors.city && <p className="text-red-500 text-xs mt-1">{formErrors.city}</p>}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Landmark (Optional)</label>
-                    <input type="text" name="landmark" placeholder="Near famous place, temple, etc." value={formData.landmark} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Pin Code *</label>
-                    <input type="text" name="pincode" placeholder="6-digit pin code" value={formData.pincode} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.pincode || pincodeStatus === 'error' ? 'border-red-500' : pincodeStatus === 'success' ? 'border-green-500' : 'border-slate-200'}`} />
-                    {formErrors.pincode && <p className="text-red-500 text-xs mt-1">{formErrors.pincode}</p>}
-                    {!formErrors.pincode && pincodeStatus === 'checking' && <p className="text-amber-600 text-xs mt-1">Checking delivery availability...</p>}
-                    {!formErrors.pincode && pincodeStatus === 'success' && <p className="text-green-600 text-xs mt-1 flex items-center"><ShieldCheck className="w-3 h-3 mr-1"/> {pincodeMessage}</p>}
-                    {!formErrors.pincode && pincodeStatus === 'error' && <p className="text-red-500 text-xs mt-1 flex items-center"><AlertCircle className="w-3 h-3 mr-1"/> {pincodeMessage}</p>}
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Country *</label>
-                  <select name="country" value={formData.country} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white">
-                    {COUNTRIES.map(country => (
-                      <option key={country} value={country}>{country}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div className="mt-4">
                   <label className="block text-sm font-medium text-slate-700 mb-1">Order Notes (Optional)</label>
                   <textarea name="order_notes" rows="3" placeholder="Notes about your order, e.g. special notes for delivery." value={formData.order_notes} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none resize-none"></textarea>
                 </div>
@@ -659,15 +845,15 @@ const Checkout = () => {
                     <div className="flex-grow">
                       <h4 className="text-sm font-medium text-slate-900 line-clamp-1">{item.title}</h4>
                       <div className="flex items-center space-x-2 mt-1">
-                        <input 
+                        <input
                           type="number"
                           min="1"
                           max={Math.max(100, item.stock || 100)}
-                          value={item.quantity} 
+                          value={item.quantity}
                           onChange={(e) => updateQuantity(item.id, Number(e.target.value))}
                           className="w-16 text-center text-xs border border-slate-200 rounded px-1 py-1 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-amber-500"
                         />
-                        <button 
+                        <button
                           onClick={() => removeFromCart(item.id)}
                           className="text-slate-400 hover:text-red-500 transition-colors"
                         >
@@ -686,7 +872,7 @@ const Checkout = () => {
                       {(() => {
                         let charges = item.extra_charges;
                         if (typeof charges === 'string') {
-                          try { charges = JSON.parse(charges); } catch(e) { charges = []; }
+                          try { charges = JSON.parse(charges); } catch (e) { charges = []; }
                         }
                         if (charges && Array.isArray(charges)) {
                           return charges.map(chargeId => {
@@ -715,14 +901,14 @@ const Checkout = () => {
                 <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
                   <Tag className="w-4 h-4 mr-2 text-amber-600" /> Apply Coupon
                 </h3>
-                
+
                 {appliedCoupon ? (
                   <div className="bg-green-50 border border-green-200 p-3 rounded-xl flex justify-between items-center">
                     <div>
                       <p className="text-sm font-bold text-green-800 uppercase">{appliedCoupon.code}</p>
                       <p className="text-xs text-green-600">
-                        {appliedCoupon.discountType === 'PERCENTAGE' 
-                          ? `${appliedCoupon.discountValue}% off applied` 
+                        {appliedCoupon.discountType === 'PERCENTAGE'
+                          ? `${appliedCoupon.discountValue}% off applied`
                           : `₹${appliedCoupon.discountValue} off applied`}
                       </p>
                     </div>
@@ -733,14 +919,14 @@ const Checkout = () => {
                 ) : (
                   <>
                     <div className="flex space-x-2">
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                        placeholder="Enter code" 
+                        placeholder="Enter code"
                         className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm uppercase"
                       />
-                      <button 
+                      <button
                         type="button"
                         onClick={() => handleApplyCoupon()}
                         disabled={isApplyingCoupon || !couponCode}
@@ -759,7 +945,7 @@ const Checkout = () => {
                             <div key={coupon.id} className="flex flex-col border border-amber-200 bg-amber-50 rounded-lg p-3 border-dashed">
                               <div className="flex justify-between items-center">
                                 <span className="font-bold text-amber-800 uppercase tracking-wider">{coupon.code}</span>
-                                <button 
+                                <button
                                   type="button"
                                   onClick={() => handleApplyCoupon(coupon.code)}
                                   className="text-xs bg-amber-600 text-white font-semibold px-3 py-1 rounded hover:bg-amber-700 transition-colors shadow-sm"
@@ -779,13 +965,13 @@ const Checkout = () => {
                 )}
               </div>
             )}
-            
+
             <div className="border-t border-slate-100 pt-4 space-y-2">
               <div className="flex justify-between text-slate-600 text-sm">
                 <span>Subtotal</span>
                 <span>₹{cartTotal.toFixed(2)}</span>
               </div>
-              
+
               {appliedCoupon && (
                 <div className="flex justify-between text-green-600 text-sm font-medium">
                   <span>Discount ({appliedCoupon.code})</span>
@@ -797,7 +983,7 @@ const Checkout = () => {
                 <span>Shipping</span>
                 <span>{cartTotal > 0 ? `₹${actualShippingCharge.toFixed(2)}` : '₹0.00'}</span>
               </div>
-              
+
               {totalExtraCharges > 0 && (
                 <div className="flex justify-between text-amber-600 text-sm font-medium">
                   <span>Extra Charges</span>
@@ -809,7 +995,7 @@ const Checkout = () => {
                 <span>Total</span>
                 <span>₹{cartTotal > 0 ? (cartTotal - (appliedCoupon ? appliedCoupon.calculatedDiscount : 0) + actualShippingCharge + totalExtraCharges).toFixed(2) : '0.00'}</span>
               </div>
-              
+
               {totalSaved > 0 && cartTotal > 0 && (
                 <div className="flex justify-between font-bold text-sm text-green-700 bg-green-50 p-3 rounded-xl mt-2 border border-green-100">
                   <span>Total Saved on this order</span>
@@ -819,7 +1005,7 @@ const Checkout = () => {
 
               {/* Expected Delivery Date */}
               {cartTotal > 0 && (
-                <div className="flex items-center justify-between text-sm text-blue-700 bg-blue-50 p-3 rounded-xl mt-3 border border-blue-100">
+                <div className={`flex items-center justify-between text-sm p-3 rounded-xl mt-3 border ${pincodeStatus === 'error' ? 'text-red-700 bg-red-50 border-red-100' : 'text-blue-700 bg-blue-50 border-blue-100'}`}>
                   <div className="flex items-center space-x-2">
                     <Truck className="w-4 h-4" />
                     <span className="font-medium">Expected Delivery:</span>

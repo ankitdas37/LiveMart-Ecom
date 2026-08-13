@@ -10,19 +10,20 @@ const {
   deleteProduct,
   bulkDeleteProducts
 } = require('../controllers/productController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/')
   .get(getProducts)
-  .post(createProduct);
+  .post(protect, admin, createProduct);
 
 router.get('/featured', getFeaturedProducts);
 router.get('/new-arrivals', getNewArrivals);
 
-router.delete('/bulk', bulkDeleteProducts);
+router.delete('/bulk', protect, admin, bulkDeleteProducts);
 
 router.route('/:id')
   .get(getProductById)
-  .put(updateProduct)
-  .delete(deleteProduct);
+  .put(protect, admin, updateProduct)
+  .delete(protect, admin, deleteProduct);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { CartContext } from '../context/CartContext';
 import { User, Mail, Lock, ArrowRight, AlertCircle, KeyRound, Eye, EyeOff, RefreshCw, ShieldCheck } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
@@ -37,6 +38,7 @@ const Signup = () => {
   }, []);
 
   const { register, sendOTP, googleLogin } = useContext(AuthContext);
+  const { syncLocalCartToDb } = useContext(CartContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -71,6 +73,7 @@ const Signup = () => {
     const result = await googleLogin(credentialResponse.credential);
     setIsSubmitting(false);
     if (result.success) {
+      await syncLocalCartToDb();
       if (result.isNewUser) {
         toast.success('🎉 Account created successfully! Welcome to LiveMart!');
       } else {
@@ -110,6 +113,7 @@ const Signup = () => {
       setIsSubmitting(false);
 
       if (result.success) {
+        await syncLocalCartToDb();
         toast.success('Account created successfully!');
         navigate(redirect);
       } else {

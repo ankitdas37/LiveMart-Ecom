@@ -3,9 +3,11 @@ const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
 const { orderConfirmationEmail, orderStatusEmail, adminNewOrderEmail } = require('../utils/orderEmailTemplates');
 const { generateInvoicePDF } = require('../utils/pdfGenerator');
-const cloudinary = require('../config/cloudinary');// @desc    Create new order
+const cloudinary = require('../config/cloudinary');
+
+// @desc    Create new order
 // @route   POST /api/orders
-// @access  Public
+// @access  Public (guest or logged-in)
 const createOrder = async (req, res) => {
   const {
     customer_name,
@@ -22,46 +24,133 @@ const createOrder = async (req, res) => {
     location_lat,
     location_lng,
     couponCode,
-    discountAmount,
     orderItems,
     total_amount,
     payment_method,
     payment_receipt,
   } = req.body;
 
-  if (orderItems && orderItems.length === 0) {
-    res.status(400).json({ message: 'No order items' });
-    return;
+  if (!orderItems || orderItems.length === 0) {
+    return res.status(400).json({ message: 'No order items' });
   }
 
   let userId = null;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       const token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       userId = decoded.id;
     } catch (error) {
-      console.error('Invalid token during checkout');
+      // Guest checkout — token invalid or absent, proceed as guest
     }
   }
 
   try {
-    const existingUser = await User.findOne({ where: { email: customer_email } });
+    // ── SERVER-SIDE PRICE RECALCULATION ─────────────────────────────────────
+    // NEVER trust client-sent prices. Fetch every product price from the DB.
+    const productIds = orderItems.map((i) => i.product_id);
+    const products = await Product.findAll({ where: { id: productIds } });
+    const productMap = Object.fromEntries(products.map((p) => [p.id, p]));
 
-    // Calculate estimated delivery date based on pincode
-    let estimatedDays = 5; // default fallback
+    const { ExtraCharge, Setting, Coupon } = require('../models');
+    
+    // Fetch active ExtraCharges & Settings
+    const activeExtraCharges = await ExtraCharge.findAll({ where: { isActive: true } });
+    const settingRec = await Setting.findOne({ where: { key: 'SHIPPING_CHARGE' } });
+    const globalShippingCharge = settingRec ? parseFloat(settingRec.value) : 40;
+
+    let serverSubtotal = 0;
+    let totalSpecificShipping = 0;
+    let hasGlobalShippingItems = false;
+    let serverExtraChargesTotal = 0;
+
+    // Validate all products exist and calculate raw totals
+    for (const item of orderItems) {
+      if (!productMap[item.product_id]) {
+        return res.status(400).json({ message: `Product not found: ${item.product_id}` });
+      }
+      if (!Number.isInteger(Number(item.quantity)) || Number(item.quantity) < 1) {
+        return res.status(400).json({ message: 'Invalid item quantity' });
+      }
+
+      const product = productMap[item.product_id];
+      const qty = Number(item.quantity);
+      
+      serverSubtotal += parseFloat(product.price) * qty;
+
+      if (product.shipping_charge !== null && product.shipping_charge !== undefined) {
+        totalSpecificShipping += Number(product.shipping_charge) * qty;
+      } else {
+        hasGlobalShippingItems = true;
+      }
+
+      let charges = product.extra_charges;
+      if (typeof charges === 'string') {
+        try { charges = JSON.parse(charges); } catch (e) { charges = []; }
+      }
+      if (charges && Array.isArray(charges)) {
+        charges.forEach(chargeId => {
+          const charge = activeExtraCharges.find(c => c.id === chargeId);
+          if (charge) {
+            serverExtraChargesTotal += Number(charge.price) * qty;
+          }
+        });
+      }
+    }
+
+    const serverShipping = hasGlobalShippingItems ? totalSpecificShipping + globalShippingCharge : totalSpecificShipping;
+
+    // ── SERVER-SIDE COUPON VALIDATION ────────────────────────────────────────
+    let serverDiscount = 0;
+    let validatedCouponCode = null;
+    if (couponCode) {
+      const coupon = await Coupon.findOne({ where: { code: couponCode.toUpperCase() } });
+
+      if (!coupon || !coupon.isActive) {
+        return res.status(400).json({ message: 'Invalid or inactive coupon code' });
+      }
+      if (new Date() > new Date(coupon.expiryDate)) {
+        return res.status(400).json({ message: 'Coupon has expired' });
+      }
+      if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
+        return res.status(400).json({ message: 'Coupon usage limit reached' });
+      }
+      if (parseFloat(coupon.minCartValue) > serverSubtotal) {
+        return res.status(400).json({ message: `Minimum cart value for this coupon is ₹${coupon.minCartValue}` });
+      }
+
+      if (coupon.discountType === 'PERCENTAGE') {
+        serverDiscount = (serverSubtotal * parseFloat(coupon.discountValue)) / 100;
+      } else {
+        serverDiscount = parseFloat(coupon.discountValue);
+      }
+      serverDiscount = Math.min(serverDiscount, serverSubtotal);
+      validatedCouponCode = coupon.code;
+    }
+
+    const serverTotal = Math.max(0, serverSubtotal - serverDiscount) + serverShipping + serverExtraChargesTotal;
+
+    // Reject if client-sent total differs by more than ₹1 (floating point tolerance)
+    if (Math.abs(parseFloat(total_amount) - serverTotal) > 1) {
+      return res.status(400).json({
+        message: 'Order total mismatch. Please refresh your cart and try again.',
+      });
+    }
+
+    // ── DELIVERY DATE ESTIMATE ────────────────────────────────────────────────
+    let estimatedDays = 5;
     try {
       if (pincode) {
         const pinRecord = await Pincode.findOne({ where: { pincode: pincode.toString() } });
-        if (pinRecord && pinRecord.estimated_days) {
-          estimatedDays = pinRecord.estimated_days;
-        }
+        if (pinRecord && pinRecord.estimated_days) estimatedDays = pinRecord.estimated_days;
       }
     } catch (err) {
-      console.error('Error fetching pincode for estimated delivery:', err);
+      // Non-fatal — use default
     }
     const estimatedDeliveryDate = new Date();
     estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + estimatedDays);
+
+    const existingUser = await User.findOne({ where: { email: customer_email } });
 
     const order = await Order.create({
       userId,
@@ -78,9 +167,9 @@ const createOrder = async (req, res) => {
       order_notes,
       location_lat,
       location_lng,
-      couponCode: couponCode || null,
-      discountAmount: discountAmount || 0,
-      total_amount,
+      couponCode: validatedCouponCode,
+      discountAmount: serverDiscount,   // Server-calculated
+      total_amount: serverTotal,         // Server-calculated
       payment_method: payment_method || 'COD',
       payment_receipt: payment_receipt || null,
       is_registered_user: !!existingUser,
@@ -93,15 +182,16 @@ const createOrder = async (req, res) => {
         existingUser.phone = customer_phone;
         await existingUser.save();
       } catch (err) {
-        console.error('Failed to auto-save phone to user profile:', err);
+        // Non-fatal
       }
     }
 
+    // Use DB-fetched prices for OrderItems — never trust client item prices
     const items = orderItems.map((item) => ({
       order_id: order.id,
       product_id: item.product_id,
-      quantity: item.quantity,
-      price: item.price,
+      quantity: Number(item.quantity),
+      price: parseFloat(productMap[item.product_id].price), // DB price
     }));
 
     await OrderItem.bulkCreate(items);
@@ -143,7 +233,7 @@ const createOrder = async (req, res) => {
             }
           ]
         });
-        console.log(`📧 Order confirmation email with PDF sent to ${order.customer_email} for LIVEMART${String(order.id).padStart(6,'0')}`);
+        console.log(`📧 Order confirmation email sent for LIVEMART${String(order.id).padStart(6,'0')}`);
 
         // --- ADMIN EMAIL NOTIFICATION ---
         try {
@@ -154,7 +244,7 @@ const createOrder = async (req, res) => {
             text: adminEmailData.text,
             html: adminEmailData.html
           });
-          console.log(`📧 Admin Notification sent to ${process.env.EMAIL_USER}`);
+          console.log(`📧 Admin order notification sent.`);
         } catch (adminErr) {
           console.error('Failed to send admin notification:', adminErr.message);
         }
@@ -320,7 +410,7 @@ const updateOrderStatus = async (req, res) => {
               }
             ]
           });
-          console.log(`📧 Status email [${status}] sent to ${order.customer_email} for LIVEMART${String(order.id).padStart(6,'0')}`);
+          console.log(`📧 Status email [${status}] sent for LIVEMART${String(order.id).padStart(6,'0')}`);
         } catch (emailErr) {
           console.error('Status update email failed:', emailErr.message);
         }
@@ -362,7 +452,7 @@ const trackOrder = async (req, res) => {
       include: [
         {
           model: OrderItem,
-          include: [Product]
+          include: [{ model: Product, attributes: ['id', 'title', 'images', 'description', 'return_policy', 'replacement_policy'] }]
         }
       ]
     });
@@ -371,7 +461,35 @@ const trackOrder = async (req, res) => {
       return res.status(404).json({ message: `Order not found. Please check your Order ID (e.g. LIVEMART${String(orderId).padStart(6,'0')})` });
     }
 
-    res.json(order);
+    // ── RETURN ONLY SAFE TRACKING FIELDS ────────────────────────────────────────
+    // Never expose customer_email, customer_phone, customer_address etc.
+    // Enumeration attack: attacker increments ID to harvest all customer PII.
+    const safeResponse = {
+      id: order.id,
+      orderId: `LIVEMART${String(order.id).padStart(6, '0')}`,
+      status: order.status,
+      payment_method: order.payment_method,
+      createdAt: order.createdAt,
+      estimatedDeliveryDate: order.estimatedDeliveryDate,
+      updatedDeliveryDate: order.updatedDeliveryDate,
+      confirmedAt: order.confirmedAt,
+      processingAt: order.processingAt,
+      shippedAt: order.shippedAt,
+      deliveredAt: order.deliveredAt,
+      cancelledAt: order.cancelledAt,
+      customer_name: order.customer_name,
+      // Mask phone number
+      customer_phone: order.customer_phone ? '*'.repeat(Math.max(0, String(order.customer_phone).length - 4)) + String(order.customer_phone).slice(-4) : null,
+      total_amount: order.total_amount,
+      discountAmount: order.discountAmount,
+      couponCode: order.couponCode,
+      // Masked delivery city only (no full address)
+      city: order.city,
+      pincode: order.pincode,
+      OrderItems: order.OrderItems, // Safe because it only has product id, title, image, price, qty
+    };
+
+    res.json(safeResponse);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -449,7 +567,7 @@ const bulkDeleteOrders = async (req, res) => {
     await Promise.allSettled(cloudinaryDeletions);
 
     // Delete associated items and orders
-    await OrderItem.destroy({ where: { orderId: idsToDelete } });
+    await OrderItem.destroy({ where: { order_id: idsToDelete } });
     const deletedCount = await Order.destroy({ where: { id: idsToDelete } });
 
     res.json({ message: `Successfully deleted ${deletedCount} order(s) and all associated data`, deletedCount });
@@ -473,7 +591,7 @@ const deleteOrder = async (req, res) => {
     }
 
     // First delete associated OrderItems
-    await OrderItem.destroy({ where: { orderId: order.id } }); // Note: the foreignKey is usually orderId in Sequelize, wait, let me check the association or just let it cascade if it does. In previous code we did order_id but the model index says foreignKey: 'orderId' - let me just use orderId or order_id. The controller used order_id: order.id previously. I will use orderId since index.js says so, but let me check. Actually I will use where: { orderId: order.id } just in case. Wait, if it fails I will check.
+    await OrderItem.destroy({ where: { order_id: order.id } }); // Fixed foreign key to order_id
 
     // Then delete the order
     await order.destroy();
@@ -492,6 +610,16 @@ const requestItemReturn = async (req, res) => {
     const { orderId, itemId } = req.params;
     const { reason } = req.body;
 
+    // ── OWNERSHIP CHECK ────────────────────────────────────────────────────
+    // Verify the order belongs to the currently authenticated user
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    if (order.userId !== req.user.id) {
+      return res.status(403).json({ message: 'You are not authorized to manage this order' });
+    }
+
     const item = await OrderItem.findOne({
       where: { id: itemId, order_id: orderId },
       include: [Product]
@@ -501,7 +629,7 @@ const requestItemReturn = async (req, res) => {
       return res.status(404).json({ message: 'Order item not found' });
     }
 
-    if (!item.Product.is_returnable) {
+    if (!item.Product.return_policy) {
       return res.status(400).json({ message: 'Item is not returnable' });
     }
 
@@ -511,8 +639,7 @@ const requestItemReturn = async (req, res) => {
 
     // Optionally generate a support ticket automatically for the admin
     const { SupportTicket } = require('../models');
-    const order = await Order.findByPk(orderId);
-    if (order && SupportTicket) {
+    if (SupportTicket) {
       await SupportTicket.create({
         name: order.customer_name,
         email: order.customer_email,
@@ -554,6 +681,36 @@ const updateItemReturnStatus = async (req, res) => {
   }
 };
 
+// @desc    Get order by ID (for logged in user)
+// @route   GET /api/orders/:id
+// @access  Private
+const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findByPk(req.params.id, {
+      include: [
+        {
+          model: OrderItem,
+          include: [{ model: Product, attributes: ['id', 'title', 'images', 'description', 'return_policy', 'replacement_policy'] }]
+        }
+      ]
+    });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Check ownership
+    if (order.userId !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'You are not authorized to view this order' });
+    }
+
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrders,
@@ -563,5 +720,6 @@ module.exports = {
   deleteOrder,
   bulkDeleteOrders,
   requestItemReturn,
-  updateItemReturnStatus
+  updateItemReturnStatus,
+  getOrderById
 };

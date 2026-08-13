@@ -7,7 +7,7 @@ const { Op } = require('sequelize');
 // @access  Public
 const createTicket = async (req, res) => {
   try {
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, toDeveloper } = req.body;
 
     if (!name || !email || !subject || !message) {
       return res.status(400).json({ message: 'All fields are required' });
@@ -45,25 +45,27 @@ const createTicket = async (req, res) => {
       }).catch(e => console.error('Failed to send ticket confirmation to user', e));
     } catch (e) { console.error('Failed to prepare ticket confirmation', e); }
 
-    // Send alert email to Admin
+    // Send alert email to Admin / Developer
     try {
-      if (process.env.EMAIL_USER) {
+      const targetEmail = toDeveloper ? process.env.DEVELOPER_EMAIL : process.env.EMAIL_USER;
+      
+      if (targetEmail) {
         const adminHtml = `
           <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-            <h2 style="color: #d9534f;">New Support Ticket</h2>
+            <h2 style="color: ${toDeveloper ? '#e83e8c' : '#d9534f'};">${toDeveloper ? 'New Developer Contact' : 'New Support Ticket'}</h2>
             <p><strong>From:</strong> ${name} (${email})</p>
             <p><strong>Subject:</strong> ${subject}</p>
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-            <blockquote style="font-size: 14px; color: #555; background: #f9f9f9; padding: 10px; border-left: 3px solid #d9534f; margin: 0; white-space: pre-wrap;">
+            <blockquote style="font-size: 14px; color: #555; background: #f9f9f9; padding: 10px; border-left: 3px solid ${toDeveloper ? '#e83e8c' : '#d9534f'}; margin: 0; white-space: pre-wrap;">
               ${message}
             </blockquote>
-            <p style="margin-top: 20px;"><a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/admin/support" style="background: #FF8C00; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">View in Admin Panel</a></p>
+            <p style="margin-top: 20px;"><a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/admin/support" style="background: ${toDeveloper ? '#e83e8c' : '#FF8C00'}; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">View in Admin Panel</a></p>
           </div>
         `;
         sendEmail({
-          email: process.env.EMAIL_USER, // sending to admin's own email
-          subject: `[ACTION REQUIRED] New Ticket: ${subject}`,
-          text: `New Support Ticket from ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`,
+          email: targetEmail, 
+          subject: `[ACTION REQUIRED] ${toDeveloper ? 'New Developer Message' : 'New Ticket'}: ${subject}`,
+          text: `New Message from ${name} (${email})\nSubject: ${subject}\n\nMessage:\n${message}`,
           html: adminHtml
         }).catch(e => console.error('Failed to send ticket alert to admin', e));
       }
@@ -322,6 +324,9 @@ const deleteTicket = async (req, res) => {
     res.json({ message: 'Ticket removed' });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete this ticket because it is referenced by other data.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -363,6 +368,9 @@ const bulkDeleteTickets = async (req, res) => {
     res.json({ message: `${ids.length} ticket(s) removed successfully` });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete selected tickets because they are referenced by other data.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };

@@ -8,6 +8,7 @@ import ProductDetails from './pages/ProductDetails';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import TrackOrder from './pages/TrackOrder';
+import About from './pages/About';
 import OrderDetails from './pages/OrderDetails';
 import OrderSuccess from './pages/OrderSuccess';
 import Login from './pages/Login';
@@ -76,6 +77,7 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="shop" element={<Shop />} />
                 <Route path="product/:id" element={<ProductDetails />} />
+                <Route path="about" element={<About />} />
                 <Route path="checkout" element={<Checkout />} />
                 <Route path="payment" element={<Payment />} />
                 <Route path="order-success" element={<OrderSuccess />} />

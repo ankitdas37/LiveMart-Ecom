@@ -18,7 +18,14 @@ export const AuthProvider = ({ children }) => {
 
     // Load admin session independently
     const adminInfo = localStorage.getItem('adminInfo');
-    if (adminInfo) setAdminUser(JSON.parse(adminInfo));
+    if (adminInfo) {
+      const admin = JSON.parse(adminInfo);
+      setAdminUser(admin);
+      // Pre-set the default auth header so all admin API calls are authenticated on page reload
+      if (admin?.token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${admin.token}`;
+      }
+    }
 
     setLoading(false);
   }, []);
@@ -34,9 +41,14 @@ export const AuthProvider = ({ children }) => {
             message === 'Not authorized, token failed' ||
             message === 'Not authorized, no token'
           ) {
-            localStorage.removeItem('userInfo');
-            setUser(null);
-            window.location.href = '/';
+            if (window.location.pathname.startsWith('/admin')) {
+              localStorage.removeItem('adminInfo');
+              window.location.href = '/admin-login';
+            } else {
+              localStorage.removeItem('userInfo');
+              setUser(null);
+              window.location.href = '/';
+            }
           }
         }
         return Promise.reject(error);
@@ -136,6 +148,8 @@ export const AuthProvider = ({ children }) => {
       }
       setAdminUser(data);
       localStorage.setItem('adminInfo', JSON.stringify(data));
+      // Set global default so every subsequent admin axios call is authenticated
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       return { success: true };
     } catch (error) {
       return {
@@ -154,6 +168,8 @@ export const AuthProvider = ({ children }) => {
       }
       setAdminUser(data);
       localStorage.setItem('adminInfo', JSON.stringify(data));
+      // Set global default so every subsequent admin axios call is authenticated
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       return { success: true };
     } catch (error) {
       return {
@@ -166,6 +182,8 @@ export const AuthProvider = ({ children }) => {
   const adminLogout = () => {
     localStorage.removeItem('adminInfo');
     setAdminUser(null);
+    // Clear the global auth header so regular user requests are not sent with admin token
+    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (

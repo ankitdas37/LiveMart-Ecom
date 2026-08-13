@@ -7,6 +7,10 @@ const Cart = sequelize.define('Cart', {
     autoIncrement: true,
     primaryKey: true,
   },
+  userEmail: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 }, {
   timestamps: true,
 });

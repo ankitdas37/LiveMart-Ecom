@@ -11,6 +11,10 @@ const Address = sequelize.define('Address', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   phone: {
     type: DataTypes.STRING,
     allowNull: false,

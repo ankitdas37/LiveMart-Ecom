@@ -112,14 +112,12 @@ const ProductForm = () => {
 
     try {
       setUploadingIndex(index);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
       handleImageChange(index, res.data.url);
       toast.success('Image uploaded successfully!');
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload image');
+      toast.error(error.response?.data?.message || 'Failed to upload image');
     } finally {
       setUploadingIndex(null);
     }

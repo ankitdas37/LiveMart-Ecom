@@ -55,6 +55,9 @@ const deleteCategory = async (req, res) => {
     res.json({ message: 'Category removed' });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete this category because it contains existing products. Please remove them first.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -97,6 +100,9 @@ const bulkDeleteCategories = async (req, res) => {
     res.json({ message: `${ids.length} category(ies) removed successfully` });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete selected categories because they contain existing products. Please remove them first.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };

@@ -79,18 +79,7 @@ const AdminDeleteModal = ({ isOpen, onClose, onConfirm, itemName = 'item', isBul
   };
 
   const handleSendActionOtp = async () => {
-    try {
-      setIsSendingOtp(true);
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const config = { headers: { Authorization: `Bearer ${userInfo?.token}` } };
-      await axios.post('/api/users/admin/send-action-otp', {}, config);
-      setOtpSent(true);
-      toast.success('📧 Verification code sent to your email!');
-    } catch (error) {
-      toast.error('Failed to send OTP. Please try again.');
-    } finally {
-      setIsSendingOtp(false);
-    }
+    toast('🚧 Email OTP verification is coming soon!', { icon: '⏳' });
   };
 
   const isConfirmDisabled =

@@ -39,10 +39,11 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
         <Link to={`/product/${product.id}`}>
-          <img 
-            src={(product.images && product.images.length > 0 ? product.images[0] : null) || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=400&q=80'}
-            alt={product.title} 
+          <img
+            src={(product.images && product.images.filter(i => i && i.trim()).length > 0 ? product.images.filter(i => i && i.trim())[0] : null) || 'https://placehold.co/400x400?text=No+Image'}
+            alt={product.title}
             className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+            onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400?text=No+Image'; }}
           />
         </Link>
         {/* Badges */}
@@ -56,7 +57,7 @@ const ProductCard = ({ product }) => {
         </div>
         {/* Quick Actions */}
         <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-4 group-hover:translate-x-0">
-          <button 
+          <button
             onClick={handleWishlist}
             className={`p-2 rounded-full transition-colors shadow-sm ${isWishlisted ? 'bg-red-50 text-red-500' : 'bg-white dark:bg-slate-900 text-slate-400 hover:text-red-500 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
           >
@@ -64,7 +65,7 @@ const ProductCard = ({ product }) => {
           </button>
         </div>
         <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0">
-          <button 
+          <button
             onClick={(e) => {
               e.preventDefault();
               if (isInCart) {
@@ -75,7 +76,7 @@ const ProductCard = ({ product }) => {
               toast((t) => (
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-medium text-white">🛍️ Added to your cart!</span>
-                  <button 
+                  <button
                     onClick={() => {
                       toast.dismiss(t.id);
                       navigate('/checkout');

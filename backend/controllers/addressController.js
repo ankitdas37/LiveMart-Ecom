@@ -5,7 +5,7 @@ const { Address, User } = require('../models');
 // @access  Private
 exports.getAddresses = async (req, res) => {
   try {
-    const addresses = await Address.findAll({ where: { UserId: req.user.id } });
+    const addresses = await Address.findAll({ where: { userId: req.user.id } });
     res.json(addresses);
   } catch (error) {
     console.error(error);
@@ -18,14 +18,18 @@ exports.getAddresses = async (req, res) => {
 // @access  Private
 exports.addAddress = async (req, res) => {
   try {
-    const { fullName, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng } = req.body;
+    let { fullName, email, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng } = req.body;
 
     if (is_default) {
-      await Address.update({ is_default: false }, { where: { UserId: req.user.id } });
+      await Address.update({ is_default: false }, { where: { userId: req.user.id } });
     }
 
+    // Convert empty string locations to null to prevent DECIMAL casting errors
+    location_lat = location_lat || null;
+    location_lng = location_lng || null;
+
     const address = await Address.create({
-      fullName, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng, UserId: req.user.id
+      fullName, email, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng, userId: req.user.id
     });
 
     res.status(201).json(address);
@@ -42,7 +46,7 @@ exports.updateAddress = async (req, res) => {
   try {
     const query = { id: req.params.id };
     if (req.user.role !== 'admin') {
-      query.UserId = req.user.id;
+      query.userId = req.user.id;
     }
     const address = await Address.findOne({ where: query });
 
@@ -50,14 +54,18 @@ exports.updateAddress = async (req, res) => {
       return res.status(404).json({ message: 'Address not found' });
     }
 
-    const { fullName, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng } = req.body;
+    let { fullName, email, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng } = req.body;
 
     if (is_default) {
-      await Address.update({ is_default: false }, { where: { UserId: address.UserId } });
+      await Address.update({ is_default: false }, { where: { userId: address.userId } });
     }
 
+    // Convert empty string locations to null to prevent DECIMAL casting errors
+    location_lat = location_lat || null;
+    location_lng = location_lng || null;
+
     await address.update({
-      fullName, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng
+      fullName, email, phone, altPhone, street, landmark, policeStation, city, district, state, country, pincode, is_default, addressType, location_lat, location_lng
     });
 
     res.json(address);
@@ -74,7 +82,7 @@ exports.deleteAddress = async (req, res) => {
   try {
     const query = { id: req.params.id };
     if (req.user.role !== 'admin') {
-      query.UserId = req.user.id;
+      query.userId = req.user.id;
     }
     const address = await Address.findOne({ where: query });
 

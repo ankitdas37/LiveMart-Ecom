@@ -125,6 +125,9 @@ const deleteNote = async (req, res) => {
     await note.destroy();
     res.json({ message: 'Note deleted' });
   } catch (error) {
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete this note because it is referenced by other data.' });
+    }
     res.status(500).json({ message: error.message });
   }
 };
@@ -163,6 +166,9 @@ const bulkDeleteNotes = async (req, res) => {
     res.json({ message: `${ids.length} note(s) removed successfully` });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete selected notes because they are referenced by other data.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };

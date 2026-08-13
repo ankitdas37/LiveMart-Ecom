@@ -7,15 +7,16 @@ const {
   deleteCategory,
   bulkDeleteCategories
 } = require('../controllers/categoryController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/')
-  .get(getCategories)
-  .post(createCategory);
+  .get(getCategories) // Public can view categories
+  .post(protect, admin, createCategory);
 
-router.delete('/bulk', bulkDeleteCategories);
+router.delete('/bulk', protect, admin, bulkDeleteCategories);
 
 router.route('/:id')
-  .put(updateCategory)
-  .delete(deleteCategory);
+  .put(protect, admin, updateCategory)
+  .delete(protect, admin, deleteCategory);
 
 module.exports = router;

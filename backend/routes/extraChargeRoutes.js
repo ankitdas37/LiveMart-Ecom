@@ -7,16 +7,16 @@ const {
   updateExtraCharge,
   deleteExtraCharge
 } = require('../controllers/extraChargeController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
-// All endpoints open for now as auth middleware is not yet strictly enforced
 router.route('/')
-  .post(createExtraCharge)
-  .get(getExtraCharges);
+  .get(protect, admin, getExtraCharges)
+  .post(protect, admin, createExtraCharge);
 
-router.get('/active', getActiveExtraCharges);
+router.get('/active', getActiveExtraCharges); // Publicly needed for checkout calculations
 
 router.route('/:id')
-  .put(updateExtraCharge)
-  .delete(deleteExtraCharge);
+  .put(protect, admin, updateExtraCharge)
+  .delete(protect, admin, deleteExtraCharge);
 
 module.exports = router;

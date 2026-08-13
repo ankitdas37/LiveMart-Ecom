@@ -134,9 +134,7 @@ const AdminUsers = () => {
       const compressedFile = await compressImage(file, 400, 400, 0.7);
       const formData = new FormData();
       formData.append('image', compressedFile);
-      const { data } = await axios.post('/api/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await axios.post('/api/upload', formData);
       setEditFormData(prev => ({ ...prev, profile_pic: data.url }));
     } catch (error) {
       setUpdateMessage({ type: 'error', text: 'Image upload failed.' });

@@ -353,6 +353,7 @@ const adminNewOrderEmail = (order, orderItems) => {
               ${order.customer_address}, ${order.landmark ? order.landmark + ', ' : ''}<br/>
               ${order.city}, ${order.district} - ${order.pincode}<br/>
               ${order.country}
+              ${order.location_lat && order.location_lng ? `<br/><br/><a href="https://www.google.com/maps/search/?api=1&query=${order.location_lat},${order.location_lng}" target="_blank" style="display:inline-block;background:#3b82f6;color:#fff;text-decoration:none;padding:6px 12px;border-radius:4px;font-size:12px;font-weight:bold;">📍 View on Google Maps</a>` : ''}
             </td>
           </tr>
           <tr>

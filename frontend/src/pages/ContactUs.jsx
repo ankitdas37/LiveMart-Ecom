@@ -15,7 +15,7 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       await axios.post('/api/support', formData);
       toast.success('Message sent! Our support team will email you back soon.');
@@ -40,7 +40,7 @@ const ContactUs = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          
+
           {/* Contact Info */}
           <div className="bg-slate-900 text-white rounded-3xl p-8 lg:p-10 shadow-2xl flex flex-col justify-between relative overflow-hidden">
             <div className="relative z-10 space-y-10">
@@ -56,7 +56,7 @@ const ContactUs = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400 font-medium">Email us</p>
-                    <p className="text-white font-medium">support@livemart.in</p>
+                    <p className="text-white font-medium">livemart.support@gmail.com</p>
                   </div>
                 </div>
 
@@ -66,7 +66,7 @@ const ContactUs = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400 font-medium">Call us</p>
-                    <p className="text-white font-medium">+91 9339840967</p>
+                    <p className="text-white font-medium">+91 9876543210</p>
                   </div>
                 </div>
 
@@ -76,7 +76,36 @@ const ContactUs = () => {
                   </div>
                   <div>
                     <p className="text-sm text-slate-400 font-medium">Visit us</p>
-                    <p className="text-white font-medium">xxxvtg</p>
+                    <p className="text-white font-medium">Online,Hooghly,West Bengal,INDIA.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 pt-6 border-t border-slate-700/50 mt-6">
+                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400 font-medium mb-2">Follow us</p>
+                    <div className="flex space-x-3">
+                      <a href="https://github.com/ankitdas37" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all">
+                        <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.03c3.15-.38 6.5-1.4 6.5-7a4.6 4.6 0 0 0-1.2-3.21 4.3 4.3 0 0 0-.12-3.17s-1-.31-3.2 1.18a11 11 0 0 0-6 0c-2.2-1.49-3.2-1.18-3.2-1.18a4.3 4.3 0 0 0-.12 3.17 4.6 4.6 0 0 0-1.2 3.21c0 5.6 3.35 6.6 6.5 7a4.8 4.8 0 0 0-1 3.03V22"></path>
+                          <path d="M9 20c-5 1.5-5-2.5-7-3"></path>
+                        </svg>
+                      </a>
+                      <a href="" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#1DA1F2] transition-all">
+                        <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                        </svg>
+                      </a>
+                      <a href="" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#E1306C] transition-all">
+                        <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -98,9 +127,9 @@ const ContactUs = () => {
                     type="text"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
-                    placeholder="John Doe"
+                    placeholder="Your Name"
                   />
                 </div>
                 <div>
@@ -109,9 +138,9 @@ const ContactUs = () => {
                     type="email"
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
-                    placeholder="john@example.com"
+                    placeholder="your@example.com"
                   />
                 </div>
               </div>
@@ -122,7 +151,7 @@ const ContactUs = () => {
                   type="text"
                   required
                   value={formData.subject}
-                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
                   placeholder="How can we help?"
                 />
@@ -134,7 +163,7 @@ const ContactUs = () => {
                   required
                   rows="5"
                   value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   className="w-full bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors resize-y"
                   placeholder="Tell us everything..."
                 ></textarea>

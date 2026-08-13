@@ -16,11 +16,16 @@ const sequelize = new Sequelize(
   { host: process.env.DB_HOST || 'localhost', dialect: 'mysql', logging: false }
 );
 
-const SUPER_ADMIN_EMAIL = 'livemart.support@gmail.com';
-const SUPER_ADMIN_NAME  = 'LiveMart Admin';
-const SUPER_ADMIN_PASS  = 'LiveMart@Admin2024'; // Change this after first login!
+// These values MUST be set in your .env file — never hardcode them
+const SUPER_ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const SUPER_ADMIN_NAME  = process.env.ADMIN_NAME || 'LiveMart Admin';
+const SUPER_ADMIN_PASS  = process.env.ADMIN_PASSWORD;
+const DEMOTE_EMAIL      = process.env.DEMOTE_EMAIL; // optional
 
-const DEMOTE_EMAIL = 'sjmusic00a@gmail.com';
+if (!SUPER_ADMIN_EMAIL || !SUPER_ADMIN_PASS) {
+  console.error('❌ ADMIN_EMAIL and ADMIN_PASSWORD must be set in your .env file before running this script.');
+  process.exit(1);
+}
 
 async function setupAdmin() {
   try {

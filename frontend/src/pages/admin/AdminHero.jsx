@@ -101,9 +101,7 @@ const AdminHero = () => {
 
     const toastId = toast.loading('Uploading image...');
     try {
-      const { data } = await axios.post('/api/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const { data } = await axios.post('/api/upload', formData);
       updateSlide(id, 'image_url', data.url);
       toast.success('Image uploaded', { id: toastId });
     } catch (error) {

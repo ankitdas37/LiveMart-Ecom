@@ -1,4 +1,4 @@
-const { Product, Order, Setting } = require('../models');
+const { Product, Order, Setting, EmailHistory } = require('../models');
 const { Op } = require('sequelize');
 
 // @desc    Get dashboard statistics
@@ -38,9 +38,23 @@ const getDashboardStats = async (req, res) => {
       attributes: ['id', 'customer_name', 'createdAt', 'total_amount', 'status']
     });
 
-    // 6. Total Emails Sent
-    const emailSetting = await Setting.findOne({ where: { key: 'TOTAL_EMAILS_SENT' } });
-    const totalEmailsSent = emailSetting ? Number(emailSetting.value) : 0;
+    // 6. Emails Sent (Today & Total)
+    const totalEmailsSent = await EmailHistory.count();
+    
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEmails = await EmailHistory.findAll({
+      where: {
+        createdAt: {
+          [Op.gte]: todayStart
+        }
+      },
+      order: [['createdAt', 'DESC']],
+      attributes: ['id', 'toEmail', 'subject', 'createdAt']
+    });
+
+    const todayEmailsCount = todayEmails.length;
 
     res.json({
       totalProducts,
@@ -53,7 +67,9 @@ const getDashboardStats = async (req, res) => {
       },
       totalCustomers,
       recentOrders,
-      totalEmailsSent
+      totalEmailsSent,
+      todayEmailsCount,
+      todayEmails
     });
 
   } catch (error) {

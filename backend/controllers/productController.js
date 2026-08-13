@@ -113,7 +113,12 @@ const getNewArrivals = async (req, res) => {
 // @access  Private/Admin
 const createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const data = { ...req.body };
+    // Strip empty-string image URLs that come from unfilled admin form fields
+    if (Array.isArray(data.images)) {
+      data.images = data.images.filter(url => url && url.trim() !== '');
+    }
+    const product = await Product.create(data);
     res.status(201).json(product);
   } catch (error) {
     console.error(error);
@@ -128,8 +133,14 @@ const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    
-    await product.update(req.body);
+
+    const data = { ...req.body };
+    // Strip empty-string image URLs that come from unfilled admin form fields
+    if (Array.isArray(data.images)) {
+      data.images = data.images.filter(url => url && url.trim() !== '');
+    }
+
+    await product.update(data);
     res.json(product);
   } catch (error) {
     console.error(error);
@@ -149,6 +160,9 @@ const deleteProduct = async (req, res) => {
     res.json({ message: 'Product removed' });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete this product because it is linked to existing data (e.g., orders, reviews).' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -195,6 +209,9 @@ const bulkDeleteProducts = async (req, res) => {
     res.json({ message: `${ids.length} product(s) removed successfully` });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete selected products because they are linked to existing data (e.g., orders, reviews).' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };

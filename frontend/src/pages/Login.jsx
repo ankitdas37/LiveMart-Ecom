@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { CartContext } from '../context/CartContext';
 import { Mail, Lock, ArrowRight, ShieldCheck, Zap, Eye, EyeOff } from 'lucide-react';
 import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
@@ -30,6 +31,7 @@ const Login = () => {
   }, []);
 
   const { login, googleLogin } = useContext(AuthContext);
+  const { syncLocalCartToDb } = useContext(CartContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,6 +43,7 @@ const Login = () => {
     setIsSubmitting(false);
     if (result.success) {
       toast.success(`✅ Welcome back, ${result.user.name}!`);
+      await syncLocalCartToDb();
       navigate(redirect);
     } else {
       setErrorMsg(result.error);
@@ -57,6 +60,7 @@ const Login = () => {
 
     if (result.success) {
       toast.success(`Welcome back, ${result.user.name}!`);
+      await syncLocalCartToDb();
       navigate(redirect);
     } else {
       setErrorMsg(result.error);

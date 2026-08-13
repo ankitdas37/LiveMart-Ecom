@@ -64,9 +64,7 @@ const AdminNotes = () => {
 
     try {
       setIsUploading(true);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
 
       let fileType = 'other';
       if (file.type.startsWith('image/')) fileType = 'image';

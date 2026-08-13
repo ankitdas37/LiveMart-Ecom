@@ -57,9 +57,7 @@ const AdminSettings = () => {
     
     try {
       setIsUploadingQR(true);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
       setSettings({ ...settings, PAYMENT_QR_CODE: res.data.url });
       setMessage({ type: 'success', text: "QR Code uploaded temporarily. Don't forget to Save Settings!" });
       setTimeout(() => setMessage(''), 3000);
@@ -82,9 +80,7 @@ const AdminSettings = () => {
     
     try {
       setUploading(true);
-      const res = await axios.post('/api/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await axios.post('/api/upload', uploadData);
       setSettings({ ...settings, [fieldName]: res.data.url });
       setMessage({ type: 'success', text: "Image uploaded temporarily. Don't forget to Save Settings!" });
       setTimeout(() => setMessage(''), 3000);

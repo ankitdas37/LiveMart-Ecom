@@ -82,6 +82,9 @@ const deleteCoupon = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete this coupon because it has been used in existing orders.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -100,6 +103,9 @@ const bulkDeleteCoupons = async (req, res) => {
     res.json({ message: `${ids.length} coupon(s) removed successfully` });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete selected coupons because they have been used in existing orders.' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };

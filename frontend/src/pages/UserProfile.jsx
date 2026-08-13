@@ -85,7 +85,7 @@ const UserProfile = () => {
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [editAddressId, setEditAddressId] = useState(null);
   const [isFetchingLocation, setIsFetchingLocation] = useState(false);
-  const [addressForm, setAddressForm] = useState({ fullName:'', phone:'', altPhone:'', street:'', landmark:'', city:'Chinsurah', district:'Hooghly', state:'West Bengal', country:'India', pincode:'', is_default:false, addressType:'Home', policeStation:'', location_lat:'', location_lng:'' });
+  const [addressForm, setAddressForm] = useState({ fullName:'', email: user?.email || '', phone:'', altPhone:'', street:'', landmark:'', city:'Chinsurah', district:'Hooghly', state:'West Bengal', country:'India', pincode:'', is_default:false, addressType:'Home', policeStation:'', location_lat:'', location_lng:'' });
 
   // Wishlist State
   const [wishlist, setWishlist] = useState([]);
@@ -140,7 +140,7 @@ const UserProfile = () => {
       setIsUploading(true);
       const compressed = await compressImage(file, 400, 400, 0.7);
       const fd = new FormData(); fd.append('image', compressed);
-      const { data } = await axios.post('/api/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const { data } = await axios.post('/api/upload', fd);
       setProfilePic(data.url);
       const saveRes = await axios.put('/api/users/profile', { name, email, profile_pic: data.url }, cfg());
       updateUserSession(saveRes.data);
@@ -171,18 +171,33 @@ const UserProfile = () => {
       updateUserSession(data);
       if (data.phone) setIsPhoneEditing(false);
       setUpdateMessage({ type:'success', text:'Profile updated successfully!' });
+      toast.success(otpCode ? 'Verification successful! Profile updated.' : 'Profile updated successfully!');
       setPassword(''); setOtpModalOpen(false); setOtp('');
-    } catch (err) { setUpdateMessage({ type:'error', text: err.response?.data?.message || 'Update failed' }); }
+    } catch (err) { 
+      const errMsg = err.response?.data?.message || 'Update failed';
+      setUpdateMessage({ type:'error', text: errMsg }); 
+      if (otpCode) toast.error(errMsg);
+    }
     finally { setIsUpdating(false); }
   };
 
   const handleAddressInput = (e) => {
-    const { name: n, value, type, checked } = e.target;
-    if (n === 'pincode' && value && !/^\d{0,6}$/.test(value)) return;
+    let { name: n, value, type, checked } = e.target;
+    
+    // Prevent non-digit inputs for phone fields and limit to 10 digits
+    if (n === 'phone' || n === 'altPhone') {
+      value = value.replace(/\D/g, '').slice(0, 10);
+    }
+    
+    // Prevent non-digit inputs for pincode and limit to 6 digits
+    if (n === 'pincode') {
+      value = value.replace(/\D/g, '').slice(0, 6);
+    }
+    
     setAddressForm(prev => ({ ...prev, [n]: type === 'checkbox' ? checked : value }));
   };
-  const openAddressForm = () => { setAddressForm(prev => ({ ...prev, phone: user.phone || '' })); setShowAddressForm(true); };
-  const resetAddressForm = () => { setShowAddressForm(false); setIsEditingAddress(false); setEditAddressId(null); setAddressForm({ fullName:'', phone:'', altPhone:'', street:'', landmark:'', city:'Chinsurah', district:'Hooghly', state:'West Bengal', country:'India', pincode:'', is_default:false, addressType:'Home', policeStation:'', location_lat:'', location_lng:'' }); };
+  const openAddressForm = () => { setAddressForm(prev => ({ ...prev, phone: user.phone || '', email: user.email || '' })); setShowAddressForm(true); };
+  const resetAddressForm = () => { setShowAddressForm(false); setIsEditingAddress(false); setEditAddressId(null); setAddressForm({ fullName:'', email: user?.email || '', phone:'', altPhone:'', street:'', landmark:'', city:'Chinsurah', district:'Hooghly', state:'West Bengal', country:'India', pincode:'', is_default:false, addressType:'Home', policeStation:'', location_lat:'', location_lng:'' }); };
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
     if (addressForm.pincode.length !== 6) { toast.error('Pincode must be 6 digits'); return; }
@@ -192,7 +207,7 @@ const UserProfile = () => {
       fetchAddresses(); resetAddressForm();
     } catch (err) { toast.error(err.response?.data?.message || 'Something went wrong'); }
   };
-  const handleEditAddress = (address) => { setAddressForm({ fullName:address.fullName, phone:address.phone, altPhone:address.altPhone||'', street:address.street, landmark:address.landmark||'', city:address.city, district:address.district, state:address.state, country:address.country, pincode:address.pincode, is_default:address.is_default, addressType:address.addressType||'Home', policeStation:address.policeStation||'', location_lat:address.location_lat||'', location_lng:address.location_lng||'' }); setEditAddressId(address.id); setIsEditingAddress(true); setShowAddressForm(true); };
+  const handleEditAddress = (address) => { setAddressForm({ fullName:address.fullName, email:address.email||user?.email||'', phone:address.phone, altPhone:address.altPhone||'', street:address.street, landmark:address.landmark||'', city:address.city, district:address.district, state:address.state, country:address.country, pincode:address.pincode, is_default:address.is_default, addressType:address.addressType||'Home', policeStation:address.policeStation||'', location_lat:address.location_lat||'', location_lng:address.location_lng||'' }); setEditAddressId(address.id); setIsEditingAddress(true); setShowAddressForm(true); };
   const handleDeleteAddress = async (id) => { if (!window.confirm('Delete this address?')) return; try { await axios.delete(`/api/users/addresses/${id}`, cfg()); toast.success('Address deleted'); fetchAddresses(); } catch (e) { toast.error('Failed to delete'); } };
   const handleSetDefault = async (address) => { try { await axios.put(`/api/users/addresses/${address.id}`, { ...address, is_default: true }, cfg()); toast.success('Default updated'); fetchAddresses(); } catch (e) { toast.error('Failed'); } };
   const fetchLocation = () => {
@@ -203,7 +218,26 @@ const UserProfile = () => {
       let fd = { ...addressForm, location_lat: lat, location_lng: lng };
       try {
         const { data } = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, { headers: { 'Accept-Language': 'en' } });
-        if (data?.address) { const a = data.address; if (a.postcode) fd.pincode = a.postcode.substring(0,6); const parts = [a.road,a.neighbourhood,a.suburb,a.village].filter(Boolean); if (parts.length) fd.street = parts.join(', '); }
+        if (data?.address) {
+          const a = data.address;
+          if (a.postcode) fd.pincode = a.postcode.substring(0,6);
+          const parts = [a.road, a.neighbourhood, a.suburb, a.village].filter(Boolean);
+          if (parts.length) fd.street = parts.join(', ');
+          
+          const landmark = a.neighbourhood || a.suburb || a.amenity || a.building;
+          if (landmark) fd.landmark = landmark;
+          
+          const district = a.state_district ? a.state_district.replace(' District', '').trim() : (a.county || '');
+          if (district) fd.district = district;
+          
+          const city = a.city || a.town || a.village;
+          if (city) fd.city = city;
+          
+          const police = a.city_district || a.suburb || a.town;
+          if (police) fd.policeStation = police;
+          
+          if (a.state) fd.state = a.state;
+        }
         toast.success('Location auto-filled! 📍');
       } catch (e) { toast.success('Location saved! 📍'); }
       setAddressForm(fd); setIsFetchingLocation(false);
@@ -295,7 +329,50 @@ const UserProfile = () => {
         </form>
       </div>
       {showImageModal && profilePic && (<div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowImageModal(false)}><div className="relative max-w-sm w-full mx-4" onClick={e => e.stopPropagation()}><button onClick={() => setShowImageModal(false)} className="absolute -top-12 right-0 text-white hover:text-amber-400"><X className="w-8 h-8" /></button><img src={profilePic} alt="Profile" className="w-72 h-72 mx-auto rounded-full object-cover border-4 border-white shadow-2xl" referrerPolicy="no-referrer" /><p className="text-center text-white/70 text-sm mt-4">Tap outside to close</p></div></div>)}
-      {otpModalOpen && (<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"><div className="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl"><div className="text-center mb-6"><div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4"><Shield className="w-7 h-7 text-amber-600" /></div><h3 className="text-xl font-bold text-slate-900 mb-1">Verify Identity</h3><p className="text-slate-500 text-sm">Enter the OTP sent to your registered email.</p></div><input type="text" inputMode="numeric" maxLength={6} value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g,''))} className="w-full text-center text-3xl tracking-[0.5em] font-bold py-4 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none text-slate-900 mb-4" /><button onClick={() => executeSave(otp)} disabled={otp.length !== 6 || isUpdating} className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all disabled:opacity-50 flex justify-center items-center gap-2">{isUpdating ? <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />Verifying...</> : 'Confirm Change'}</button></div></div>)}
+      {otpModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md px-4 transition-all duration-300">
+          <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl transform scale-100 animate-in zoom-in-95 duration-200 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+            
+            <button onClick={() => {setOtpModalOpen(false); setOtp('');}} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center mb-8 mt-2">
+              <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-inner border border-amber-200/50 transform rotate-3">
+                <Shield className="w-10 h-10 text-amber-600 transform -rotate-3" />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 mb-2">Verify Identity</h3>
+              <p className="text-slate-500 text-sm px-4">We've sent a 6-digit security code to your registered email address.</p>
+            </div>
+            
+            <div className="relative mb-8">
+              <input 
+                type="text" 
+                inputMode="numeric" 
+                maxLength={6} 
+                value={otp} 
+                onChange={e => setOtp(e.target.value.replace(/\D/g,''))} 
+                className="w-full text-center text-4xl tracking-[0.4em] font-black py-5 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 outline-none text-slate-800 transition-all shadow-inner placeholder-slate-300"
+                placeholder="------"
+              />
+              <div className="absolute -bottom-6 left-0 right-0 text-center">
+                <span className="text-xs font-medium text-slate-400 flex items-center justify-center gap-1">
+                  <Shield className="w-3 h-3" /> Secure Verification
+                </span>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => executeSave(otp)} 
+              disabled={otp.length !== 6 || isUpdating} 
+              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 rounded-2xl font-bold text-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 shadow-lg shadow-amber-500/30 flex justify-center items-center gap-2"
+            >
+              {isUpdating ? <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />Verifying...</> : 'Confirm & Save Changes'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -320,14 +397,17 @@ const UserProfile = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Full Name <span className="text-red-500">*</span></label><input required type="text" name="fullName" value={addressForm.fullName} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Pincode <span className="text-red-500">*</span></label><input required type="text" name="pincode" maxLength={6} value={addressForm.pincode} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" placeholder="6-digit PIN" /></div>
+              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email Address <span className="text-red-500">*</span></label><input required type="email" name="email" value={addressForm.email} onChange={handleAddressInput} readOnly className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all text-slate-500 cursor-not-allowed" /></div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone <span className="text-red-500">*</span></label><input required type="tel" name="phone" value={addressForm.phone} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" /></div>
               <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Alternate Phone</label><input type="tel" name="altPhone" value={addressForm.altPhone} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" /></div>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Pincode <span className="text-red-500">*</span></label><input required type="text" name="pincode" maxLength={6} value={addressForm.pincode} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" placeholder="6-digit PIN" /></div>
+              <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Landmark</label><input type="text" name="landmark" value={addressForm.landmark} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" placeholder="e.g. Near Apollo Pharmacy" /></div>
+            </div>
             <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Street Address <span className="text-red-500">*</span></label><textarea required name="street" rows={2} value={addressForm.street} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all resize-none" /></div>
-            <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Landmark</label><input type="text" name="landmark" value={addressForm.landmark} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all" placeholder="e.g. Near Apollo Pharmacy" /></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">State <span className="text-red-500">*</span></label><select required name="state" value={addressForm.state} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all cursor-pointer"><option>West Bengal</option></select></div>
               <div><label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">District <span className="text-red-500">*</span></label><select required name="district" value={addressForm.district} onChange={handleAddressInput} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:border-amber-500 outline-none transition-all cursor-pointer">{WB_DISTRICTS.map(d => <option key={d}>{d}</option>)}</select></div>
@@ -375,10 +455,10 @@ const UserProfile = () => {
         <Link to={`/order/${order.id}`} key={order.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-amber-200 transition-all block">
           <div className="flex-1">
             <div className="flex items-center gap-3 flex-wrap mb-2">
-              <span className="font-bold text-slate-900">Order #{order.id}</span>
+              <span className="font-bold text-slate-900">Order #LIVEMART{String(order.id).padStart(6, '0')}</span>
               <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${order.status==='Delivered'?'bg-emerald-100 text-emerald-700':order.status==='Cancelled'?'bg-red-100 text-red-700':order.status==='Processing'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}`}>{order.status}</span>
             </div>
-            <p className="text-sm text-slate-500">Placed {new Date(order.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} · Rs {order.totalPrice}</p>
+            <p className="text-sm text-slate-500">Placed {new Date(order.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} · Rs {order.total_amount}</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex -space-x-2">{order.OrderItems?.slice(0,4).map((item,i)=>(<img key={i} src={(item.Product?.images&&item.Product.images[0])||'https://via.placeholder.com/40'} alt="p" className="w-10 h-10 rounded-full border-2 border-white object-cover bg-slate-100" />))}</div>

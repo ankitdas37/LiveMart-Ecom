@@ -50,8 +50,10 @@ const updateUserProfile = async (req, res) => {
       }
       const isPasswordChanged = !!req.body.password;
       const isPhoneChanged = req.body.phone !== undefined && req.body.phone !== (user.phone || '');
+      const isEmailChanged = req.body.email && req.body.email !== user.email;
 
-      if (isPasswordChanged || isPhoneChanged) {
+      // Email, password, and phone are all sensitive — require OTP verification for any of them
+      if (isPasswordChanged || isPhoneChanged || isEmailChanged) {
         if (!req.body.otp) {
           return res.status(400).json({ message: 'OTP is required to update sensitive information' });
         }
@@ -65,6 +67,14 @@ const updateUserProfile = async (req, res) => {
         
         if (isPhoneChanged) {
           user.phone = req.body.phone;
+        }
+
+        if (isEmailChanged) {
+          const emailExists = await User.findOne({ where: { email: req.body.email } });
+          if (emailExists) {
+            return res.status(400).json({ message: 'Email is already in use' });
+          }
+          user.email = req.body.email;
         }
 
         if (isPasswordChanged) {
@@ -91,17 +101,10 @@ const updateUserProfile = async (req, res) => {
           }
         }
         
-        await OTP.destroy({ where: { email: user.email } }); // Clear OTP
+        await OTP.destroy({ where: { email: user.email } }); // Clear OTP after successful use
       }
       
-      // Update email if provided, but maybe verify it's not taken
-      if (req.body.email && req.body.email !== user.email) {
-        const emailExists = await User.findOne({ where: { email: req.body.email } });
-        if (emailExists) {
-          return res.status(400).json({ message: 'Email is already in use' });
-        }
-        user.email = req.body.email;
-      }
+
 
       await user.save();
       
@@ -178,7 +181,7 @@ const deleteUser = async (req, res) => {
           
           if (publicId) {
             await cloudinary.uploader.destroy(publicId);
-            console.log(`Deleted image from Cloudinary: ${publicId}`);
+          // Profile image removed from Cloudinary
           }
         } catch (cloudinaryError) {
           console.error('Failed to delete image from Cloudinary:', cloudinaryError);
@@ -193,6 +196,9 @@ const deleteUser = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete this user because they are linked to existing data (e.g., orders, reviews).' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -241,6 +247,9 @@ const bulkDeleteUsers = async (req, res) => {
     res.json({ message: `${idsToDelete.length} user(s) removed successfully` });
   } catch (error) {
     console.error(error);
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ message: 'Cannot delete selected users because they are linked to existing data (e.g., orders, reviews).' });
+    }
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -333,7 +342,7 @@ const sendPasswordChangeOTP = async (req, res) => {
     await OTP.destroy({ where: { email: user.email } });
     await OTP.create({ email: user.email, otp: otpCode, expiresAt });
 
-    console.log(`\n🔑 ${isPhoneUpdate ? 'PROFILE UPDATE' : 'PASSWORD CHANGE'} OTP FOR ${user.email}: ${otpCode}\n`);
+    // OTP sent via email. Removed console.log to prevent OTP exposure in logs.
 
     const title = isPhoneUpdate ? 'Profile Update Request' : 'Password Change Request';
     const actionText = isPhoneUpdate ? 'update your profile' : 'change your password';
@@ -382,7 +391,7 @@ const getAdminUserDetails = async (req, res) => {
 
     // Fetch all related data in parallel
     const [addresses, sessions, loginActivities, wishlist, reviews, tickets, orders] = await Promise.all([
-      Address.findAll({ where: { UserId: userId }, order: [['is_default', 'DESC']] }),
+      Address.findAll({ where: { userId: userId }, order: [['is_default', 'DESC']] }),
       Session.findAll({ where: { userEmail: user.email }, order: [['last_active', 'DESC']] }),
       LoginActivity.findAll({ where: { email: user.email }, order: [['createdAt', 'DESC']] }),
       Wishlist.findAll({ where: { userId }, include: [{ model: Product }], order: [['createdAt', 'DESC']] }),
@@ -428,15 +437,22 @@ const sendAdminActionOTP = async (req, res) => {
       </div>
     `;
 
-    await sendEmail({
-      email: user.email,
-      subject: 'LiveMart - Admin Action Verification Code',
-      html
-    });
+    // OTP sent via email. Removed console.log to prevent OTP exposure in server logs.
 
-    res.json({ message: 'OTP sent to your admin email' });
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: 'LiveMart - Admin Action Verification Code',
+        html
+      });
+      res.json({ message: 'OTP sent to your admin email' });
+    } catch (emailError) {
+      console.error('Admin OTP Email failed:', emailError);
+      res.status(200).json({ message: 'OTP generated. Check console if email failed.' });
+    }
   } catch (error) {
     console.error(error);
+    console.error('Send Admin OTP error:', error.message);
     res.status(500).json({ message: 'Failed to send OTP' });
   }
 };
@@ -450,7 +466,8 @@ const verifyAdminAction = async (req, res) => {
     const user = req.user;
 
     if (method === 'password') {
-      const isMatch = await bcrypt.compare(password, user.password);
+      const fullUser = await User.findByPk(user.id); // Fetch full user to get password hash
+      const isMatch = await bcrypt.compare(password, fullUser.password);
       if (!isMatch) {
         return res.status(401).json({ message: 'Invalid admin password' });
       }
@@ -473,6 +490,51 @@ const verifyAdminAction = async (req, res) => {
   }
 };
 
+// @desc    Delete own account (self-service data erasure)
+// @route   DELETE /api/users/me
+// @access  Private
+const deleteOwnAccount = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Delete profile picture from Cloudinary if it exists
+    if (user.profile_pic && user.profile_pic.includes('cloudinary.com')) {
+      try {
+        const cloudinary = require('../config/cloudinary');
+        const urlParts = user.profile_pic.split('/');
+        const folderAndFile = urlParts.slice(urlParts.length - 2).join('/');
+        const publicId = folderAndFile.split('.')[0];
+        if (publicId) await cloudinary.uploader.destroy(publicId);
+      } catch (e) {
+        console.error('Failed to delete profile pic from Cloudinary during account deletion');
+      }
+    }
+
+    // Anonymize linked orders (preserve business records but strip PII)
+    await Order.update(
+      {
+        customer_name: '[Deleted User]',
+        customer_email: 'deleted@livemart.com',
+        customer_phone: '0000000000',
+        customer_address: '[REDACTED]',
+      },
+      { where: { userId: user.id } }
+    );
+
+    // Delete all PII-containing associated records
+    await Address.destroy({ where: { userId: user.id } });
+
+    // Destroy the user record itself
+    await user.destroy();
+
+    res.json({ message: 'Your account and personal data have been permanently deleted.' });
+  } catch (error) {
+    console.error('Account deletion error:', error.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserProfile,
@@ -481,12 +543,11 @@ module.exports = {
   deleteUser,
   bulkDeleteUsers,
   getUserOrders,
-
   createUser,
   getOrdersByUserId,
   sendPasswordChangeOTP,
   getAdminUserDetails,
   sendAdminActionOTP,
-  verifyAdminAction
+  verifyAdminAction,
+  deleteOwnAccount
 };
-

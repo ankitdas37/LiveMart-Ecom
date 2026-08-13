@@ -251,7 +251,9 @@ const ProductDetails = () => {
     );
   }
 
-  const mainImage = product.images && product.images.length > 0 ? product.images[activeImage] : 'https://placehold.co/600x600?text=No+Image';
+  // Filter out empty/null URL entries that come from the admin product form
+  const validImages = (product.images || []).filter(img => img && img.trim() !== '');
+  const mainImage = validImages.length > 0 ? validImages[activeImage] ?? validImages[0] : null;
 
   return (
     <div className="bg-slate-50 min-h-screen py-8">
@@ -273,7 +275,12 @@ const ProductDetails = () => {
 
             <div className="w-full lg:w-1/2 p-6 lg:p-10 lg:border-r border-slate-100">
               <div className="aspect-square rounded-2xl overflow-hidden bg-slate-100 mb-4 relative group">
-                <img src={mainImage} alt={product.title} className="w-full h-full object-contain p-4" />
+                <img
+                  src={mainImage || 'https://placehold.co/600x600?text=No+Image'}
+                  alt={product.title}
+                  className="w-full h-full object-contain p-4"
+                  onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x600?text=No+Image'; }}
+                />
                 <div className="absolute top-4 right-4 flex flex-col gap-2">
                   <button
                     onClick={toggleWishlist}
@@ -288,15 +295,20 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              {product.images && product.images.length > 1 && (
+              {validImages.length > 1 && (
                 <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                  {product.images.map((img, idx) => (
+                  {validImages.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveImage(idx)}
                       className={`flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden border-2 ${activeImage === idx ? 'border-amber-500' : 'border-transparent opacity-60'}`}
                     >
-                      <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-contain p-1" />
+                      <img
+                        src={img}
+                        alt={`Thumbnail ${idx}`}
+                        className="w-full h-full object-contain p-1"
+                        onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/100x100?text=Img'; }}
+                      />
                     </button>
                   ))}
                 </div>

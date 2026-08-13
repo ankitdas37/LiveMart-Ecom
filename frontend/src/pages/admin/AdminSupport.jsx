@@ -92,9 +92,7 @@ const AdminSupport = () => {
       if (replyAttachment) {
         const formData = new FormData();
         formData.append('image', replyAttachment); // backend uploadRoute expects 'image'
-        const uploadRes = await axios.post('/api/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        const uploadRes = await axios.post('/api/upload', formData);
         admin_attachment_url = uploadRes.data.imageUrl;
       }
 

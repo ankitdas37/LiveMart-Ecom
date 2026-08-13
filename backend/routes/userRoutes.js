@@ -13,7 +13,8 @@ const {
   sendPasswordChangeOTP,
   getAdminUserDetails,
   sendAdminActionOTP,
-  verifyAdminAction
+  verifyAdminAction,
+  deleteOwnAccount
 } = require('../controllers/userController');
 
 const {
@@ -42,6 +43,9 @@ router.route('/')
 router.route('/profile')
   .get(protect, getUserProfile)
   .put(protect, updateUserProfile);
+
+// Self-service account deletion (GDPR right to erasure)
+router.delete('/me', protect, deleteOwnAccount);
 
 router.post('/send-password-otp', protect, sendPasswordChangeOTP);
 

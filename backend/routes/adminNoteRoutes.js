@@ -8,10 +8,11 @@ const {
   deleteNote,
   bulkDeleteNotes,
 } = require('../controllers/adminNoteController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
-router.get('/public', getPublicNotes);
-router.route('/').get(getAllNotes).post(createNote);
-router.delete('/bulk', bulkDeleteNotes);
-router.route('/:id').put(updateNote).delete(deleteNote);
+router.get('/public', getPublicNotes); // Public announcements
+router.route('/').get(protect, admin, getAllNotes).post(protect, admin, createNote);
+router.delete('/bulk', protect, admin, bulkDeleteNotes);
+router.route('/:id').put(protect, admin, updateNote).delete(protect, admin, deleteNote);
 
 module.exports = router;

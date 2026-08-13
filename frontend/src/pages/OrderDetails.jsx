@@ -82,9 +82,10 @@ export default function OrderDetails() {
     try {
       setLoading(true);
       setError('');
-      const paddedId = String(id).padStart(6, '0');
-      const orderId = `LIVEMART${paddedId}`;
-      const { data } = await axios.get(`/api/orders/track/${orderId}`);
+      
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      // Use the authenticated endpoint instead of public track API
+      const { data } = await axios.get(`/api/orders/${id}`, config);
       setOrder(data);
       
       // Fetch support tickets for this order
@@ -506,7 +507,7 @@ export default function OrderDetails() {
                           </button>
                         )}
                         {/* Return Logic */}
-                        {order.status === 'Delivered' && item.Product?.is_returnable && item.return_status === 'None' && (
+                        {order.status === 'Delivered' && item.Product?.return_policy && item.return_status === 'None' && (
                           <button
                             onClick={() => openReturnModal(item)}
                             className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 px-2.5 py-1 rounded-lg transition-colors"
