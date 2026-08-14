@@ -188,9 +188,9 @@ export default function OrderDetails() {
   /* ─── LOADING STATE ─── */
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4">
-        <div className="w-16 h-16 border-4 border-slate-200 border-t-amber-500 rounded-full animate-spin" />
-        <p className="text-slate-600 font-semibold text-lg">Loading your order…</p>
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors flex flex-col items-center justify-center gap-4">
+        <div className="w-16 h-16 border-4 border-slate-200 dark:border-slate-600 border-t-amber-500 rounded-full animate-spin" />
+        <p className="text-slate-600 dark:text-slate-300 font-semibold text-lg">Loading your order…</p>
         <p className="text-slate-400 text-sm">Please wait a moment</p>
       </div>
     );
@@ -199,12 +199,12 @@ export default function OrderDetails() {
   /* ─── ERROR STATE ─── */
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center gap-4 p-6">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors flex flex-col items-center justify-center gap-4 p-6">
         <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
           <XCircle className="w-10 h-10 text-red-400" />
         </div>
-        <h2 className="text-2xl font-black text-slate-900">Order Not Found</h2>
-        <p className="text-slate-500 max-w-sm text-center text-sm">{error || 'This order could not be loaded.'}</p>
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white">Order Not Found</h2>
+        <p className="text-slate-500 dark:text-slate-400 max-w-sm text-center text-sm">{error || 'This order could not be loaded.'}</p>
         <button
           onClick={() => navigate('/profile')}
           className="mt-2 px-8 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-amber-500 transition-colors"
@@ -233,7 +233,7 @@ export default function OrderDetails() {
   const ratingLabels = ['', 'Poor 😞', 'Fair 😐', 'Good 😊', 'Great 😄', 'Excellent! 🤩'];
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-40 sm:pb-24">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors pb-40 sm:pb-24">
 
       {/* ════ HERO BANNER ════ */}
       <div className="relative overflow-hidden">
@@ -245,7 +245,7 @@ export default function OrderDetails() {
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 right-0 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-28 pb-12">
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-12">
           {/* Back */}
           <button
             onClick={() => navigate('/profile')}
@@ -313,7 +313,7 @@ export default function OrderDetails() {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+          <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
               <div className="flex items-center gap-3">
@@ -321,7 +321,7 @@ export default function OrderDetails() {
                   <Truck className="w-5 h-5 text-amber-500" />
                 </div>
                 <div>
-                  <h2 className="font-black text-slate-900 text-lg">Order Tracking</h2>
+                  <h2 className="font-black text-slate-900 dark:text-white text-lg">Order Tracking</h2>
                   {order.status === 'Delivered' && (
                     <p className="text-xs text-emerald-600 font-bold flex items-center gap-1 mt-0.5">
                       <CheckCircle className="w-3 h-3" /> Delivered on {fmtDate(order.deliveredAt)}
@@ -330,7 +330,7 @@ export default function OrderDetails() {
                 </div>
               </div>
               {order.estimatedDeliveryDate && order.status !== 'Delivered' && (
-                <span className="text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 flex items-center gap-1.5 font-semibold">
+                <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-1.5 flex items-center gap-1.5 font-semibold">
                   <Clock className="w-3.5 h-3.5" />
                   Est. Delivery: {new Date(order.estimatedDeliveryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long' })}
                 </span>
@@ -340,7 +340,7 @@ export default function OrderDetails() {
             {/* Desktop timeline */}
             <div className="hidden sm:block relative mb-2">
               {/* Progress rail */}
-              <div className="absolute top-5 left-[2.5rem] right-[2.5rem] h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div className="absolute top-5 left-[2.5rem] right-[2.5rem] h-1.5 bg-slate-100 dark:bg-slate-700 transition-colors rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
@@ -360,13 +360,13 @@ export default function OrderDetails() {
                         className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
                           done
                             ? 'bg-amber-500 border-amber-500 text-white shadow-md shadow-amber-500/30'
-                            : 'bg-white border-slate-200 text-slate-300'
+                            : 'bg-white dark:bg-slate-800 transition-colors border-slate-200 dark:border-slate-600 text-slate-300'
                         } ${active ? 'scale-125 ring-4 ring-amber-500/20' : ''}`}
                       >
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="text-center px-1">
-                        <p className={`text-[11px] font-black ${done ? 'text-slate-800' : 'text-slate-400'}`}>
+                        <p className={`text-[11px] font-black ${done ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400'}`}>
                           {s.label}
                         </p>
                         {active && (
@@ -396,24 +396,24 @@ export default function OrderDetails() {
                   <div
                     key={i}
                     className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                      active ? 'bg-amber-50 border border-amber-200' : done ? 'bg-slate-50' : ''
+                      active ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50' : done ? 'bg-slate-50 dark:bg-slate-900 transition-colors' : ''
                     }`}
                   >
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
-                        done ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-300'
+                        done ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-700 transition-colors text-slate-300'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1">
-                      <p className={`text-sm font-black ${done ? 'text-slate-900' : 'text-slate-400'}`}>{s.label}</p>
+                      <p className={`text-sm font-black ${done ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{s.label}</p>
                       {s.date && done && (
                         <p className="text-xs text-slate-400">{fmtDate(s.date)}</p>
                       )}
                     </div>
                     {active && (
-                      <span className="text-[10px] font-black text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full shrink-0">
+                      <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-full shrink-0">
                         LIVE
                       </span>
                     )}
@@ -431,11 +431,11 @@ export default function OrderDetails() {
           <div className="lg:col-span-3 space-y-5">
 
             {/* Products card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-2 bg-slate-50">
+            <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700/50 flex items-center gap-2 bg-slate-50 dark:bg-slate-900 transition-colors">
                 <Package className="w-4 h-4 text-amber-500" />
-                <h2 className="font-black text-slate-900">Order Items</h2>
-                <span className="ml-auto text-xs text-slate-400 font-semibold bg-white border border-slate-200 px-2 py-0.5 rounded-full">
+                <h2 className="font-black text-slate-900 dark:text-white">Order Items</h2>
+                <span className="ml-auto text-xs text-slate-400 font-semibold bg-white dark:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-600 px-2 py-0.5 rounded-full">
                   {items.length} item{items.length !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -446,7 +446,7 @@ export default function OrderDetails() {
                     {/* Image */}
                     <Link
                       to={`/product/${item.product_id}`}
-                      className="relative shrink-0 w-20 h-20 rounded-xl overflow-hidden border border-slate-100 shadow-sm block"
+                      className="relative shrink-0 w-20 h-20 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700/50 shadow-sm block"
                     >
                       <img
                         src={item.Product?.images?.[0] || 'https://via.placeholder.com/80x80?text=Product'}
@@ -462,15 +462,15 @@ export default function OrderDetails() {
                     <div className="flex-1 min-w-0">
                       <Link
                         to={`/product/${item.product_id}`}
-                        className="block font-bold text-slate-900 text-sm leading-snug hover:text-amber-600 transition-colors line-clamp-2"
+                        className="block font-bold text-slate-900 dark:text-white text-sm leading-snug hover:text-amber-600 transition-colors line-clamp-2"
                       >
                         {item.Product?.title || 'Product'}
                       </Link>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                        <span className="text-xs text-slate-500 bg-slate-100 rounded-md px-2 py-0.5">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 transition-colors rounded-md px-2 py-0.5">
                           Qty: {item.quantity}
                         </span>
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
                           ₹{Number(item.price).toLocaleString('en-IN')} each
                         </span>
                       </div>
@@ -530,7 +530,7 @@ export default function OrderDetails() {
 
                     {/* Price */}
                     <div className="shrink-0 text-right">
-                      <p className="font-black text-slate-900 text-sm">
+                      <p className="font-black text-slate-900 dark:text-white text-sm">
                         ₹{(Number(item.price) * Number(item.quantity)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </p>
                       <p className="text-xs text-slate-400 mt-0.5">
@@ -542,14 +542,14 @@ export default function OrderDetails() {
               </div>
 
               {/* Bill Summary */}
-              <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 border-t border-slate-100 p-5">
-                <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 dark:from-slate-700/60 dark:to-slate-800/80 border-t border-slate-100 dark:border-slate-700/50 p-5 transition-colors">
+                <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                   <Receipt className="w-3.5 h-3.5" /> Bill Summary
                 </h3>
 
                 <div className="space-y-2.5">
                   {/* Subtotal */}
-                  <div className="flex justify-between text-sm text-slate-600">
+                  <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                     <span>Subtotal ({items.length} item{items.length !== 1 ? 's' : ''})</span>
                     <span className="font-semibold">₹{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                   </div>
@@ -562,9 +562,9 @@ export default function OrderDetails() {
                     
                     if (otherCharges > 0.01) {
                       return (
-                        <div className="flex justify-between text-sm text-slate-600">
+                        <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                           <span className="flex items-center gap-1.5">
-                            <Truck className="w-3.5 h-3.5 text-slate-400" />
+                            <Truck className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                             Shipping & Other Charges
                           </span>
                           <span className="font-semibold">+₹{otherCharges.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
@@ -572,12 +572,12 @@ export default function OrderDetails() {
                       );
                     } else {
                       return (
-                        <div className="flex justify-between text-sm text-slate-600">
+                        <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                           <span className="flex items-center gap-1.5">
-                            <Truck className="w-3.5 h-3.5 text-slate-400" />
+                            <Truck className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                             Shipping & Other Charges
                           </span>
-                          <span className="font-bold text-emerald-600">FREE</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400">FREE</span>
                         </div>
                       );
                     }
@@ -585,7 +585,7 @@ export default function OrderDetails() {
 
                   {/* Coupon Discount */}
                   {Number(order.discountAmount) > 0 && (
-                    <div className="flex justify-between text-sm text-emerald-600 font-bold">
+                    <div className="flex justify-between text-sm text-emerald-600 dark:text-emerald-400 font-bold">
                       <span className="flex items-center gap-1.5">
                         <Tag className="w-3.5 h-3.5" />
                         Coupon Discount {order.couponCode && `(${order.couponCode})`}
@@ -595,15 +595,15 @@ export default function OrderDetails() {
                   )}
 
                   {/* Divider */}
-                  <div className="border-t-2 border-dashed border-slate-200 pt-3 mt-1">
+                  <div className="border-t-2 border-dashed border-slate-200 dark:border-slate-600/60 pt-3 mt-1">
                     <div className="flex justify-between items-center">
-                      <span className="font-black text-slate-900 text-base">Total Paid</span>
+                      <span className="font-black text-slate-900 dark:text-white text-base">Total Paid</span>
                       <div className="text-right">
-                        <span className="font-black text-xl text-indigo-600">
+                        <span className="font-black text-xl text-indigo-600 dark:text-indigo-400">
                           ₹{Number(order.total_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                         </span>
                         {order.payment_method && (
-                          <p className="text-xs text-slate-400 mt-0.5">via {order.payment_method}</p>
+                          <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">via {order.payment_method}</p>
                         )}
                       </div>
                     </div>
@@ -614,13 +614,13 @@ export default function OrderDetails() {
 
             {/* ── Delivery Experience (only if Delivered) ── */}
             {order.status === 'Delivered' && (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                 <div className="p-6 text-center">
                   <div className="w-14 h-14 bg-emerald-50 rounded-full mx-auto flex items-center justify-center mb-3">
                     <ThumbsUp className="w-7 h-7 text-emerald-500" />
                   </div>
-                  <h3 className="font-black text-slate-900 text-xl mb-1">How was your delivery?</h3>
-                  <p className="text-slate-500 text-sm mb-5">Your feedback helps us improve our service</p>
+                  <h3 className="font-black text-slate-900 dark:text-white text-xl mb-1">How was your delivery?</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Your feedback helps us improve our service</p>
                   {deliveryRated ? (
                     <div className="bg-emerald-50 border border-emerald-200 rounded-xl py-4 px-6 inline-flex items-center gap-2 text-emerald-700 font-black">
                       <CheckCircle className="w-5 h-5" />
@@ -633,7 +633,7 @@ export default function OrderDetails() {
                           <button
                             key={s}
                             onClick={() => { setDeliveryRated(true); setDeliveryRating(s); toast.success(`You rated ${s} star${s > 1 ? 's' : ''}! ⭐`); }}
-                            className="w-12 h-12 bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 hover:border-amber-400 rounded-full flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-md"
+                            className="w-12 h-12 bg-slate-50 dark:bg-slate-900 transition-colors hover:bg-amber-50 border-2 border-slate-200 dark:border-slate-600 hover:border-amber-400 rounded-full flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-md"
                           >
                             <Star className="w-5 h-5 text-slate-300 hover:text-amber-400" />
                           </button>
@@ -651,10 +651,10 @@ export default function OrderDetails() {
           <div className="lg:col-span-2 space-y-4">
 
             {/* Order Info */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-slate-500" />
-                <h2 className="font-black text-slate-900">Order Info</h2>
+            <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900 transition-colors flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <h2 className="font-black text-slate-900 dark:text-white">Order Info</h2>
               </div>
               <div className="p-5 space-y-3.5">
                 {[
@@ -674,12 +674,12 @@ export default function OrderDetails() {
                     {row.copy ? (
                       <button
                         onClick={() => copyToClipboard(row.value)}
-                        className="flex items-center gap-1 text-xs font-black text-slate-900 hover:text-amber-600 transition-colors text-right"
+                        className="flex items-center gap-1 text-xs font-black text-slate-900 dark:text-white hover:text-amber-600 transition-colors text-right"
                       >
                         {row.value} <Copy className="w-3 h-3 shrink-0" />
                       </button>
                     ) : (
-                      <span className="text-xs font-bold text-slate-900 text-right">{row.value}</span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-white text-right">{row.value}</span>
                     )}
                   </div>
                 ))}
@@ -694,18 +694,18 @@ export default function OrderDetails() {
             </div>
 
             {/* Payment */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-slate-500" />
-                <h2 className="font-black text-slate-900">Payment</h2>
+            <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900 transition-colors flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <h2 className="font-black text-slate-900 dark:text-white">Payment</h2>
               </div>
               <div className="p-5 space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-900 transition-colors rounded-xl border border-slate-100 dark:border-slate-700/50">
                   <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
                     <CreditCard className="w-5 h-5 text-indigo-500" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-black text-slate-900 text-sm">{order.payment_method || 'Cash on Delivery'}</p>
+                    <p className="font-black text-slate-900 dark:text-white text-sm">{order.payment_method || 'Cash on Delivery'}</p>
                     <p className="text-xs text-slate-400">
                       ₹{Number(order.total_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} paid
                     </p>
@@ -714,12 +714,12 @@ export default function OrderDetails() {
                 </div>
                 
                 {order.payment_receipt && (
-                  <div className="mt-2 bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between">
+                  <div className="mt-2 bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-100 dark:border-slate-700/50 rounded-xl p-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200">
+                      <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-600">
                         <img src={order.payment_receipt} alt="Receipt" className="w-full h-full object-cover" />
                       </div>
-                      <span className="text-xs font-bold text-slate-700">Payment Screenshot</span>
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Payment Screenshot</span>
                     </div>
                     <a 
                       href={order.payment_receipt} 
@@ -747,10 +747,10 @@ export default function OrderDetails() {
             </div>
 
             {/* Delivery Address */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-slate-500" />
-                <h2 className="font-black text-slate-900">Delivery Address</h2>
+            <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900 transition-colors flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                <h2 className="font-black text-slate-900 dark:text-white">Delivery Address</h2>
               </div>
               <div className="p-5 space-y-3">
                 <div className="flex items-center gap-3">
@@ -759,29 +759,29 @@ export default function OrderDetails() {
                       {order.customer_name?.charAt(0)?.toUpperCase() || 'U'}
                     </span>
                   </div>
-                  <p className="font-black text-slate-900">{order.customer_name}</p>
+                  <p className="font-black text-slate-900 dark:text-white">{order.customer_name}</p>
                 </div>
 
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 space-y-1">
-                  <p className="text-sm text-slate-700 leading-relaxed">
+                <div className="bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-100 dark:border-slate-700/50 rounded-xl p-3.5 space-y-1">
+                  <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
                     {order.customer_address}
                     {order.landmark ? `, Near ${order.landmark}` : ''}
                   </p>
-                  <p className="text-sm text-slate-600 font-semibold">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 font-semibold">
                     {order.city}, {order.district} — {order.pincode}
                   </p>
-                  <p className="text-sm text-slate-500">{order.country}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{order.country}</p>
                 </div>
 
                 <div className="space-y-2">
                   {order.customer_phone && (
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                       <Phone className="w-4 h-4 text-slate-400 shrink-0" />
                       <span className="font-mono text-sm font-semibold">{String(order.customer_phone)}</span>
                     </div>
                   )}
                   {order.customer_email && (
-                    <div className="flex items-center gap-2 text-sm text-slate-600 min-w-0">
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 min-w-0">
                       <Mail className="w-4 h-4 text-slate-400 shrink-0" />
                       <span className="truncate text-sm">{order.customer_email}</span>
                     </div>
@@ -792,16 +792,16 @@ export default function OrderDetails() {
 
             {/* Support Tickets */}
             {tickets.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div className="px-5 py-4 border-b border-slate-100 bg-slate-50 flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-slate-500" />
-                  <h2 className="font-black text-slate-900">Support Tickets</h2>
+              <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-900 transition-colors flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                  <h2 className="font-black text-slate-900 dark:text-white">Support Tickets</h2>
                 </div>
                 <div className="p-5 space-y-4">
                   {tickets.map(ticket => (
-                    <div key={ticket.id} className="border border-slate-100 rounded-xl overflow-hidden text-sm">
-                      <div className="bg-slate-50 p-3 flex justify-between items-center border-b border-slate-100">
-                        <span className="font-bold text-slate-700">Ticket #{ticket.id}</span>
+                    <div key={ticket.id} className="border border-slate-100 dark:border-slate-700/50 rounded-xl overflow-hidden text-sm">
+                      <div className="bg-slate-50 dark:bg-slate-900 transition-colors p-3 flex justify-between items-center border-b border-slate-100 dark:border-slate-700/50">
+                        <span className="font-bold text-slate-700 dark:text-slate-200">Ticket #{ticket.id}</span>
                         <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${
                           ticket.status === 'Open' ? 'bg-amber-100 text-amber-700' :
                           ticket.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' :
@@ -810,19 +810,19 @@ export default function OrderDetails() {
                           {ticket.status}
                         </span>
                       </div>
-                      <div className="p-3 bg-white">
-                        <p className="text-slate-600 mb-2"><strong>You:</strong> {ticket.message}</p>
+                      <div className="p-3 bg-white dark:bg-slate-800 transition-colors">
+                        <p className="text-slate-600 dark:text-slate-300 mb-2"><strong>You:</strong> {ticket.message}</p>
                         {ticket.admin_reply && (
-                          <div className="bg-slate-50 p-3 rounded-lg border-l-4 border-amber-500 mt-3">
-                            <p className="text-slate-900 font-bold text-xs mb-1">Admin Reply:</p>
-                            <p className="text-slate-700 whitespace-pre-wrap">{ticket.admin_reply}</p>
+                          <div className="bg-slate-50 dark:bg-slate-900 transition-colors p-3 rounded-lg border-l-4 border-amber-500 mt-3">
+                            <p className="text-slate-900 dark:text-white font-bold text-xs mb-1">Admin Reply:</p>
+                            <p className="text-slate-700 dark:text-slate-200 whitespace-pre-wrap">{ticket.admin_reply}</p>
                             {ticket.admin_attachment_url && (
-                              <div className="mt-3 border border-slate-200 rounded-lg p-2 bg-white flex items-center justify-between">
+                              <div className="mt-3 border border-slate-200 dark:border-slate-600 rounded-lg p-2 bg-white dark:bg-slate-800 transition-colors flex items-center justify-between">
                                 <div className="flex items-center gap-2 overflow-hidden">
                                   <div className="w-8 h-8 bg-amber-50 text-amber-600 rounded flex items-center justify-center shrink-0">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                                   </div>
-                                  <span className="text-xs text-slate-600 truncate font-medium">Attachment File</span>
+                                  <span className="text-xs text-slate-600 dark:text-slate-300 truncate font-medium">Attachment File</span>
                                 </div>
                                 <a 
                                   href={ticket.admin_attachment_url} 
@@ -844,11 +844,11 @@ export default function OrderDetails() {
             )}
 
             {/* CTA buttons */}
-            <div className="fixed sm:relative bottom-0 left-0 right-0 p-4 sm:p-0 bg-white sm:bg-transparent border-t sm:border-t-0 border-slate-200 z-40 sm:z-auto space-y-3 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] sm:shadow-none animate-in slide-in-from-bottom-full sm:animate-none">
+            <div className="fixed sm:relative bottom-0 left-0 right-0 p-4 sm:p-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl sm:backdrop-blur-none border-t sm:border-t-0 border-slate-200/50 dark:border-slate-700/50 z-40 sm:z-auto space-y-3 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_30px_rgba(0,0,0,0.4)] sm:shadow-none animate-in slide-in-from-bottom-full sm:animate-none pb-safe">
               <button
                 onClick={handleDownloadInvoice}
                 disabled={genPdf}
-                className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-amber-500 text-white py-4 sm:py-4 rounded-2xl font-black transition-all shadow-sm hover:shadow-lg hover:shadow-amber-500/20 disabled:opacity-70 text-sm"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 sm:py-4 rounded-2xl font-black transition-all shadow-lg hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-70 text-[15px]"
               >
                 {genPdf
                   ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -858,7 +858,7 @@ export default function OrderDetails() {
 
               <Link
                 to={`/order-help/${id}`}
-                className="w-full flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-slate-300 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none"
+                className="w-full flex items-center justify-center gap-2 bg-white/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none"
               >
                 <MessageSquare className="w-4 h-4 text-slate-400" />
                 Need help with this order?
@@ -876,7 +876,7 @@ export default function OrderDetails() {
           onClick={closeReview}
         >
           <div
-            className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
+            className="bg-white dark:bg-slate-800 transition-colors w-full max-w-md rounded-3xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: 'slideUp 0.3s ease' }}
           >
@@ -904,7 +904,7 @@ export default function OrderDetails() {
             <div className="p-6 space-y-5">
               {/* Stars */}
               <div className="text-center">
-                <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Overall Rating</p>
+                <p className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Overall Rating</p>
                 <div className="flex justify-center gap-2">
                   {[1, 2, 3, 4, 5].map((s) => (
                     <button
@@ -931,7 +931,7 @@ export default function OrderDetails() {
 
               {/* Text */}
               <div>
-                <label className="block text-xs font-black text-slate-700 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest mb-2">
                   Your Review
                 </label>
                 <textarea
@@ -940,7 +940,7 @@ export default function OrderDetails() {
                   onChange={(e) => setReviewText(e.target.value)}
                   maxLength={500}
                   placeholder="What did you like or dislike? Share your honest experience…"
-                  className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none resize-none transition-all"
+                  className="w-full p-4 bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-200 dark:border-slate-600 rounded-xl text-sm focus:bg-white dark:bg-slate-800 transition-colors focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none resize-none transition-all"
                 />
                 <p className="text-xs text-slate-400 mt-1 text-right">{reviewText.length}/500</p>
               </div>
@@ -964,37 +964,37 @@ export default function OrderDetails() {
       {/* ── RETURN MODAL ── */}
         {returnModal && returnItem && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm sm:animate-in sm:fade-in duration-200">
-            <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
-              <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 className="font-black text-slate-900 text-lg flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-800 transition-colors rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+              <div className="p-5 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
+                <h3 className="font-black text-slate-900 dark:text-white text-lg flex items-center gap-2">
                   <RefreshCw className="w-5 h-5 text-red-500" /> Return Item
                 </h3>
                 <button
                   onClick={closeReturnModal}
-                  className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-slate-400 hover:text-slate-600 shadow-sm border border-slate-200 transition-all hover:rotate-90"
+                  className="w-8 h-8 flex items-center justify-center bg-white dark:bg-slate-800 transition-colors rounded-full text-slate-400 hover:text-slate-600 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-600 transition-all hover:rotate-90"
                 >
                   <XCircle className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="p-6">
-                <div className="flex items-center gap-4 mb-6 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center gap-4 mb-6 p-3 bg-slate-50 dark:bg-slate-900 transition-colors rounded-xl border border-slate-100 dark:border-slate-700/50">
                   <img src={returnItem.Product?.images?.[0] || 'https://via.placeholder.com/60'} alt={returnItem.Product?.title} className="w-12 h-12 rounded-lg object-cover" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-slate-900 text-sm truncate">{returnItem.Product?.title}</p>
-                    <p className="text-xs text-slate-500">Qty: {returnItem.quantity}</p>
+                    <p className="font-bold text-slate-900 dark:text-white text-sm truncate">{returnItem.Product?.title}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {returnItem.quantity}</p>
                   </div>
                 </div>
 
                 <form onSubmit={handleReturnSubmit}>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">
                     Why are you returning this item? <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     value={returnReason}
                     onChange={(e) => setReturnReason(e.target.value)}
                     placeholder="E.g. Item is defective, wrong size, etc."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all h-28 resize-none mb-6"
+                    className="w-full bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-200 dark:border-slate-600 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:bg-slate-800 transition-colors transition-all h-28 resize-none mb-6"
                     required
                   ></textarea>
 
@@ -1002,7 +1002,7 @@ export default function OrderDetails() {
                     <button
                       type="button"
                       onClick={closeReturnModal}
-                      className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-colors"
+                      className="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-600 transition-colors text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm transition-colors"
                     >
                       Cancel
                     </button>

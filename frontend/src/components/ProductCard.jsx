@@ -56,59 +56,51 @@ const ProductCard = ({ product }) => {
           )}
         </div>
         {/* Quick Actions */}
-        <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-4 group-hover:translate-x-0">
+        <div className="absolute top-2 right-2 flex flex-col space-y-2">
           <button
             onClick={handleWishlist}
-            className={`p-2 rounded-full transition-colors shadow-sm ${isWishlisted ? 'bg-red-50 text-red-500' : 'bg-white dark:bg-slate-900 text-slate-400 hover:text-red-500 dark:hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+            className={`p-1.5 rounded-full transition-colors shadow-sm bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm ${isWishlisted ? 'text-red-500' : 'text-slate-400 hover:text-red-500 dark:hover:text-red-500'}`}
           >
-            <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
-          </button>
-        </div>
-        <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              if (isInCart) {
-                navigate('/checkout');
-                return;
-              }
-              addToCart(product, 1);
-              toast((t) => (
-                <div className="flex items-center justify-between gap-4">
-                  <span className="font-medium text-white">🛍️ Added to your cart!</span>
-                  <button
-                    onClick={() => {
-                      toast.dismiss(t.id);
-                      navigate('/checkout');
-                    }}
-                    className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-bold shadow-sm transition-colors whitespace-nowrap"
-                  >
-                    Go to Cart
-                  </button>
-                </div>
-              ), { duration: 4000 });
-            }}
-            className={`w-full ${isInCart ? 'bg-amber-600' : 'bg-slate-900/90'} backdrop-blur-sm text-white py-3 rounded-xl font-medium hover:bg-amber-700 transition-colors flex items-center justify-center`}
-          >
-            <ShoppingBag className="w-4 h-4 mr-2" /> {isInCart ? 'Go to Cart' : 'Add to Cart'}
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-5 flex-grow flex flex-col">
-        <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider font-medium">{product.category_name || ''}</div>
-        <Link to={`/product/${product.id}`} className="block">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-1 line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors">{product.title}</h3>
+      <div className="p-2 sm:p-3 flex-grow flex flex-col">
+        <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-0.5 uppercase tracking-wider font-medium line-clamp-1">{product.category_name || ''}</div>
+        <Link to={`/product/${product.id}`} className="block mb-1">
+          <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">{product.title}</h3>
         </Link>
-        <div className="mt-auto pt-2 flex items-center justify-between">
-          <span className="text-xl font-bold text-slate-900 dark:text-white">₹{parseFloat(product.price).toFixed(2)}</span>
-          {/* Real Rating */}
-          {product.reviews_count > 0 && (
-            <div className="flex items-center text-yellow-400 text-xs">
-              {'★'.repeat(Math.round(product.rating))}{'☆'.repeat(5 - Math.round(product.rating))}
-              <span className="text-slate-400 dark:text-slate-500 ml-1">({product.reviews_count})</span>
+        
+        {/* Rating */}
+        {product.reviews_count > 0 ? (
+          <div className="flex items-center gap-1.5 mb-1">
+            <div className="flex items-center bg-green-600 text-white px-1 py-0.5 rounded text-[10px] sm:text-xs font-bold">
+              {Number(product.rating).toFixed(1)} <span className="ml-0.5 text-[8px] sm:text-[10px]">★</span>
             </div>
+            <span className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium">({product.reviews_count})</span>
+          </div>
+        ) : (
+          <div className="h-4 sm:h-5 mb-1"></div>
+        )}
+
+        <div className="mt-auto pt-2 flex items-center justify-between gap-2">
+          <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">₹{parseFloat(product.price).toFixed(2)}</span>
+          {isInCart ? (
+            <button
+              onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}
+              className="bg-green-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-md hover:bg-green-700 transition-colors shadow-sm whitespace-nowrap flex-shrink-0"
+            >
+              Go to Cart
+            </button>
+          ) : (
+            <button
+              onClick={(e) => { e.preventDefault(); addToCart(product); }}
+              className="bg-white border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white text-[10px] sm:text-xs font-bold px-4 py-1.5 rounded-md hover:border-amber-500 hover:text-amber-600 transition-colors shadow-sm whitespace-nowrap flex-shrink-0 dark:bg-slate-800"
+            >
+              Add
+            </button>
           )}
         </div>
       </div>

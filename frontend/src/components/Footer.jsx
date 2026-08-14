@@ -25,18 +25,18 @@ const InstagramIcon = ({ className }) => (
 
 const Footer = () => {
   const location = useLocation();
-  // Show footer on mobile only for Home and Shop pages
-  const isHomeOrShop = location.pathname === '/' || location.pathname === '/shop';
-  const mobileVisibilityClass = isHomeOrShop ? 'block' : 'hidden md:block';
+  // Show footer on mobile only for Home, About, and Contact pages
+  const showOnMobile = ['/', '/about', '/contact'].includes(location.pathname);
+  const mobileVisibilityClass = showOnMobile ? 'block mb-16 md:mb-0' : 'hidden md:block';
 
   return (
     <footer className={`bg-slate-900 text-slate-300 pt-16 pb-24 md:pb-8 ${mobileVisibilityClass}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-12 mb-8 md:mb-12">
           {/* Brand Info */}
-          <div>
-            <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2 mb-6">
-              <img src="/logo.png" alt="LiveMart" className="h-9 w-9 rounded-xl object-contain shadow-sm" />
+          <div className="mb-6 md:mb-0 border-b border-slate-800 pb-8 md:border-0 md:pb-0">
+            <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2 mb-4 md:mb-6">
+              <img src="/logo.png" alt="LiveMart" className="h-8 w-8 md:h-9 md:w-9 rounded-xl object-contain shadow-sm" />
               <div className="flex">
                 <span className="text-white">Live</span>
                 <span className="text-[#FF8C00]">Mart</span>
@@ -59,9 +59,23 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Quick Links</h4>
-            <ul className="space-y-3">
+          <div className="border-b border-slate-800 pb-4 md:border-0 md:pb-0">
+            <h4 className="hidden md:block text-white font-semibold mb-6 uppercase tracking-wider text-sm">Quick Links</h4>
+            <details className="md:hidden group">
+              <summary className="flex justify-between items-center font-semibold text-white uppercase tracking-wider text-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Quick Links
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" width="20"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <ul className="space-y-3 pt-4 text-slate-400">
+                <li><Link to="/shop" className="hover:text-white transition-colors text-sm">Shop All</Link></li>
+                <li><Link to="/categories/bestsellers" className="hover:text-white transition-colors text-sm">Best Sellers</Link></li>
+                <li><Link to="/about" className="hover:text-white transition-colors text-sm">About Us</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors text-sm">Contact</Link></li>
+              </ul>
+            </details>
+            <ul className="hidden md:block space-y-3">
               <li><Link to="/shop" className="hover:text-white transition-colors text-sm">Shop All</Link></li>
               <li><Link to="/categories/bestsellers" className="hover:text-white transition-colors text-sm">Best Sellers</Link></li>
               <li><Link to="/about" className="hover:text-white transition-colors text-sm">About Us</Link></li>
@@ -70,9 +84,28 @@ const Footer = () => {
           </div>
 
           {/* Customer Service */}
-          <div>
-            <h4 className="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Customer Service</h4>
-            <ul className="space-y-3">
+          <div className="border-b border-slate-800 pb-4 md:border-0 md:pb-0">
+            <h4 className="hidden md:block text-white font-semibold mb-6 uppercase tracking-wider text-sm">Customer Service</h4>
+            <details className="md:hidden group">
+              <summary className="flex justify-between items-center font-semibold text-white uppercase tracking-wider text-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Customer Service
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" width="20"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <ul className="space-y-3 pt-4 text-slate-400">
+                <li><a href="#" className="hover:text-white transition-colors text-sm">FAQ</a></li>
+                <li><a href="#" className="hover:text-white transition-colors text-sm">Shipping & Returns</a></li>
+                <li>
+                  <a href="#" onClick={(e) => { e.preventDefault(); toast('Coming Soon!', { icon: '🚀' }); }} className="hover:text-white transition-colors text-sm">
+                    Track Order
+                  </a>
+                </li>
+                <li><a href="#" className="hover:text-white transition-colors text-sm">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors text-sm">Terms of Service</a></li>
+              </ul>
+            </details>
+            <ul className="hidden md:block space-y-3">
               <li><a href="#" className="hover:text-white transition-colors text-sm">FAQ</a></li>
               <li><a href="#" className="hover:text-white transition-colors text-sm">Shipping & Returns</a></li>
               <li>
@@ -86,9 +119,31 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div>
-            <h4 className="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Contact Us</h4>
-            <ul className="space-y-4">
+          <div className="border-b border-slate-800 pb-4 md:border-0 md:pb-0">
+            <h4 className="hidden md:block text-white font-semibold mb-6 uppercase tracking-wider text-sm">Contact Us</h4>
+            <details className="md:hidden group">
+              <summary className="flex justify-between items-center font-semibold text-white uppercase tracking-wider text-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                Contact Us
+                <span className="transition group-open:rotate-180">
+                  <svg fill="none" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" width="20"><path d="M6 9l6 6 6-6"></path></svg>
+                </span>
+              </summary>
+              <ul className="space-y-4 pt-4 text-slate-400">
+                <li className="flex items-start">
+                  <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
+                  <span className="text-sm">Online.<br />Hooghly, West Bengal</span>
+                </li>
+                <li className="flex items-center">
+                  <Phone className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
+                  <a href="tel:+919876543210" className="text-sm hover:text-white transition-colors">+91 9876543210</a>
+                </li>
+                <li className="flex items-center">
+                  <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
+                  <a href="mailto:livemart.support@gmail.com" className="text-sm hover:text-white transition-colors">livemart.support@gmail.com</a>
+                </li>
+              </ul>
+            </details>
+            <ul className="hidden md:block space-y-4">
               <li className="flex items-start">
                 <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
                 <span className="text-sm">Online.<br />Hooghly, West Bengal</span>

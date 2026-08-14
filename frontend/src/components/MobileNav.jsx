@@ -1,12 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Grid, ShoppingCart, User, Info } from 'lucide-react';
+import { Home, Grid, MessageSquare, User, Info } from 'lucide-react';
 import { useContext } from 'react';
-import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 
 const MobileNav = () => {
   const location = useLocation();
-  const { itemCount } = useContext(CartContext);
   const { user } = useContext(AuthContext);
 
   const isActive = (path) => {
@@ -18,7 +16,7 @@ const MobileNav = () => {
     { name: 'Home', path: '/', icon: Home },
     { name: 'Shop', path: '/shop', icon: Grid },
     { name: 'About', path: '/about', icon: Info },
-    { name: 'Cart', path: '/cart', icon: ShoppingCart, badge: itemCount },
+    { name: 'Contact', path: '/contact', icon: MessageSquare },
     { name: 'Profile', path: user ? '/profile' : '/login', icon: User },
   ];
 
@@ -29,14 +27,7 @@ const MobileNav = () => {
           const Icon = item.icon;
           const active = isActive(item.path);
 
-          // Redirect to checkout or cart page? We don't have a specific cart page, 
-          // wait, the site uses a cart sliding panel from Navbar or redirects to /checkout?
-          // I will link Cart to /checkout for now, or just trigger the cart open? 
-          // Let's use /checkout since clicking Cart icon in Navbar goes to /checkout or opens side cart.
-          // Wait, Navbar's Cart icon goes to /checkout in this app. Let's check Navbar.jsx. 
-          // Navbar uses `<Link to="/checkout" ...>`
-          
-          const actualPath = item.name === 'Cart' ? '/checkout' : item.path;
+          const actualPath = item.path;
 
           return (
             <Link

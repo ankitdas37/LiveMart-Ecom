@@ -11,7 +11,7 @@ import ImageModal from '../components/ImageModal';
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, updateUserSession } = useContext(AuthContext);
   const { clearCart } = useContext(CartContext);
 
   const [checkoutData] = useState(location.state?.checkoutData || null);
@@ -191,6 +191,9 @@ const Payment = () => {
       };
 
       setPlacedOrder(response.data);
+      if (user && !user.phone && finalOrderPayload.customer_phone) {
+        updateUserSession({ ...user, phone: finalOrderPayload.customer_phone });
+      }
       clearCart();
       localStorage.removeItem('checkoutFormData');
       navigate('/order-success', { state: { order: mockOrderForPdf }, replace: true });
@@ -216,22 +219,22 @@ const Payment = () => {
   if (!checkoutData) return null; // Prevents render while redirecting
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-indigo-950/40 dark:to-slate-950 py-6 sm:py-12 relative overflow-hidden transition-colors">
       {/* Decorative background elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/50 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-200/50 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/50 dark:bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-200/50 dark:bg-pink-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 relative z-10">
 
-        <div className="flex items-center space-x-4 mb-8">
+        <div className="flex items-center space-x-3 sm:space-x-4 mb-6 sm:mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="p-3 bg-white/80 backdrop-blur-md rounded-full hover:bg-white text-slate-700 transition-all shadow-sm border border-white/40"
+            className="p-2 sm:p-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-full hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all shadow-sm border border-white/40 dark:border-slate-700/50 shrink-0"
             aria-label="Go back"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-3xl font-extrabold text-slate-900 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-pink-500">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-pink-500 truncate">
             Complete Payment
           </h1>
         </div>
@@ -255,22 +258,22 @@ const Payment = () => {
               </div>
             )}
 
-            <div className="bg-white/70 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl border border-white/50">
-              <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center">
-                <ShieldCheck className="w-6 h-6 mr-2 text-indigo-500" />
+            <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-[2rem] shadow-xl border border-white/50 dark:border-slate-700/50 transition-colors">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-6 flex items-center">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-indigo-500" />
                 Select Payment Method
               </h2>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4">
 
                 {/* COD Option */}
                 {settings.PAYMENT_COD_ENABLED && (
                   <label
-                    className={`relative flex items-center p-6 border-2 rounded-2xl transition-all duration-300 ${(!isCodAvailableByProducts)
-                        ? 'opacity-50 cursor-not-allowed border-white bg-slate-50/50'
+                    className={`relative flex items-center p-4 sm:p-6 border-2 rounded-2xl transition-all duration-300 ${(!isCodAvailableByProducts)
+                        ? 'opacity-50 cursor-not-allowed border-white dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/20'
                         : paymentMethod === 'COD'
-                          ? 'border-pink-500 bg-pink-50/50 shadow-md shadow-pink-100 ring-2 ring-pink-500/20 cursor-pointer'
-                          : 'border-white hover:border-pink-200 hover:bg-white/80 bg-white/50 cursor-pointer'
+                          ? 'border-pink-500 dark:border-pink-600 bg-pink-50/50 dark:bg-pink-900/20 shadow-md shadow-pink-100 dark:shadow-pink-900/20 ring-2 ring-pink-500/20 dark:ring-pink-600/20 cursor-pointer'
+                          : 'border-white dark:border-slate-700/50 hover:border-pink-200 dark:hover:border-pink-800/50 hover:bg-white/80 dark:hover:bg-slate-700/50 bg-white/50 dark:bg-slate-800/30 cursor-pointer'
                       }`}
                   >
                     <input
@@ -287,12 +290,12 @@ const Payment = () => {
                       {paymentMethod === 'COD' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
                     </div>
                     <div className="flex-1 flex items-center">
-                      <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center text-pink-600 mr-4">
+                      <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-xl flex items-center justify-center text-pink-600 dark:text-pink-400 mr-4">
                         <Banknote className="w-6 h-6" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-slate-900 text-lg">Cash on Delivery</h3>
-                        <p className="text-sm text-slate-500 font-medium">Pay when your order arrives</p>
+                        <h3 className="font-bold text-slate-900 dark:text-white text-lg">Cash on Delivery</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Pay when your order arrives</p>
                       </div>
                     </div>
                   </label>
@@ -301,9 +304,9 @@ const Payment = () => {
                 {/* Online Payment Option */}
                 {settings.PAYMENT_ONLINE_ENABLED && (
                   <label
-                    className={`relative flex items-center p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'Online'
-                        ? 'border-indigo-500 bg-indigo-50/50 shadow-md shadow-indigo-100 ring-2 ring-indigo-500/20'
-                        : 'border-white hover:border-indigo-200 hover:bg-white/80 bg-white/50'
+                    className={`relative flex items-center p-4 sm:p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 ${paymentMethod === 'Online'
+                        ? 'border-indigo-500 dark:border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/20 shadow-md shadow-indigo-100 dark:shadow-indigo-900/20 ring-2 ring-indigo-500/20 dark:ring-indigo-600/20'
+                        : 'border-white dark:border-slate-700/50 hover:border-indigo-200 dark:hover:border-indigo-800/50 hover:bg-white/80 dark:hover:bg-slate-700/50 bg-white/50 dark:bg-slate-800/30'
                       }`}
                   >
                     <input
@@ -322,12 +325,12 @@ const Payment = () => {
                       {paymentMethod === 'Online' && <div className="w-2.5 h-2.5 bg-white rounded-full"></div>}
                     </div>
                     <div className="flex-1 flex items-center">
-                      <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mr-4">
+                      <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 mr-4">
                         <CreditCard className="w-6 h-6" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-slate-900 text-lg">Pay Online</h3>
-                        <p className="text-sm text-slate-500 font-medium">UPI, Net Banking, Card Transfer</p>
+                        <h3 className="font-bold text-slate-900 dark:text-white text-lg">Pay Online</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">UPI, Net Banking, Card Transfer</p>
                       </div>
                     </div>
                   </label>
@@ -337,19 +340,19 @@ const Payment = () => {
 
               {/* Expandable Gateway Instructions */}
               {paymentMethod === 'Online' && (
-                <div className="mt-8 p-6 bg-white/60 rounded-2xl border border-white/80 shadow-inner">
-                  <h3 className="font-bold text-slate-800 text-lg mb-2">Secure Transfer Instructions</h3>
-                  <p className="text-slate-600 text-sm mb-6">
-                    Please transfer exactly <span className="font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">₹{finalTotalAmount.toFixed(2)}</span> to the details below, then upload a screenshot of your successful transaction.
+                <div className="mt-8 p-6 bg-white/60 dark:bg-slate-900/40 rounded-2xl border border-white/80 dark:border-slate-700/50 shadow-inner transition-colors">
+                  <h3 className="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2">Secure Transfer Instructions</h3>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm mb-6">
+                    Please transfer exactly <span className="font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 px-2 py-1 rounded">₹{finalTotalAmount.toFixed(2)}</span> to the details below, then upload a screenshot of your successful transaction.
                   </p>
 
                   <div className="flex flex-col sm:flex-row gap-6 mb-6">
                     {/* UPI Box — only show if admin has set a real UPI ID */}
                     {settings.PAYMENT_UPI_ID && settings.PAYMENT_UPI_ID !== 'merchant@upi' && (
-                      <div className="flex-1 bg-white p-5 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-50 rounded-bl-[100%] -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
-                        <p className="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1 relative z-10">Scan & Pay via UPI</p>
-                        <p className="font-extrabold text-xl text-slate-900 relative z-10">{settings.PAYMENT_UPI_ID}</p>
+                      <div className="flex-1 bg-white dark:bg-slate-800 p-5 rounded-xl border border-indigo-100 dark:border-indigo-800/50 shadow-sm relative overflow-hidden group transition-colors">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 rounded-bl-[100%] -mr-4 -mt-4 transition-transform group-hover:scale-150"></div>
+                        <p className="text-xs font-bold text-indigo-400 dark:text-indigo-500 uppercase tracking-wider mb-1 relative z-10">Scan & Pay via UPI</p>
+                        <p className="font-extrabold text-xl text-slate-900 dark:text-white relative z-10">{settings.PAYMENT_UPI_ID}</p>
                       </div>
                     )}
 
@@ -358,18 +361,18 @@ const Payment = () => {
                       <button 
                         type="button"
                         onClick={() => setShowQrModal(true)}
-                        className="flex-shrink-0 bg-white hover:bg-indigo-50 p-4 rounded-xl border border-indigo-100 hover:border-indigo-300 shadow-sm transition-colors text-center flex flex-col items-center justify-center group"
+                        className="flex-shrink-0 bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/50 hover:border-indigo-300 dark:hover:border-indigo-700 shadow-sm transition-colors text-center flex flex-col items-center justify-center group"
                       >
-                        <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
                         </div>
-                        <p className="text-xs font-bold text-indigo-600 uppercase">Show QR Code</p>
+                        <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase">Show QR Code</p>
                       </button>
                     )}
                   </div>
 
-                  <div className="pt-6 border-t border-indigo-100">
-                    <label className="block text-sm font-bold text-slate-700 mb-3">Upload Payment Proof (Screenshot) *</label>
+                  <div className="pt-6 border-t border-indigo-100 dark:border-slate-700/50">
+                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">Upload Payment Proof (Screenshot) *</label>
 
                     {paymentReceiptUrl ? (
                       <div className="relative w-full h-32 bg-indigo-50 rounded-xl border-2 border-indigo-200 overflow-hidden flex items-center justify-center group">
@@ -414,21 +417,21 @@ const Payment = () => {
           </div>
 
           {/* Order Summary Sidebar */}
-          <div className="lg:w-1/3">
-            <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2rem] shadow-xl border border-white/50 sticky top-24">
-              <h2 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">Payment Summary</h2>
+          <div className="lg:w-1/3 mb-16 md:mb-0">
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl p-4 sm:p-8 rounded-2xl sm:rounded-[2rem] shadow-xl border border-white/50 dark:border-slate-700/50 sticky top-24 transition-colors">
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-3">Payment Summary</h2>
 
-              <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-200">
+              <div className="space-y-0 mb-6 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-200 dark:scrollbar-thumb-slate-700">
                 {checkoutData?.orderItems?.map((item, idx) => (
-                  <div key={idx} className="flex items-center space-x-4">
-                    <div className="w-14 h-14 bg-slate-100 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200">
+                  <div key={idx} className="flex items-center space-x-3 py-3 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
+                    <div className="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200 dark:border-slate-600">
                       <img src={item.image_url || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt="Product" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-grow min-w-0">
-                      <h4 className="text-sm font-bold text-slate-900 truncate">{item.title || 'Product'}</h4>
-                      <p className="text-xs text-slate-500 font-medium">Qty: {item.quantity}</p>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">{item.title || 'Product'}</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Qty: {item.quantity}</p>
                     </div>
-                    <div className="text-sm font-bold text-slate-900">
+                    <div className="text-sm font-bold text-slate-900 dark:text-white flex-shrink-0">
                       ₹{(item.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
@@ -436,7 +439,7 @@ const Payment = () => {
               </div>
 
               {/* Coupon Section */}
-              <div className="mb-6 pt-4 border-t border-slate-200">
+              <div className="mb-6 pt-4 border-t border-slate-200 dark:border-slate-700">
                 {!appliedCoupon ? (
                   <>
                     <div className="flex space-x-2">
@@ -447,7 +450,7 @@ const Payment = () => {
                           placeholder="Coupon Code"
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                          className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none uppercase font-medium placeholder-slate-400"
+                          className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 dark:text-white border border-slate-200 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none uppercase font-medium placeholder-slate-400 dark:placeholder-slate-500"
                         />
                       </div>
                       <button
@@ -493,17 +496,17 @@ const Payment = () => {
                     )}
                   </>
                 ) : (
-                  <div className="flex items-center justify-between bg-green-50 border border-green-200 p-3 rounded-lg">
+                  <div className="flex items-center justify-between bg-green-50 dark:bg-emerald-900/20 border border-green-200 dark:border-emerald-800/50 p-3 rounded-lg transition-colors">
                     <div className="flex items-center">
-                      <Tag className="text-green-600 w-4 h-4 mr-2" />
+                      <Tag className="text-green-600 dark:text-emerald-400 w-4 h-4 mr-2" />
                       <div>
-                        <p className="text-sm font-bold text-green-800">{appliedCoupon.code}</p>
-                        <p className="text-xs text-green-600 font-medium">Saved ₹{appliedCoupon.calculatedDiscount?.toFixed(2) || 0}</p>
+                        <p className="text-sm font-bold text-green-800 dark:text-emerald-300">{appliedCoupon.code}</p>
+                        <p className="text-xs text-green-600 dark:text-emerald-400 font-medium">Saved ₹{appliedCoupon.calculatedDiscount?.toFixed(2) || 0}</p>
                       </div>
                     </div>
                     <button
                       onClick={removeCoupon}
-                      className="text-red-500 hover:text-red-700 p-1.5 bg-red-50 rounded-md hover:bg-red-100 transition-colors"
+                      className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-1.5 bg-red-50 dark:bg-red-900/20 rounded-md hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
                       title="Remove Coupon"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -512,7 +515,7 @@ const Payment = () => {
                 )}
               </div>
 
-              <div className="border-t border-slate-200 pt-4 space-y-3">
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
                 <div className="flex justify-between text-slate-600 text-sm font-medium">
                   <span>Cart Total</span>
                   <span>₹{checkoutData?.cartTotal?.toFixed(2) || (checkoutData?.total_amount - checkoutData?.actualShippingCharge).toFixed(2)}</span>
@@ -537,7 +540,7 @@ const Payment = () => {
                   </div>
                 )}
 
-                <div className="flex justify-between items-center text-slate-900 pt-4 border-t border-slate-200 mt-2">
+                <div className="flex justify-between items-center text-slate-900 dark:text-white pt-4 border-t border-slate-200 dark:border-slate-700 mt-2">
                   <span className="font-bold">Total Amount</span>
                   <span className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-500">
                     ₹{finalTotalAmount.toFixed(2)}
@@ -561,7 +564,7 @@ const Payment = () => {
                 )}
               </button>
 
-              <p className="text-center text-xs text-slate-400 mt-4 font-medium flex items-center justify-center">
+              <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-4 font-medium flex items-center justify-center">
                 <ShieldCheck className="w-3 h-3 mr-1" /> Secure checkout encrypted by 256-bit SSL
               </p>
             </div>
@@ -573,40 +576,46 @@ const Payment = () => {
       {/* Online Payment Info Modal */}
       {showInfoModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-[2rem] shadow-2xl max-w-lg w-full p-6 sm:p-8 relative animate-in zoom-in-95 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-200">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl max-w-lg w-full p-5 sm:p-8 relative animate-in zoom-in-95 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-200 dark:scrollbar-thumb-slate-700 transition-colors">
             <button
               onClick={() => setShowInfoModal(false)}
-              className="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-slate-600 bg-slate-100 p-2 rounded-full transition-colors z-10"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors z-10"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center space-x-3 mb-6 pr-8">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center space-x-3 mb-5 sm:mb-6 pr-8">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center flex-shrink-0">
                 <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight">Important Information</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight">Important Information</h3>
             </div>
 
-            <div className="space-y-4 text-slate-600 text-sm leading-relaxed mb-8">
-              <p className="font-medium text-slate-800 border-l-4 border-indigo-500 pl-3">
-                First pay using the QR code or UPI ID, then upload the payment screenshot. Our executive officer will check if your payment is successful. If it is, your order will be confirmed; otherwise, it will fail.
-              </p>
-              <p>
-                Our officer will update you via WhatsApp, SMS, Email, Call, etc. If you are not comfortable or do not trust this manual process, please choose Cash on Delivery (COD). If your order is not confirmed, you can <Link to="/contact" className="text-indigo-600 font-bold hover:underline" onClick={() => setShowInfoModal(false)}>contact us</Link>.
-              </p>
-              <hr className="border-slate-100" />
-              <p className="font-medium text-slate-800 border-l-4 border-pink-500 pl-3" style={{ fontFamily: 'sans-serif' }}>
-                প্রথমে QR কোড বা UPI ID ব্যবহার করে পেমেন্ট করুন, তারপর পেমেন্টের স্ক্রিনশট আপলোড করুন। আমাদের এক্সিকিউটিভ অফিসার চেক করবেন আপনার পেমেন্ট সফল হয়েছে কিনা। সফল হলে আপনার অর্ডার কনফার্ম করা হবে, অন্যথায় তা বাতিল হবে।
-              </p>
-              <p style={{ fontFamily: 'sans-serif' }}>
-                আমাদের অফিসার আপনাকে WhatsApp, SMS, Email বা Call এর মাধ্যমে আপডেট করবেন। আপনি যদি এটি বিশ্বাস না করেন বা স্বাচ্ছন্দ্যবোধ না করেন, তবে অনুগ্রহ করে ক্যাশ অন ডেলিভারি (COD) বেছে নিন। যদি আপনার অর্ডার কনফার্ম না হয়, তবে আপনি আমাদের সাথে <Link to="/contact" className="text-pink-600 font-bold hover:underline" onClick={() => setShowInfoModal(false)}>যোগাযোগ করতে পারেন</Link>.
-              </p>
+            <div className="space-y-4 text-sm leading-relaxed mb-8">
+              <div className="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 p-4 rounded-2xl">
+                <p className="font-semibold text-slate-800 dark:text-slate-100 mb-2">
+                  1. Pay using the QR code or UPI ID, then upload the screenshot.
+                  Our team will manually verify the payment to confirm your order.
+                </p>
+                <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
+                  You will be updated via WhatsApp/SMS. If you're uncomfortable with this manual process, please choose Cash on Delivery (COD). Need help? <Link to="/contact" className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline" onClick={() => setShowInfoModal(false)}>Contact us</Link>.
+                </p>
+              </div>
+
+              <div className="bg-pink-50 dark:bg-pink-900/20 border border-pink-100 dark:border-pink-800/40 p-4 rounded-2xl" style={{ fontFamily: 'sans-serif' }}>
+                <p className="font-semibold text-slate-800 dark:text-slate-100 mb-2">
+                  ১. QR কোড বা UPI ID তে পেমেন্ট করে স্ক্রিনশট আপলোড করুন। 
+                  আমাদের টিম ম্যানুয়ালি পেমেন্ট চেক করে অর্ডার কনফার্ম করবে।
+                </p>
+                <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
+                  আপনাকে WhatsApp/SMS এর মাধ্যমে আপডেট করা হবে। আপনি যদি এটিতে স্বাচ্ছন্দ্যবোধ না করেন, তবে Cash on Delivery (COD) বেছে নিন। <Link to="/contact" className="text-pink-600 dark:text-pink-400 font-bold hover:underline" onClick={() => setShowInfoModal(false)}>যোগাযোগ করুন</Link>.
+                </p>
+              </div>
             </div>
 
             <button
               onClick={() => setShowInfoModal(false)}
-              className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20"
+              className="w-full bg-slate-900 dark:bg-indigo-600 hover:dark:bg-indigo-700 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20"
             >
               I Understand / আমি বুঝতে পেরেছি
             </button>
@@ -616,28 +625,28 @@ const Payment = () => {
       {/* QR Code Modal */}
       {showQrModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in" onClick={() => setShowQrModal(false)}>
-          <div className="bg-white p-8 rounded-[2rem] shadow-2xl relative max-w-sm w-full text-center animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-slate-800 p-5 sm:p-8 rounded-[2rem] shadow-2xl relative max-w-sm w-full text-center animate-in zoom-in-95 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-200 dark:scrollbar-thumb-slate-700 transition-colors" onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setShowQrModal(false)} 
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 p-2 rounded-full transition-colors"
+              className="absolute top-4 right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-700 p-2 rounded-full transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
             
-            <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ShieldCheck className="w-8 h-8" />
+            <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-3">
+              <ShieldCheck className="w-6 h-6" />
             </div>
             
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Scan QR Code</h3>
-            <p className="text-slate-500 text-sm mb-6">Scan with any UPI app (GPay, PhonePe, Paytm)</p>
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1">Scan QR Code</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mb-4">Scan with any UPI app (GPay, PhonePe, Paytm)</p>
             
-            <div className="bg-slate-50 p-4 rounded-2xl inline-block border border-slate-200 mb-6 shadow-inner">
-               <img src={settings.PAYMENT_QR_CODE || `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(`upi://pay?pa=${settings.PAYMENT_UPI_ID}&pn=Store&am=${finalTotalAmount.toFixed(2)}&cu=INR`)}`} alt="UPI QR Code" className="w-full max-w-[240px] mx-auto rounded-xl object-contain" />
+            <div className="bg-slate-50 dark:bg-slate-900 p-2 sm:p-4 rounded-2xl inline-block border border-slate-200 dark:border-slate-700 mb-4 shadow-inner max-w-full">
+               <img src={settings.PAYMENT_QR_CODE || `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(`upi://pay?pa=${settings.PAYMENT_UPI_ID}&pn=Store&am=${finalTotalAmount.toFixed(2)}&cu=INR`)}`} alt="UPI QR Code" className="w-full max-w-[200px] sm:max-w-[240px] max-h-[250px] mx-auto rounded-xl object-contain" />
             </div>
             
-            <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
-              <p className="text-xs text-indigo-500 font-bold uppercase mb-1">Total Amount to Pay</p>
-              <p className="text-2xl font-extrabold text-indigo-700">₹{finalTotalAmount.toFixed(2)}</p>
+            <div className="bg-indigo-50 dark:bg-indigo-900/30 p-3 sm:p-4 rounded-xl border border-indigo-100 dark:border-indigo-800/50">
+              <p className="text-xs text-indigo-500 dark:text-indigo-400 font-bold uppercase mb-0.5">Total Amount to Pay</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-indigo-700 dark:text-indigo-300">₹{finalTotalAmount.toFixed(2)}</p>
             </div>
           </div>
         </div>

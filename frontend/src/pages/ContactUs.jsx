@@ -30,11 +30,11 @@ const ContactUs = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-8 md:mb-16">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3 md:mb-4">
             Contact Support
           </h1>
-          <p className="text-lg text-slate-600 dark:text-slate-400">
+          <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 px-2">
             Have a question, issue, or just want to say hi? Send us a message and our team will get back to you via email.
           </p>
         </div>
@@ -49,36 +49,45 @@ const ContactUs = () => {
                 <p className="text-slate-400">We'd love to hear from you. Our friendly team is always here to chat.</p>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0">
+              <div className="space-y-4">
+                <a href="mailto:livemart.support@gmail.com" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
+                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Mail className="w-6 h-6" />
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-400 font-medium">Email us</p>
-                    <p className="text-white font-medium">livemart.support@gmail.com</p>
+                  <div className="flex-1">
+                    <p className="text-sm text-slate-400 font-medium group-hover:text-amber-400 transition-colors">Email us</p>
+                    <p className="text-white font-medium break-all text-sm sm:text-base">livemart.support@gmail.com</p>
                   </div>
-                </div>
+                  <div className="text-slate-500 group-hover:text-amber-500 transition-colors">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </div>
+                </a>
 
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0">
+                <a href="tel:+919876543210" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
+                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Phone className="w-6 h-6" />
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-400 font-medium">Call us</p>
+                  <div className="flex-1">
+                    <p className="text-sm text-slate-400 font-medium group-hover:text-amber-400 transition-colors">Call us</p>
                     <p className="text-white font-medium">+91 9876543210</p>
                   </div>
-                </div>
+                  <div className="text-slate-500 group-hover:text-amber-500 transition-colors">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </div>
+                </a>
 
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0">
+                <a href="https://maps.google.com/?q=Hooghly,West Bengal,INDIA" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
+                  <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <MapPin className="w-6 h-6" />
                   </div>
-                  <div>
-                    <p className="text-sm text-slate-400 font-medium">Visit us</p>
-                    <p className="text-white font-medium">Online,Hooghly,West Bengal,INDIA.</p>
+                  <div className="flex-1">
+                    <p className="text-sm text-slate-400 font-medium group-hover:text-amber-400 transition-colors">Visit us</p>
+                    <p className="text-white font-medium text-sm">Hooghly, West Bengal, INDIA</p>
                   </div>
-                </div>
+                  <div className="text-slate-500 group-hover:text-amber-500 transition-colors">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </div>
+                </a>
 
                 <div className="flex items-center gap-4 pt-6 border-t border-slate-700/50 mt-6">
                   <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0">

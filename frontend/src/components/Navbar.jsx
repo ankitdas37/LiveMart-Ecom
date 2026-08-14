@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRight, Package, Shield, Heart, HelpCircle, Activity, MessageSquare, Clock, Settings, Bell, Globe, Grid, Sparkles, Tag } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRight, Package, Shield, Heart, HelpCircle, Activity, MessageSquare, Clock, Settings, Bell, Globe, Grid, Sparkles, Tag, Sun, Moon } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
+import { ThemeContext } from '../context/ThemeContext';
 import axios from 'axios';
 
 const Navbar = () => {
@@ -21,6 +22,7 @@ const Navbar = () => {
 
   const { user, logout } = useContext(AuthContext);
   const { itemCount } = useContext(CartContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   // Delivery Modal State
@@ -235,6 +237,13 @@ const Navbar = () => {
 
           {/* Icons and Auth */}
           <div className="hidden md:flex items-center space-x-5">
+            
+            <button
+              onClick={toggleTheme}
+              className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-500 transition-colors p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
 
             <button
               onClick={() => setIsDeliveryModalOpen(true)}
@@ -479,86 +488,48 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-4">
-
+          {/* Mobile Icons (Auth & Cart & Theme) */}
+          <div className="md:hidden flex items-center space-x-3">
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-500 focus:outline-none"
+              onClick={toggleTheme}
+              className="text-slate-600 dark:text-slate-300 p-1 hover:text-amber-600 transition-colors"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
+
+            {!user ? (
+              <button 
+                onClick={() => document.getElementById('login-link-mobile').click()}
+                className="text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full"
+              >
+                Login
+                <Link id="login-link-mobile" to="/login" className="hidden"></Link>
+              </button>
+            ) : (
+              <Link to="/profile" className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-500">
+                <div className="w-7 h-7 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 border border-slate-300 flex items-center justify-center">
+                  {user.profile_pic ? (
+                    <img src={user.profile_pic} alt="profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-4 h-4 text-slate-500" />
+                  )}
+                </div>
+              </Link>
+            )}
+
+            <Link to="/checkout" className="relative text-slate-600 dark:text-slate-300 p-1">
+              <ShoppingCart className="w-6 h-6" />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white dark:border-slate-900">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-slate-100 max-h-[calc(100vh-70px)] overflow-y-auto">
-          <div className="pt-2 pb-6">
 
-            {/* Services Section */}
-            <div className="border-t border-slate-100 py-2">
-              <div className="px-6 pb-2 pt-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Services</div>
-              <Link to="/track-order" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-3 flex items-center text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors font-medium">
-                <Truck className="w-5 h-5 mr-4 text-slate-400" />
-                Track Order
-              </Link>
-              <button
-                onClick={() => { setIsDeliveryModalOpen(true); setIsMobileMenuOpen(false); }}
-                className="w-full text-left px-6 py-3 flex items-center text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors font-medium"
-              >
-                <MapPin className="w-5 h-5 mr-4 text-slate-400" />
-                <span className="truncate">{savedPincode ? `Deliver to ${savedPincode}` : 'Check Delivery Location'}</span>
-              </button>
-              <Link to="/admin" onClick={() => setIsMobileMenuOpen(false)} className="px-6 py-3 flex items-center text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors font-medium">
-                <Shield className="w-5 h-5 mr-4 text-slate-400" />
-                Admin Panel
-              </Link>
-            </div>
-
-            {user ? (
-              <div className="mt-4 pt-4 border-t border-slate-200">
-                <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="px-4 py-3 text-base font-bold text-slate-700 hover:text-amber-600 uppercase tracking-wider flex items-center transition-colors">
-                  <User className="w-5 h-5 mr-3 text-slate-400" />
-                  {user.name}'s Account
-                </Link>
-
-                <div className="mt-2 pt-2 border-t border-slate-100 px-2">
-                  <button
-                    onClick={() => { setIsMobileMenuOpen(false); logoutHandler(); }}
-                    className="w-full text-left px-4 py-3 text-base font-bold text-red-500 hover:bg-red-50 flex items-center rounded-xl transition-colors"
-                  >
-                    <LogOut className="w-6 h-6 mr-3" />
-                    Logout
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-2 pt-2 border-t border-slate-100 space-y-1">
-                <Link to="/login" className="block px-3 py-2 text-base font-medium text-slate-600 hover:bg-slate-50 hover:text-amber-600">Log in</Link>
-                <Link to="/signup" className="block px-3 py-2 text-base font-medium text-amber-600 hover:bg-amber-50">Sign up</Link>
-              </div>
-            )}
-
-            <div className="mt-4 pt-4 border-t border-slate-100 flex justify-around">
-              <button className="flex flex-col items-center text-slate-600 hover:text-amber-600">
-                <Search className="w-5 h-5" />
-                <span className="text-xs mt-1">Search</span>
-              </button>
-              <Link to="/checkout" className="flex flex-col items-center text-slate-600 hover:text-amber-600 relative">
-                <ShoppingCart className="w-5 h-5" />
-                {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {itemCount}
-                  </span>
-                )}
-                <span className="text-xs mt-1">Cart</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Delivery Checker Modal */}
       {isDeliveryModalOpen && (

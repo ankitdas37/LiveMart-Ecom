@@ -17,8 +17,9 @@ import ForgotPassword from './pages/ForgotPassword';
 import UserProfile from './pages/UserProfile';
 import ContactUs from './pages/ContactUs';
 import OrderHelp from './pages/OrderHelp';
-import { AuthProvider } from './context/AuthContext';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 
 // Admin imports
@@ -55,67 +56,69 @@ const StoreLayout = () => (
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-            <Toaster
-              position="bottom-center"
-              toastOptions={{
-                duration: 3000,
-                style: {
-                  background: '#333',
-                  color: '#fff',
-                  borderRadius: '10px',
-                  padding: '16px',
-                  fontWeight: 'bold',
-                },
-              }}
-            />
-            <Routes>
-              {/* Storefront Routes */}
-              <Route path="/" element={<StoreLayout />}>
-                <Route index element={<Home />} />
-                <Route path="shop" element={<Shop />} />
-                <Route path="product/:id" element={<ProductDetails />} />
-                <Route path="about" element={<About />} />
-                <Route path="checkout" element={<Checkout />} />
-                <Route path="payment" element={<Payment />} />
-                <Route path="order-success" element={<OrderSuccess />} />
-                <Route path="track-order" element={<TrackOrder />} />
-                <Route path="order/:id" element={<OrderDetails />} />
-                <Route path="order-help/:id" element={<OrderHelp />} />
-                <Route path="login" element={<Login />} />
-                <Route path="signup" element={<Signup />} />
-                <Route path="forgot-password" element={<ForgotPassword />} />
-                <Route path="profile" element={<UserProfile />} />
-                <Route path="contact" element={<ContactUs />} />
-              </Route>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#333',
+                color: '#fff',
+                borderRadius: '10px',
+                padding: '16px',
+                fontWeight: 'bold',
+              },
+            }}
+          />
+          <Routes>
+            {/* Storefront Routes */}
+            <Route path="/" element={<StoreLayout />}>
+              <Route index element={<Home />} />
+              <Route path="shop" element={<Shop />} />
+              <Route path="product/:id" element={<ProductDetails />} />
+              <Route path="about" element={<About />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="payment" element={<Payment />} />
+              <Route path="order-success" element={<OrderSuccess />} />
+              <Route path="track-order" element={<TrackOrder />} />
+              <Route path="order/:id" element={<OrderDetails />} />
+              <Route path="order-help/:id" element={<OrderHelp />} />
+              <Route path="login" element={<Login />} />
+              <Route path="signup" element={<Signup />} />
+              <Route path="forgot-password" element={<ForgotPassword />} />
+              <Route path="profile" element={<UserProfile />} />
+              <Route path="contact" element={<ContactUs />} />
+            </Route>
 
-              {/* Admin Routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminDashboard />} />
-                <Route path="products" element={<AdminProducts />} />
-                <Route path="products/new" element={<ProductForm />} />
-                <Route path="products/:id/edit" element={<ProductForm />} />
-                <Route path="categories" element={<AdminCategories />} />
-                <Route path="orders" element={<AdminOrders />} />
-                <Route path="online-payments" element={<AdminOnlinePayments />} />
-                <Route path="coupons" element={<AdminCoupons />} />
-                <Route path="pincodes" element={<AdminPincodes />} />
-                <Route path="reviews" element={<ReviewsAdmin />} />
-                <Route path="hero" element={<AdminHero />} />
-                <Route path="bestsellers" element={<AdminBestSellers />} />
-                <Route path="extracharges" element={<AdminExtraCharges />} />
-                <Route path="notes" element={<AdminNotes />} />
-                <Route path="support" element={<AdminSupport />} />
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="users" element={<AdminUsers />} />
-              </Route>
-            </Routes>
-          </Router>
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="products/new" element={<ProductForm />} />
+              <Route path="products/:id/edit" element={<ProductForm />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="online-payments" element={<AdminOnlinePayments />} />
+              <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="pincodes" element={<AdminPincodes />} />
+              <Route path="reviews" element={<ReviewsAdmin />} />
+              <Route path="hero" element={<AdminHero />} />
+              <Route path="bestsellers" element={<AdminBestSellers />} />
+              <Route path="extracharges" element={<AdminExtraCharges />} />
+              <Route path="notes" element={<AdminNotes />} />
+              <Route path="support" element={<AdminSupport />} />
+              <Route path="settings" element={<AdminSettings />} />
+              <Route path="users" element={<AdminUsers />} />
+            </Route>
+          </Routes>
+        </Router>
       </CartProvider>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

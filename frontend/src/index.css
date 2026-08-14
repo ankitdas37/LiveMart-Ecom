@@ -33,10 +33,12 @@ body {
 
 @layer base {
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: #f8fafc; /* Slate 50 */
     color: #0f172a;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.015em;
     @apply transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100;
   }
 }

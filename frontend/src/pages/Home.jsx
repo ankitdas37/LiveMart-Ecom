@@ -190,14 +190,14 @@ const Home = () => {
 
   return (
     <div className="w-full">
-      {/* Mobile Sub-Header (Flipkart Style) */}
-      <div className="md:hidden bg-gradient-to-b from-orange-100 to-white dark:from-slate-900 dark:to-slate-900 pt-3 pb-2 px-3 space-y-3">
+      {/* Mobile Sub-Header (Premium E-com Style) */}
+      <div className="md:hidden bg-gradient-to-b from-orange-50 to-white dark:from-slate-900 dark:to-slate-900 pt-3 pb-3 px-3 space-y-4">
         
         {/* Top Row: Address, Track, and Points */}
         <div className="flex justify-between items-center gap-2">
           <button 
             onClick={() => window.dispatchEvent(new Event('openDeliveryModal'))}
-            className="flex-1 flex items-center bg-white/60 dark:bg-slate-800/60 backdrop-blur-md rounded-lg py-1.5 px-2 border border-orange-200/50 dark:border-slate-700 min-w-0"
+            className="flex-1 flex items-center bg-white dark:bg-slate-800/80 backdrop-blur-md rounded-full py-1.5 px-3 border border-slate-100 dark:border-slate-700/50 shadow-sm min-w-0"
           >
             <HomeIcon className="w-4 h-4 text-slate-800 dark:text-slate-200 mr-1.5 flex-shrink-0" />
             <div className="flex items-center overflow-hidden min-w-0">
@@ -206,7 +206,7 @@ const Home = () => {
                 {localStorage.getItem('savedPincode') || 'Select Delivery Location'}
               </span>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-500 ml-1 flex-shrink-0" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 ml-1 flex-shrink-0" />
           </button>
           
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -229,33 +229,33 @@ const Home = () => {
               e.preventDefault();
               if (searchQuery) navigate(`/shop?search=${searchQuery}`);
             }} 
-            className="relative"
+            className="relative flex items-center"
           >
-            <Search className="absolute left-3 top-2.5 w-5 h-5 text-slate-600 dark:text-slate-400" />
+            <Search className="absolute left-4 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
             <input 
               type="text" 
               name="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products..." 
-              className="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl py-2.5 pl-10 pr-20 text-sm focus:outline-none shadow-sm border border-slate-200 dark:border-slate-700" 
+              className="w-full bg-slate-50 dark:bg-slate-800/90 text-slate-900 dark:text-white rounded-full py-3 pl-11 pr-24 text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-inner border border-slate-200 dark:border-slate-700/60 backdrop-blur-sm transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" 
               autoComplete="off"
             />
-            <div className="absolute right-3 top-2.5 flex space-x-3 text-slate-400">
+            <div className="absolute right-3 flex space-x-2 text-slate-400">
               <button 
                 type="button" 
                 onClick={() => setShowCameraAlert(true)}
-                className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors focus:outline-none"
+                className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full hover:text-slate-600 dark:hover:text-slate-300 transition-colors focus:outline-none"
               >
                 <Camera className="w-5 h-5" />
               </button>
               <button 
                 type="button"
                 onClick={startVoiceSearch}
-                className={`transition-colors focus:outline-none flex items-center justify-center ${isListening ? 'text-red-500 animate-pulse' : 'hover:text-slate-600 dark:hover:text-slate-300'}`}
+                className={`p-1.5 rounded-full transition-colors focus:outline-none flex items-center justify-center ${isListening ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 'hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'}`}
               >
                 <Mic className="w-5 h-5" />
-                {isListening && <span className="absolute w-6 h-6 rounded-full bg-red-500/20 animate-ping"></span>}
+                {isListening && <span className="absolute w-8 h-8 rounded-full border-2 border-red-500/50 animate-ping"></span>}
               </button>
             </div>
           </form>
@@ -294,27 +294,29 @@ const Home = () => {
         </div>
 
         {/* Categories Horizontal Scroll */}
-        <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-x-6 py-2 px-1">
+        <div className="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-x-5 py-2 px-1">
           {/* Static 'For You' Category */}
-          <Link to="/shop" className="flex flex-col items-center min-w-max space-y-1">
-            <div className="w-12 h-12 bg-[#fed7aa] dark:bg-slate-700 rounded-xl flex items-center justify-center border border-orange-300 dark:border-slate-600 shadow-sm relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-orange-300/50 to-transparent"></div>
-                <CircleDot className="w-6 h-6 text-orange-700 dark:text-orange-400 relative z-10" />
+          <Link to="/shop" className="flex flex-col items-center min-w-max space-y-1.5 group">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 p-[2px] shadow-sm transform group-active:scale-95 transition-transform">
+              <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-orange-500/10"></div>
+                <CircleDot className="w-6 h-6 text-orange-600 dark:text-orange-500 relative z-10" />
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200">For You</span>
-            <div className="w-6 h-0.5 bg-slate-800 dark:bg-white rounded-full mt-0.5"></div>
+            <span className="text-[11px] font-bold text-slate-800 dark:text-white">For You</span>
+            <div className="w-4 h-0.5 bg-orange-500 rounded-full"></div>
           </Link>
           
           {categories.map(cat => (
-            <Link key={cat.id} to={`/shop?category=${cat.id}`} className="flex flex-col items-center min-w-max space-y-1 pt-0.5">
-              <div className="w-11 h-11 bg-transparent rounded-xl flex items-center justify-center overflow-hidden">
+            <Link key={cat.id} to={`/shop?category=${cat.id}`} className="flex flex-col items-center min-w-max space-y-1.5 pt-0.5 group">
+              <div className="w-14 h-14 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden shadow-sm transform group-active:scale-95 transition-transform p-2.5">
                 {cat.image_url ? (
-                  <img src={cat.image_url} alt={cat.name} className="w-9 h-9 object-contain mix-blend-multiply dark:mix-blend-normal" />
+                  <img src={cat.image_url} alt={cat.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" />
                 ) : (
-                  <Circle className="w-6 h-6 text-slate-400" />
+                  <Circle className="w-6 h-6 text-slate-300 dark:text-slate-600" />
                 )}
               </div>
-              <span className="text-[10px] font-medium text-slate-700 dark:text-slate-300">{cat.name}</span>
+              <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300">{cat.name}</span>
             </Link>
           ))}
         </div>
@@ -322,7 +324,7 @@ const Home = () => {
 
       {/* Hero Section */}
       <section 
-        className="relative h-[85vh] bg-slate-900 flex items-center overflow-hidden group"
+        className="relative h-[22vh] md:h-[85vh] bg-slate-900 flex items-center overflow-hidden group mt-2 mx-2 md:mt-0 md:mx-0 rounded-2xl md:rounded-none shadow-sm md:shadow-none"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEndHandler}
@@ -354,7 +356,7 @@ const Home = () => {
           </div>
         )}
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-20 hidden md:block">
           <div className="max-w-2xl transition-all duration-700 transform translate-y-0 opacity-100" key={activeSlide.id || 'default'}>
             {activeSlide.subtitle && (
               <span className="block text-amber-400 font-medium tracking-wider uppercase mb-4 text-sm animate-fade-in-up">{activeSlide.subtitle}</span>
@@ -418,12 +420,12 @@ const Home = () => {
       </section>
 
       {/* Featured Categories */}
-      <section className="py-20 bg-white dark:bg-slate-900 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
+      <section className="py-6 md:py-20 bg-white dark:bg-slate-900 transition-colors duration-300 mt-2 md:mt-0">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-end mb-4 md:mb-12 px-2 md:px-0">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Shop by Category</h2>
-              <p className="text-slate-500 dark:text-slate-400">Find exactly what you're looking for</p>
+              <h2 className="text-lg md:text-3xl font-bold text-slate-900 dark:text-white mb-0.5 md:mb-2">Shop by Category</h2>
+              <p className="text-xs md:text-base text-slate-500 dark:text-slate-400">Find exactly what you're looking for</p>
             </div>
           </div>
           
@@ -432,17 +434,17 @@ const Home = () => {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
             </div>
           ) : categories.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 px-2 md:px-0">
               {categories.slice(0, 4).map((cat) => (
-                <Link key={cat.id} to={`/shop?category=${cat.id}`} className="group relative h-[400px] rounded-2xl overflow-hidden">
+                <Link key={cat.id} to={`/shop?category=${cat.id}`} className="group relative h-[160px] md:h-[400px] rounded-xl md:rounded-2xl overflow-hidden">
                   <img 
                     src={cat.image_url || "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
                     alt={cat.name} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent flex flex-col justify-end p-8">
-                    <h3 className="text-2xl font-bold text-white mb-2">{cat.name}</h3>
-                    <div className="flex items-center text-amber-400 font-medium group-hover:text-amber-300 transition-colors">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent flex flex-col justify-end p-3 md:p-8">
+                    <h3 className="text-sm md:text-2xl font-bold text-white mb-0.5 md:mb-2">{cat.name}</h3>
+                    <div className="hidden md:flex items-center text-amber-400 font-medium group-hover:text-amber-300 transition-colors">
                       Explore Collection <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
                     </div>
                   </div>
@@ -458,17 +460,17 @@ const Home = () => {
       </section>
 
       {/* Best Sellers */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-800 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{bestSellerTitle}</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-12">{bestSellerSubtitle}</p>
+      <section className="py-6 md:py-20 bg-slate-50 dark:bg-slate-800 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-2 md:px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-lg md:text-3xl font-bold text-slate-900 dark:text-white mb-0.5 md:mb-2">{bestSellerTitle}</h2>
+          <p className="text-xs md:text-base text-slate-500 dark:text-slate-400 mb-4 md:mb-12">{bestSellerSubtitle}</p>
           
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
             </div>
           ) : products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 text-left px-2 md:px-0">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

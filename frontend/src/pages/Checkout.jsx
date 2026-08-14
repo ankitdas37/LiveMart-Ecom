@@ -608,29 +608,29 @@ const Checkout = () => {
   // Show loading spinner while cart is being fetched from DB on refresh
   if (cartLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
-        <p className="text-slate-500 font-medium">Loading your cart...</p>
+        <p className="text-slate-500 dark:text-slate-400 font-medium">Loading your cart...</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="flex items-center space-x-4 mb-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-slate-200 text-slate-600 dark:text-slate-300 transition-colors"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Checkout</h1>
+      </div>
+
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Checkout Form */}
-        <div className="lg:w-2/3">
-          <div className="flex items-center space-x-4 mb-8">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 rounded-full hover:bg-slate-200 text-slate-600 transition-colors"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-3xl font-bold text-slate-900">Checkout</h1>
-          </div>
-
+        <div className="lg:w-2/3 order-2 lg:order-1">
           {submitMessage && submitMessage.type === 'error' && (
             <div className="mb-6 p-4 rounded-xl flex bg-red-50 border border-red-200 text-red-800">
               <AlertCircle className="w-5 h-5 mr-3 flex-shrink-0" />
@@ -642,10 +642,10 @@ const Checkout = () => {
 
             {/* Select Saved Address */}
             {user && savedAddresses.length > 0 && (
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+              <div className="bg-white dark:bg-slate-800 transition-colors p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                 <h2 className="text-xl font-semibold mb-4 border-b pb-4">Select Delivery Address</h2>
                 {isAddressesLoading ? (
-                  <div className="text-slate-500 animate-pulse">Loading saved addresses...</div>
+                  <div className="text-slate-500 dark:text-slate-400 animate-pulse">Loading saved addresses...</div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {savedAddresses.map(addr => (
@@ -654,21 +654,21 @@ const Checkout = () => {
                         onClick={() => handleSelectAddress(addr)}
                         className={`p-4 border rounded-xl cursor-pointer transition-all ${selectedAddressId === addr.id
                             ? 'border-amber-500 bg-amber-50 ring-1 ring-amber-500'
-                            : 'border-slate-200 hover:border-amber-300 hover:bg-slate-50'
+                            : 'border-slate-200 dark:border-slate-600 hover:border-amber-300 hover:bg-slate-50 dark:bg-slate-900 transition-colors'
                           }`}
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <span className="inline-block px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded uppercase">
+                          <span className="inline-block px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded uppercase">
                             {addr.addressType || 'Home'}
                           </span>
                           {selectedAddressId === addr.id && (
                             <span className="text-amber-600"><CheckCircle2 className="w-5 h-5" /></span>
                           )}
                         </div>
-                        <h4 className="font-bold text-slate-900">{addr.fullName}</h4>
-                        <p className="text-sm text-slate-600 mt-1 line-clamp-2">{addr.street}, {addr.city}, {addr.district}</p>
-                        <p className="text-sm text-slate-600 font-medium mt-1">PIN: {addr.pincode}</p>
-                        <p className="text-sm text-slate-500 mt-1 flex items-center">
+                        <h4 className="font-bold text-slate-900 dark:text-white">{addr.fullName}</h4>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">{addr.street}, {addr.city}, {addr.district}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 font-medium mt-1">PIN: {addr.pincode}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center">
                           📞 {addr.phone}
                         </p>
                         {selectedAddressId === addr.id && pincodeStatus === 'error' && (
@@ -689,7 +689,7 @@ const Checkout = () => {
                       onClick={handleAddNewAddress}
                       className={`p-4 border border-dashed rounded-xl cursor-pointer flex flex-col items-center justify-center min-h-[140px] transition-all ${selectedAddressId === null
                           ? 'border-amber-500 bg-amber-50 text-amber-700'
-                          : 'border-slate-300 text-slate-500 hover:border-amber-400 hover:text-amber-600 hover:bg-slate-50'
+                          : 'border-slate-300 text-slate-500 dark:text-slate-400 hover:border-amber-400 hover:text-amber-600 hover:bg-slate-50 dark:bg-slate-900 transition-colors'
                         }`}
                     >
                       <span className="text-2xl mb-2">+</span>
@@ -703,16 +703,16 @@ const Checkout = () => {
             {selectedAddressId === null && (
               <div className="space-y-6">
                 {/* Contact Information */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div className="bg-white dark:bg-slate-800 transition-colors p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                   <h2 className="text-xl font-semibold mb-4 border-b pb-4">Contact Information</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
-                      <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Full Name *</label>
+                      <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                       {formErrors.name && <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Email *</label>
                       <input
                         type="email"
                         name="email"
@@ -720,33 +720,33 @@ const Checkout = () => {
                         onChange={handleChange}
                         required
                         readOnly={!!user}
-                        className={`w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${!!user ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-white'}`}
+                        className={`w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${!!user ? 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed' : 'bg-white dark:bg-slate-800 transition-colors'}`}
                       />
                       {!!user && <p className="text-xs text-amber-600 mt-1">Logged in as {user.email}</p>}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number *</label>
-                      <input type="text" name="phone" placeholder="10-digit number" value={formData.phone} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.phone ? 'border-red-500' : 'border-slate-200'}`} />
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Mobile Number *</label>
+                      <input type="text" name="phone" placeholder="10-digit number" value={formData.phone} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.phone ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'}`} />
                       {formErrors.phone && <p className="text-red-500 text-xs mt-1">{formErrors.phone}</p>}
                     </div>
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Alternative Mobile Number (Optional)</label>
-                      <input type="text" name="alt_phone" placeholder="10-digit number" value={formData.alt_phone} onChange={handleChange} className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.alt_phone ? 'border-red-500' : 'border-slate-200'}`} />
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Alternative Mobile Number (Optional)</label>
+                      <input type="text" name="alt_phone" placeholder="10-digit number" value={formData.alt_phone} onChange={handleChange} className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.alt_phone ? 'border-red-500' : 'border-slate-200 dark:border-slate-600'}`} />
                       {formErrors.alt_phone && <p className="text-red-500 text-xs mt-1">{formErrors.alt_phone}</p>}
                     </div>
                   </div>
                 </div>
 
                 {/* Shipping Address */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div className="bg-white dark:bg-slate-800 transition-colors p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
                   <div className="flex justify-between items-center mb-4 border-b pb-4">
                     <h2 className="text-xl font-semibold">Shipping Address</h2>
                     <button
                       type="button"
                       onClick={requestLocation}
                       className={`text-sm flex items-center px-3 py-1.5 rounded-lg border transition-colors ${locationStatus === 'success' ? 'bg-green-50 text-green-700 border-green-200' :
-                          locationStatus === 'requesting' ? 'bg-slate-100 text-slate-500 border-slate-200' :
-                            'bg-white text-indigo-600 border-indigo-200 hover:bg-indigo-50'
+                          locationStatus === 'requesting' ? 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-600' :
+                            'bg-white dark:bg-slate-800 transition-colors text-indigo-600 border-indigo-200 hover:bg-indigo-50'
                         }`}
                     >
                       <MapPin className="w-4 h-4 mr-1.5" />
@@ -758,35 +758,35 @@ const Checkout = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Full Address *</label>
-                      <input type="text" name="address" placeholder="House/Flat No, Building, Street" value={formData.address} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Full Address *</label>
+                      <input type="text" name="address" placeholder="House/Flat No, Building, Street" value={formData.address} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                       {formErrors.address && <p className="text-red-500 text-xs mt-1">{formErrors.address}</p>}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">District *</label>
-                        <select name="district" value={formData.district} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white">
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">District *</label>
+                        <select name="district" value={formData.district} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-800 transition-colors">
                           {WB_DISTRICTS.map(dist => (
                             <option key={dist} value={dist}>{dist}</option>
                           ))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">City/Area/Police station *</label>
-                        <input type="text" name="city" value={formData.city} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">City/Area/Police station *</label>
+                        <input type="text" name="city" value={formData.city} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                         {formErrors.city && <p className="text-red-500 text-xs mt-1">{formErrors.city}</p>}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Landmark (Optional)</label>
-                        <input type="text" name="landmark" placeholder="Near famous place, temple, etc." value={formData.landmark} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Landmark (Optional)</label>
+                        <input type="text" name="landmark" placeholder="Near famous place, temple, etc." value={formData.landmark} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Pin Code *</label>
-                        <input type="text" name="pincode" placeholder="6-digit pin code" value={formData.pincode} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.pincode || pincodeStatus === 'error' ? 'border-red-500' : pincodeStatus === 'success' ? 'border-green-500' : 'border-slate-200'}`} />
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Pin Code *</label>
+                        <input type="text" name="pincode" placeholder="6-digit pin code" value={formData.pincode} onChange={handleChange} required className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none ${formErrors.pincode || pincodeStatus === 'error' ? 'border-red-500' : pincodeStatus === 'success' ? 'border-green-500' : 'border-slate-200 dark:border-slate-600'}`} />
                         {formErrors.pincode && <p className="text-red-500 text-xs mt-1">{formErrors.pincode}</p>}
                         {!formErrors.pincode && pincodeStatus === 'checking' && <p className="text-amber-600 text-xs mt-1">Checking delivery availability...</p>}
                         {!formErrors.pincode && pincodeStatus === 'success' && <p className="text-green-600 text-xs mt-1 flex items-center"><ShieldCheck className="w-3 h-3 mr-1" /> {pincodeMessage}</p>}
@@ -795,8 +795,8 @@ const Checkout = () => {
                     </div>
 
                     <div className="mt-4">
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Country *</label>
-                      <select name="country" value={formData.country} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white">
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Country *</label>
+                      <select name="country" value={formData.country} onChange={handleChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-800 transition-colors">
                         {COUNTRIES.map(country => (
                           <option key={country} value={country}>{country}</option>
                         ))}
@@ -808,12 +808,12 @@ const Checkout = () => {
             )}
 
             {/* Order Notes (Always visible) */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div className="bg-white dark:bg-slate-800 transition-colors p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
               <h2 className="text-xl font-semibold mb-4 border-b pb-4">Additional Information</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Order Notes (Optional)</label>
-                  <textarea name="order_notes" rows="3" placeholder="Notes about your order, e.g. special notes for delivery." value={formData.order_notes} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none resize-none"></textarea>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Order Notes (Optional)</label>
+                  <textarea name="order_notes" rows="3" placeholder="Notes about your order, e.g. special notes for delivery." value={formData.order_notes} onChange={handleChange} className="w-full px-4 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none resize-none"></textarea>
                 </div>
               </div>
             </div>
@@ -827,23 +827,23 @@ const Checkout = () => {
         </div>
 
         {/* Order Summary */}
-        <div className="lg:w-1/3">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 sticky top-24">
+        <div className="lg:w-1/3 order-1 lg:order-2 mb-6 lg:mb-0">
+          <div className="bg-white dark:bg-slate-800 transition-colors p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 sticky top-24">
             <h2 className="text-xl font-semibold mb-4 border-b pb-4">Order Summary</h2>
             <div className="space-y-4 mb-4 max-h-96 overflow-y-auto pr-2 scrollbar-hide">
               {/* Cart Items */}
               {cartItems.length === 0 ? (
-                <div className="text-center py-4 text-slate-500">
+                <div className="text-center py-4 text-slate-500 dark:text-slate-400">
                   Your cart is empty.
                 </div>
               ) : (
                 cartItems.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-slate-100 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">
                       <img src={item.image_url || item.images?.[0] || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt={item.title} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-grow">
-                      <h4 className="text-sm font-medium text-slate-900 line-clamp-1">{item.title}</h4>
+                      <h4 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1">{item.title}</h4>
                       <div className="flex items-center space-x-2 mt-1">
                         <input
                           type="number"
@@ -851,7 +851,7 @@ const Checkout = () => {
                           max={Math.max(100, item.stock || 100)}
                           value={item.quantity}
                           onChange={(e) => updateQuantity(item.id, Number(e.target.value))}
-                          className="w-16 text-center text-xs border border-slate-200 rounded px-1 py-1 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                          className="w-16 text-center text-xs border border-slate-200 dark:border-slate-600 rounded px-1 py-1 bg-slate-50 dark:bg-slate-900 transition-colors focus:outline-none focus:ring-1 focus:ring-amber-500"
                         />
                         <button
                           onClick={() => removeFromCart(item.id)}
@@ -861,7 +861,7 @@ const Checkout = () => {
                         </button>
                       </div>
                     </div>
-                    <div className="font-semibold text-slate-900 text-sm flex flex-col items-end">
+                    <div className="font-semibold text-slate-900 dark:text-white text-sm flex flex-col items-end">
                       {item.discount_price && (
                         <span className="text-xs text-slate-400 line-through font-medium">₹{(item.discount_price * item.quantity).toFixed(2)}</span>
                       )}
@@ -897,22 +897,22 @@ const Checkout = () => {
 
             {/* Coupon Section */}
             {cartItems.length > 0 && (
-              <div className="border-t border-slate-100 py-4">
-                <h3 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
+              <div className="border-t border-slate-100 dark:border-slate-700 py-4">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
                   <Tag className="w-4 h-4 mr-2 text-amber-600" /> Apply Coupon
                 </h3>
 
                 {appliedCoupon ? (
-                  <div className="bg-green-50 border border-green-200 p-3 rounded-xl flex justify-between items-center">
+                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 p-3 rounded-xl flex justify-between items-center transition-colors">
                     <div>
-                      <p className="text-sm font-bold text-green-800 uppercase">{appliedCoupon.code}</p>
-                      <p className="text-xs text-green-600">
+                      <p className="text-sm font-bold text-green-800 dark:text-green-400 uppercase">{appliedCoupon.code}</p>
+                      <p className="text-xs text-green-600 dark:text-green-500">
                         {appliedCoupon.discountType === 'PERCENTAGE'
                           ? `${appliedCoupon.discountValue}% off applied`
                           : `₹${appliedCoupon.discountValue} off applied`}
                       </p>
                     </div>
-                    <button onClick={removeCoupon} className="text-red-500 hover:text-red-700 p-1">
+                    <button onClick={removeCoupon} className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 p-1 transition-colors">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -924,27 +924,27 @@ const Checkout = () => {
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Enter code"
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm uppercase"
+                        className="flex-1 px-3 py-2 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm uppercase bg-white dark:bg-slate-700 dark:text-white transition-colors"
                       />
                       <button
                         type="button"
                         onClick={() => handleApplyCoupon()}
                         disabled={isApplyingCoupon || !couponCode}
-                        className="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 disabled:opacity-70 transition-colors"
+                        className="bg-slate-900 dark:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 dark:hover:bg-amber-700 disabled:opacity-70 transition-colors"
                       >
                         {isApplyingCoupon ? '...' : 'Apply'}
                       </button>
                     </div>
-                    {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
+                    {couponError && <p className="text-red-500 dark:text-red-400 text-xs mt-1">{couponError}</p>}
 
                     {availableCoupons.length > 0 && (
                       <div className="mt-3 space-y-2">
-                        <p className="text-xs font-medium text-slate-500">Available Coupons:</p>
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Available Coupons:</p>
                         <div className="flex flex-col gap-2">
                           {availableCoupons.map(coupon => (
-                            <div key={coupon.id} className="flex flex-col border border-amber-200 bg-amber-50 rounded-lg p-3 border-dashed">
+                            <div key={coupon.id} className="flex flex-col border border-amber-200 dark:border-amber-700/50 bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3 border-dashed transition-colors">
                               <div className="flex justify-between items-center">
-                                <span className="font-bold text-amber-800 uppercase tracking-wider">{coupon.code}</span>
+                                <span className="font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider">{coupon.code}</span>
                                 <button
                                   type="button"
                                   onClick={() => handleApplyCoupon(coupon.code)}
@@ -954,7 +954,7 @@ const Checkout = () => {
                                 </button>
                               </div>
                               {coupon.description && (
-                                <p className="text-xs text-amber-700 mt-1.5">{coupon.description}</p>
+                                <p className="text-xs text-amber-700 dark:text-amber-500/80 mt-1.5">{coupon.description}</p>
                               )}
                             </div>
                           ))}
@@ -966,8 +966,8 @@ const Checkout = () => {
               </div>
             )}
 
-            <div className="border-t border-slate-100 pt-4 space-y-2">
-              <div className="flex justify-between text-slate-600 text-sm">
+            <div className="border-t border-slate-100 dark:border-slate-700 pt-4 space-y-2">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300 text-sm">
                 <span>Subtotal</span>
                 <span>₹{cartTotal.toFixed(2)}</span>
               </div>
@@ -979,7 +979,7 @@ const Checkout = () => {
                 </div>
               )}
 
-              <div className="flex justify-between text-slate-600 text-sm">
+              <div className="flex justify-between text-slate-600 dark:text-slate-300 text-sm">
                 <span>Shipping</span>
                 <span>{cartTotal > 0 ? `₹${actualShippingCharge.toFixed(2)}` : '₹0.00'}</span>
               </div>
@@ -991,7 +991,7 @@ const Checkout = () => {
                 </div>
               )}
 
-              <div className="flex justify-between text-slate-900 font-bold text-lg pt-3 border-t border-slate-100 mt-2">
+              <div className="flex justify-between text-slate-900 dark:text-white font-bold text-lg pt-3 border-t border-slate-100 dark:border-slate-700 mt-2">
                 <span>Total</span>
                 <span>₹{cartTotal > 0 ? (cartTotal - (appliedCoupon ? appliedCoupon.calculatedDiscount : 0) + actualShippingCharge + totalExtraCharges).toFixed(2) : '0.00'}</span>
               </div>

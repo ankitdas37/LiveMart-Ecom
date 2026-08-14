@@ -65,6 +65,26 @@ export const AuthProvider = ({ children }) => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
       const { data } = await axios.post('/api/auth/login', { email, password }, config);
+      
+      if (data.requireOTP) {
+        return { success: true, requireOTP: true, message: data.message };
+      }
+
+      setUser(data);
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      return { success: true, user: data };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response && error.response.data.message ? error.response.data.message : error.message,
+      };
+    }
+  };
+
+  const verifyLogin = async (email, otp) => {
+    try {
+      const config = { headers: { 'Content-Type': 'application/json' } };
+      const { data } = await axios.post('/api/auth/login-verify', { email, otp }, config);
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       return { success: true, user: data };
@@ -189,7 +209,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       // User session
-      user, login, googleLogin, sendOTP, register, logout, updateUserSession, loading,
+      user, login, verifyLogin, googleLogin, sendOTP, register, logout, updateUserSession, loading,
       // Admin session (separate)
       adminUser, adminLogin, adminGoogleLogin, adminLogout,
     }}>

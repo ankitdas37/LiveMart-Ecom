@@ -467,47 +467,47 @@ ${orderNotesHTML}
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12">
-      <div className="max-w-4xl w-full">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors flex flex-col pt-10 pb-24 sm:py-12 px-3 sm:px-4">
+      <div className="max-w-4xl w-full mx-auto">
 
-        <div className="bg-white p-8 md:p-12 rounded-[2rem] shadow-2xl border border-slate-100 transform transition-all duration-500 animate-in fade-in zoom-in-95 relative overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 transition-colors p-5 sm:p-8 md:p-12 rounded-3xl sm:rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-700/50 transform transition-all duration-500 animate-in fade-in zoom-in-95 relative overflow-hidden">
           {/* Background Decorations */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-[80px] -mr-20 -mt-20 z-0"></div>
+          <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-emerald-50 rounded-full blur-[60px] sm:blur-[80px] -mr-10 sm:-mr-20 -mt-10 sm:-mt-20 z-0"></div>
 
-          <div className="relative z-10 text-center border-b border-slate-100 pb-8 mb-8">
-            <div className="w-24 h-24 bg-gradient-to-tr from-emerald-400 to-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/30 ring-4 ring-emerald-50">
-              <CheckCircle2 className="w-12 h-12" />
+          <div className="relative z-10 text-center border-b border-slate-100 dark:border-slate-700/50 pb-6 sm:pb-8 mb-6 sm:mb-8">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-tr from-emerald-400 to-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg shadow-emerald-500/30 ring-4 ring-emerald-50">
+              <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12" />
             </div>
-            <h1 className="text-4xl font-extrabold text-slate-900 mb-2 tracking-tight">Order Successful!</h1>
-            <p className="text-lg text-slate-500 font-medium">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight">Order Successful!</h1>
+            <p className="text-sm sm:text-lg text-slate-500 dark:text-slate-400 font-medium px-2">
               Thank you for your purchase. Your order has been placed.
             </p>
-            <div className="mt-4 inline-flex flex-col items-center justify-center p-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
-              <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Your Order ID</span>
-              <span className="text-3xl font-black text-emerald-800 tracking-wider">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</span>
+            <div className="mt-4 sm:mt-6 inline-flex flex-col items-center justify-center p-3 sm:p-4 bg-emerald-50 border border-emerald-100 rounded-2xl max-w-full">
+              <span className="text-[10px] sm:text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Your Order ID</span>
+              <span className="text-xl sm:text-3xl font-black text-emerald-800 tracking-wider truncate px-2">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</span>
             </div>
           </div>
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Left Column: Customer & Payment Details */}
             <div className="space-y-6">
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <h3 className="font-bold text-slate-900 border-b border-slate-200 pb-3 mb-4 uppercase tracking-wider text-sm flex justify-between items-center">
+              <div className="bg-slate-50 dark:bg-slate-900 transition-colors p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+                <h3 className="font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-600 pb-3 mb-4 uppercase tracking-wider text-sm flex justify-between items-center">
                   Customer Details
-                  {order.is_registered_user ? <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold">Registered</span> : <span className="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded font-bold">Guest</span>}
+                  {order.is_registered_user ? <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded font-bold">Registered</span> : <span className="text-xs bg-slate-200 dark:bg-slate-600 transition-colors text-slate-600 dark:text-slate-300 px-2 py-1 rounded font-bold">Guest</span>}
                 </h3>
                 <div className="flex items-start space-x-4">
                   <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xl overflow-hidden">
                     {(order.customer_name || 'G').charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900 text-lg">{order.customer_name}</p>
-                    <p className="text-sm text-slate-600">{order.customer_email}</p>
-                    <p className="text-sm text-slate-600">
+                    <p className="font-bold text-slate-900 dark:text-white text-lg">{order.customer_name}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">{order.customer_email}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
                       {order.customer_phone}
                       {order.alt_phone && ` / ${order.alt_phone}`}
                     </p>
-                    <p className="text-sm text-slate-500 mt-2 font-medium">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">
                       {order.customer_address}
                       {order.landmark && `, Landmark: ${order.landmark}`}
                       <br />
@@ -516,7 +516,7 @@ ${orderNotesHTML}
                     {order.order_notes && (
                       <div className="mt-3 p-3 bg-amber-50/50 rounded border border-amber-100">
                         <p className="text-xs font-bold text-amber-800 mb-1">Order Notes:</p>
-                        <p className="text-xs text-slate-600">{order.order_notes}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-300">{order.order_notes}</p>
                       </div>
                     )}
                   </div>
@@ -524,8 +524,8 @@ ${orderNotesHTML}
               </div>
 
               {/* Delivery Info */}
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <h3 className="font-bold text-slate-900 border-b border-slate-200 pb-3 mb-4 uppercase tracking-wider text-sm">
+              <div className="bg-slate-50 dark:bg-slate-900 transition-colors p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+                <h3 className="font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-600 pb-3 mb-4 uppercase tracking-wider text-sm">
                   Delivery Info
                 </h3>
                 <div className="flex items-start space-x-4">
@@ -533,21 +533,21 @@ ${orderNotesHTML}
                     <Truck className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Delivering to</p>
-                    <p className="font-bold text-slate-900">
+                    <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Delivering to</p>
+                    <p className="font-bold text-slate-900 dark:text-white">
                       {order.customer_address}{order.landmark ? `, ${order.landmark}` : ''}
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
                       {[order.city, order.district, order.pincode].filter(Boolean).join(', ')}
                     </p>
-                    <div className="mt-3 pt-3 border-t border-slate-200">
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Expected Delivery</p>
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600">
+                      <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Expected Delivery</p>
                       {order.estimatedDeliveryDate ? (
                         <p className="font-black text-emerald-700 text-base">
                           📦 {new Date(order.estimatedDeliveryDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </p>
                       ) : (
-                        <p className="font-bold text-slate-900 text-base">
+                        <p className="font-bold text-slate-900 dark:text-white text-base">
                           {order.estimated_delivery_time || 'Standard Delivery (3–5 Days)'}
                         </p>
                       )}
@@ -556,20 +556,20 @@ ${orderNotesHTML}
                 </div>
               </div>
 
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <h3 className="font-bold text-slate-900 border-b border-slate-200 pb-3 mb-4 uppercase tracking-wider text-sm">
+              <div className="bg-slate-50 dark:bg-slate-900 transition-colors p-6 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+                <h3 className="font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-600 pb-3 mb-4 uppercase tracking-wider text-sm">
                   Payment Info
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-slate-600 text-sm font-medium">Method</span>
-                    <span className="font-bold text-slate-900 bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm">
+                    <span className="text-slate-600 dark:text-slate-300 text-sm font-medium">Method</span>
+                    <span className="font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-800 transition-colors px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">
                       {order.payment_method === 'Online' ? 'Online Transfer (UPI/Bank)' : 'Cash on Delivery (COD)'}
                     </span>
                   </div>
                   {order.payment_method === 'Online' && order.payment_receipt && (
-                    <div className="mt-4 pt-4 border-t border-slate-200">
-                      <span className="block text-slate-600 text-sm font-medium mb-2">Payment Receipt Preview:</span>
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
+                      <span className="block text-slate-600 dark:text-slate-300 text-sm font-medium mb-2">Payment Receipt Preview:</span>
                       <button
                         onClick={() => setViewImage(order.payment_receipt)}
                         className="block w-32 h-32 rounded-xl overflow-hidden border-2 border-indigo-100 hover:border-indigo-300 transition-colors shadow-sm relative group"
@@ -590,7 +590,7 @@ ${orderNotesHTML}
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/50 to-transparent pointer-events-none"></div>
               <h3 className="font-bold text-white border-b border-slate-700 pb-3 mb-4 uppercase tracking-wider text-sm relative z-10 flex items-center justify-between">
                 <span>Order Summary</span>
-                <span className="bg-amber-500 text-slate-900 text-xs px-2 py-0.5 rounded font-bold">Paid: ₹{Number(order.total_amount).toFixed(2)}</span>
+                <span className="bg-amber-500 text-slate-900 dark:text-white text-xs px-2 py-0.5 rounded font-bold">Paid: ₹{Number(order.total_amount).toFixed(2)}</span>
               </h3>
 
               <div className="space-y-3 mb-6 relative z-10 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700">
@@ -599,7 +599,7 @@ ${orderNotesHTML}
                     <img
                       src={(item.Product?.images && item.Product.images[0]) ? item.Product.images[0] : (item.image_url || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100')}
                       alt={item.Product?.title || item.title || 'Product'}
-                      className="w-10 h-10 rounded bg-white object-cover flex-shrink-0"
+                      className="w-10 h-10 rounded bg-white dark:bg-slate-800 transition-colors object-cover flex-shrink-0"
                     />
                     <div className="flex-grow min-w-0">
                       <p className="text-xs font-semibold truncate text-slate-200">{item.Product?.title || item.title}</p>
@@ -653,14 +653,14 @@ ${orderNotesHTML}
 
           {/* Manual Confirmation Notice for Online Payments */}
           {order.payment_method === 'Online' && (
-            <div className="relative z-10 bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8 text-amber-900 text-sm leading-relaxed shadow-inner">
+            <div className="relative z-10 bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 text-amber-900 text-xs sm:text-sm leading-relaxed shadow-inner">
               <div className="flex items-start">
-                <AlertCircle className="w-6 h-6 text-amber-600 mr-3 flex-shrink-0 mt-1" />
-                <div className="space-y-4 font-medium">
+                <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <div className="space-y-3 sm:space-y-4 font-medium">
                   <p>
                     <strong>English:</strong> Our executive officer will check if your payment is successful. If it is, your order will be confirmed; otherwise, it will fail. Our officer will update you via WhatsApp, SMS, Email, Call, etc. If you are not comfortable or do not trust this manual process, please choose Cash on Delivery (COD). If your order is not confirmed, you can contact us.
                   </p>
-                  <p className="border-t border-amber-200/60 pt-4 font-bengali">
+                  <p className="border-t border-amber-200/60 pt-3 sm:pt-4 font-bengali">
                     <strong>বাংলা:</strong> আমাদের এক্সিকিউটিভ অফিসার চেক করবেন আপনার পেমেন্ট সফল হয়েছে কিনা। যদি হয়, আপনার অর্ডার কনফার্ম করা হবে; অন্যথায়, এটি বাতিল হবে। আমাদের অফিসার আপনাকে হোয়াটসঅ্যাপ, এসএমএস, ইমেল, কল ইত্যাদির মাধ্যমে আপডেট করবেন। আপনি যদি এই ম্যানুয়াল প্রক্রিয়ায় স্বাচ্ছন্দ্যবোধ পণ্ডিত না করেন, তবে অনুগ্রহ করে ক্যাশ অন ডেলিভারি (COD) বেছে নিন। যদি আপনার অর্ডার কনফার্ম না হয়, তাহলে আপনি আমাদের সাথে যোগাযোগ করতে পারেন।
                   </p>
                 </div>
@@ -669,17 +669,17 @@ ${orderNotesHTML}
           )}
 
           {/* Action Buttons */}
-          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-4 border-t border-slate-100 pt-8 mt-4">
+          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 border-t border-slate-100 dark:border-slate-700/50 pt-6 sm:pt-8 mt-2 sm:mt-4">
             <button
               onClick={downloadInvoice}
-              className="w-full sm:w-auto bg-white text-slate-700 border-2 border-slate-200 px-8 py-3.5 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 transition-all shadow-sm active:scale-95 flex items-center justify-center"
+              className="w-full sm:w-auto bg-white dark:bg-slate-800 transition-colors text-slate-700 dark:text-slate-200 border-2 border-slate-200 dark:border-slate-600 px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-slate-700/50 dark:bg-slate-900 transition-colors hover:border-slate-300 dark:border-slate-500 hover:text-slate-900 dark:text-white transition-all shadow-sm active:scale-95 flex items-center justify-center text-sm sm:text-base"
             >
-              <svg className="w-5 h-5 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              <svg className="w-5 h-5 mr-2 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               Download PDF Invoice
             </button>
             <button
               onClick={() => navigate('/shop', { replace: true })}
-              className="w-full sm:w-auto bg-slate-900 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl hover:shadow-slate-900/20 active:scale-95"
+              className="w-full sm:w-auto bg-slate-900 text-white px-8 sm:px-10 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg hover:bg-slate-800 transition-all shadow-xl hover:shadow-slate-900/20 active:scale-95"
             >
               Continue Shopping
             </button>
