@@ -49,6 +49,9 @@ const supportRoutes = require('./routes/supportRoutes');
 const { seedSettings } = require('./controllers/settingController');
 
 const app = express();
+// Trust Render's proxy to get the real client IP for rate limiting
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 5000;
 
 // ─── 2. SECURITY HEADERS (Helmet) ─────────────────────────────────────────────
