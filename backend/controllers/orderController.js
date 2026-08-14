@@ -209,7 +209,7 @@ const createOrder = async (req, res) => {
       }
     }
 
-    // Send order confirmation email with PDF attachment (fire-and-forget so API responds fast)
+    // Send order confirmation email with optional PDF attachment (fire-and-forget so API responds fast)
     (async () => {
       try {
         const fullOrder = await Order.findByPk(order.id, {
@@ -217,22 +217,26 @@ const createOrder = async (req, res) => {
         });
         const emailData = orderConfirmationEmail(fullOrder, fullOrder.OrderItems || []);
         
-        // Generate PDF buffer
-        const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
-
-        await sendEmail({
+        // Try to generate PDF, but don't fail the email if it doesn't work
+        let emailOptions = {
           email: order.customer_email,
           subject: emailData.subject,
           message: emailData.text,
           html: emailData.html,
-          attachments: [
-            {
-              filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
-              content: pdfBuffer,
-              contentType: 'application/pdf'
-            }
-          ]
-        });
+        };
+
+        try {
+          const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
+          emailOptions.attachments = [{
+            filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+            content: pdfBuffer,
+            contentType: 'application/pdf'
+          }];
+        } catch (pdfErr) {
+          console.warn('PDF generation skipped (Puppeteer not available):', pdfErr.message);
+        }
+
+        await sendEmail(emailOptions);
         console.log(`📧 Order confirmation email sent for LIVEMART${String(order.id).padStart(6,'0')}`);
 
         // --- ADMIN EMAIL NOTIFICATION ---
@@ -395,21 +399,26 @@ const updateOrderStatus = async (req, res) => {
           });
           
           const emailData = orderStatusEmail(fullOrder);
-          const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
-          
-          await sendEmail({
+
+          let emailOptions = {
             email: order.customer_email,
             subject: emailData.subject,
             message: emailData.text,
             html: emailData.html,
-            attachments: [
-              {
-                filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
-                content: pdfBuffer,
-                contentType: 'application/pdf'
-              }
-            ]
-          });
+          };
+
+          try {
+            const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
+            emailOptions.attachments = [{
+              filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+              content: pdfBuffer,
+              contentType: 'application/pdf'
+            }];
+          } catch (pdfErr) {
+            console.warn('PDF generation skipped (Puppeteer not available):', pdfErr.message);
+          }
+
+          await sendEmail(emailOptions);
           console.log(`📧 Status email [${status}] sent for LIVEMART${String(order.id).padStart(6,'0')}`);
         } catch (emailErr) {
           console.error('Status update email failed:', emailErr.message);
