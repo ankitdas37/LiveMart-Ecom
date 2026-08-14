@@ -1,52 +1,62 @@
-const { Resend } = require('resend');
+const { google } = require('googleapis');
 const { Setting } = require('../models');
 
 const sendEmail = async (options) => {
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const clientId = process.env.GMAIL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GMAIL_CLIENT_SECRET;
+  const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
   const emailUser = process.env.EMAIL_USER;
 
-  // Check if Resend is configured
-  if (!resendApiKey || resendApiKey === 'your_resend_api_key') {
-    // Not configured — just log and return without throwing
+  // Check if Gmail API is configured
+  if (!clientSecret || !refreshToken) {
     console.log('\n==============================================');
     console.log(`📧 EMAIL NOT CONFIGURED — Would have sent to: ${options.email}`);
     console.log(`Subject: ${options.subject}`);
     console.log(`Message: ${options.message || '(HTML only)'}`);
     console.log('==============================================\n');
-    return; // Graceful no-op
+    return;
   }
 
-  const resend = new Resend(resendApiKey);
+  // Set up OAuth2 client — uses HTTPS, works on Render free tier
+  const oauth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    'https://developers.google.com/oauthplayground'
+  );
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
 
-  // On Resend's free plan, you can only send FROM onboarding@resend.dev
-  // unless you verify a custom domain. Change RESEND_FROM_EMAIL in your env
-  // after verifying your domain.
-  const fromAddress = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-  const payload = {
-    from: `LiveMart Support <${fromAddress}>`,
-    reply_to: emailUser,
-    to: [options.email],
-    subject: options.subject,
-    text: options.message || options.text || '',
-    html: options.html || `<p>${options.message || ''}</p>`,
-  };
+  // Build a proper RFC 2822 email message
+  const messageParts = [
+    `From: "LiveMart Support" <${emailUser}>`,
+    `To: ${options.email}`,
+    `Subject: ${options.subject}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset=utf-8',
+    '',
+    options.html || `<p>${options.message || ''}</p>`,
+  ];
 
   if (options.cc) {
-    payload.cc = Array.isArray(options.cc) ? options.cc : [options.cc];
+    const cc = Array.isArray(options.cc) ? options.cc.join(', ') : options.cc;
+    messageParts.splice(2, 0, `Cc: ${cc}`);
   }
 
-  if (options.attachments) {
-    payload.attachments = options.attachments;
-  }
+  const rawMessage = messageParts.join('\n');
+  // Base64 URL-encode the message as required by Gmail API
+  const encodedMessage = Buffer.from(rawMessage)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
 
-  const { error } = await resend.emails.send(payload);
+  await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: { raw: encodedMessage },
+  });
 
-  if (error) {
-    throw new Error(`Resend API error: ${error.message}`);
-  }
-
-  // Track total emails sent (fire-and-forget to not block)
+  // Track total emails sent (fire-and-forget)
   try {
     const [setting] = await Setting.findOrCreate({
       where: { key: 'TOTAL_EMAILS_SENT' },
