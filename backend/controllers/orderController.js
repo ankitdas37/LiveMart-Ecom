@@ -225,15 +225,20 @@ const createOrder = async (req, res) => {
           html: emailData.html,
         };
 
-        try {
-          const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
-          emailOptions.attachments = [{
-            filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
-            content: pdfBuffer,
-            contentType: 'application/pdf'
-          }];
-        } catch (pdfErr) {
-          console.warn('PDF generation skipped (Puppeteer not available):', pdfErr.message);
+        // Skip PDF generation on Render because Puppeteer crashes the server (OOM/No Chrome)
+        if (process.env.RENDER) {
+          console.log('Skipping PDF generation on Render to prevent OOM crashes.');
+        } else {
+          try {
+            const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
+            emailOptions.attachments = [{
+              filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+              content: pdfBuffer,
+              contentType: 'application/pdf'
+            }];
+          } catch (pdfErr) {
+            console.warn('PDF generation skipped:', pdfErr.message);
+          }
         }
 
         await sendEmail(emailOptions);
@@ -407,15 +412,20 @@ const updateOrderStatus = async (req, res) => {
             html: emailData.html,
           };
 
-          try {
-            const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
-            emailOptions.attachments = [{
-              filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
-              content: pdfBuffer,
-              contentType: 'application/pdf'
-            }];
-          } catch (pdfErr) {
-            console.warn('PDF generation skipped (Puppeteer not available):', pdfErr.message);
+          // Skip PDF generation on Render because Puppeteer crashes the server (OOM/No Chrome)
+          if (process.env.RENDER) {
+            console.log('Skipping PDF generation on Render to prevent OOM crashes.');
+          } else {
+            try {
+              const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
+              emailOptions.attachments = [{
+                filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+                content: pdfBuffer,
+                contentType: 'application/pdf'
+              }];
+            } catch (pdfErr) {
+              console.warn('PDF generation skipped:', pdfErr.message);
+            }
           }
 
           await sendEmail(emailOptions);
