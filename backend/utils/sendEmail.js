@@ -1,23 +1,12 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { Setting } = require('../models');
-const dns = require('dns');
-
-// Force IPv4 for DNS resolution. 
-// This fixes the "ENETUNREACH" error on Render when it tries to connect to Gmail via IPv6.
-dns.setDefaultResultOrder('ipv4first');
 
 const sendEmail = async (options) => {
+  const resendApiKey = process.env.RESEND_API_KEY;
   const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
 
-  // Check if placeholder / unconfigured
-  const isConfigured =
-    emailUser &&
-    emailPass &&
-    emailUser !== 'your_email@gmail.com' &&
-    emailPass !== 'your_app_password';
-
-  if (!isConfigured) {
+  // Check if Resend is configured
+  if (!resendApiKey || resendApiKey === 'your_resend_api_key') {
     // Not configured — just log and return without throwing
     console.log('\n==============================================');
     console.log(`📧 EMAIL NOT CONFIGURED — Would have sent to: ${options.email}`);
@@ -27,45 +16,36 @@ const sendEmail = async (options) => {
     return; // Graceful no-op
   }
 
-  const port = parseInt(process.env.EMAIL_PORT) || 587;
-  
-  // Render's free tier has broken IPv6 routing to Gmail.
-  // We manually look up the IPv4 address to force it to use IPv4.
-  const { address: smtpIp } = await dns.promises.lookup(process.env.EMAIL_HOST || 'smtp.gmail.com', { family: 4 });
+  const resend = new Resend(resendApiKey);
 
-  const transporter = nodemailer.createTransport({
-    host: smtpIp,
-    port: port,
-    secure: port === 465, // true for 465, false for other ports
-    auth: {
-      user: emailUser,
-      pass: emailPass,
-    },
-    tls: {
-      // Because we are passing an IP address instead of 'smtp.gmail.com', 
-      // we must tell the TLS socket to expect the 'smtp.gmail.com' certificate.
-      servername: process.env.EMAIL_HOST || 'smtp.gmail.com'
-    }
-  });
+  // On Resend's free plan, you can only send FROM onboarding@resend.dev
+  // unless you verify a custom domain. Change RESEND_FROM_EMAIL in your env
+  // after verifying your domain.
+  const fromAddress = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
-  // Define email options
-  const mailOptions = {
-    from: `"LiveMart Support" <${emailUser}>`,
-    replyTo: emailUser,
-    to: options.email,
-    cc: options.cc,
+  const payload = {
+    from: `LiveMart Support <${fromAddress}>`,
+    reply_to: emailUser,
+    to: [options.email],
     subject: options.subject,
-    text: options.message || options.text,
-    html: options.html,
+    text: options.message || options.text || '',
+    html: options.html || `<p>${options.message || ''}</p>`,
   };
 
-  if (options.attachments) {
-    mailOptions.attachments = options.attachments;
+  if (options.cc) {
+    payload.cc = Array.isArray(options.cc) ? options.cc : [options.cc];
   }
 
-  // Actually send the email
-  await transporter.sendMail(mailOptions);
-  
+  if (options.attachments) {
+    payload.attachments = options.attachments;
+  }
+
+  const { error } = await resend.emails.send(payload);
+
+  if (error) {
+    throw new Error(`Resend API error: ${error.message}`);
+  }
+
   // Track total emails sent (fire-and-forget to not block)
   try {
     const [setting] = await Setting.findOrCreate({
@@ -80,3 +60,4 @@ const sendEmail = async (options) => {
 };
 
 module.exports = sendEmail;
+
