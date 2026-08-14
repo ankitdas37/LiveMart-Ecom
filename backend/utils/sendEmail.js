@@ -28,14 +28,24 @@ const sendEmail = async (options) => {
   }
 
   const port = parseInt(process.env.EMAIL_PORT) || 587;
+  
+  // Render's free tier has broken IPv6 routing to Gmail.
+  // We manually look up the IPv4 address to force it to use IPv4.
+  const { address: smtpIp } = await dns.promises.lookup(process.env.EMAIL_HOST || 'smtp.gmail.com', { family: 4 });
+
   const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    host: smtpIp,
     port: port,
     secure: port === 465, // true for 465, false for other ports
     auth: {
       user: emailUser,
       pass: emailPass,
     },
+    tls: {
+      // Because we are passing an IP address instead of 'smtp.gmail.com', 
+      // we must tell the TLS socket to expect the 'smtp.gmail.com' certificate.
+      servername: process.env.EMAIL_HOST || 'smtp.gmail.com'
+    }
   });
 
   // Define email options
