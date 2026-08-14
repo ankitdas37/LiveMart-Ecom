@@ -1,5 +1,10 @@
 const nodemailer = require('nodemailer');
 const { Setting } = require('../models');
+const dns = require('dns');
+
+// Force IPv4 for DNS resolution. 
+// This fixes the "ENETUNREACH" error on Render when it tries to connect to Gmail via IPv6.
+dns.setDefaultResultOrder('ipv4first');
 
 const sendEmail = async (options) => {
   const emailUser = process.env.EMAIL_USER;
