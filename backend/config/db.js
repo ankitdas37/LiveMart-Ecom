@@ -4,6 +4,7 @@ require('dotenv').config();
 // DB config — vars are already validated in server.js before this loads
 const sequelizeOptions = {
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT || 3306,
   dialect: 'mysql',
   logging: false, // Never log raw SQL in any environment (may contain user data)
   pool: {
@@ -15,11 +16,12 @@ const sequelizeOptions = {
 };
 
 // Enable TLS/SSL for database connections in production
+// Set DB_SSL_REJECT=false in .env for Aiven / self-signed certs
 if (process.env.NODE_ENV === 'production') {
   sequelizeOptions.dialectOptions = {
     ssl: {
       require: true,
-      rejectUnauthorized: true,
+      rejectUnauthorized: process.env.DB_SSL_REJECT !== 'false',
     },
   };
 }

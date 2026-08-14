@@ -238,11 +238,29 @@ const Navbar = () => {
           {/* Icons and Auth */}
           <div className="hidden md:flex items-center space-x-5">
             
+            {/* Dark Mode Toggle — Premium Pill */}
             <button
               onClick={toggleTheme}
-              className="text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-500 transition-colors p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 text-xs font-bold select-none ${
+                theme === 'dark'
+                  ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700'
+                  : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
+              }`}
             >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              <span className={`transition-all duration-300 ${theme === 'dark' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 absolute'}`}>
+                <Moon className="w-3.5 h-3.5" />
+              </span>
+              <span className={`w-8 h-4 rounded-full relative transition-all duration-300 ${
+                theme === 'dark' ? 'bg-amber-500' : 'bg-slate-300'
+              }`}>
+                <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-all duration-300 ${
+                  theme === 'dark' ? 'left-[18px]' : 'left-0.5'
+                }`} />
+              </span>
+              <span className={`transition-all duration-300 ${theme === 'dark' ? 'opacity-0 scale-75 absolute' : 'opacity-100 scale-100'}`}>
+                <Sun className="w-3.5 h-3.5" />
+              </span>
             </button>
 
             <button
@@ -534,19 +552,19 @@ const Navbar = () => {
       {/* Delivery Checker Modal */}
       {isDeliveryModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-[100] px-4">
-          <div ref={deliveryModalRef} className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative">
+          <div ref={deliveryModalRef} className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative transition-colors">
             <button
               onClick={() => { setIsDeliveryModalOpen(false); setDeliveryMessage(null); }}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+              className="absolute top-4 right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 bg-slate-100 dark:bg-slate-700 p-1.5 rounded-full transition-colors"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
             <div className="p-8">
-              <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mb-4">
                 <MapPin className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Choose your location</h3>
-              <p className="text-sm text-slate-500 mb-6">Enter your Pincode to see if we deliver to your area.</p>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Choose your location</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Enter your Pincode to see if we deliver to your area.</p>
 
               <form onSubmit={checkDelivery} className="space-y-4">
                 <input
@@ -555,18 +573,22 @@ const Navbar = () => {
                   onChange={(e) => setPincode(e.target.value)}
                   placeholder="Enter 6-digit Pincode"
                   maxLength="6"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-4 py-3 border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors"
                 />
                 <button
                   type="submit"
-                  className="w-full bg-slate-900 text-white font-medium py-3 rounded-xl hover:bg-slate-800 transition-colors"
+                  className="w-full bg-slate-900 dark:bg-amber-500 dark:hover:bg-amber-600 text-white font-medium py-3 rounded-xl hover:bg-slate-800 transition-colors"
                 >
                   Apply
                 </button>
               </form>
 
               {deliveryMessage && (
-                <div className={`mt-4 p-3 rounded-lg text-sm font-medium ${deliveryMessage.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <div className={`mt-4 p-3 rounded-lg text-sm font-medium ${
+                  deliveryMessage.type === 'success'
+                    ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                    : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
+                }`}>
                   {deliveryMessage.text}
                 </div>
               )}

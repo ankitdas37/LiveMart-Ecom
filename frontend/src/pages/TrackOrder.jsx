@@ -75,14 +75,14 @@ const TrackOrder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-32 pb-24">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-32 pb-24 transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header & Search */}
         {/* Header & Search */}
         {(!isAutoLoaded || error) && (
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-slate-900 mb-4">Track Your Order</h1>
-            <p className="text-slate-600 mb-8 max-w-xl mx-auto">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Track Your Order</h1>
+            <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto">
               Enter your Order ID to get real-time updates on your shipment status.
             </p>
             
@@ -93,24 +93,24 @@ const TrackOrder = () => {
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value.toUpperCase().trim())}
                   placeholder="e.g. LIVEMART000022"
-                  className="w-full pl-12 pr-32 py-4 rounded-2xl border-none shadow-lg focus:ring-4 focus:ring-amber-500/20 text-lg font-mono tracking-wider outline-none"
+                  className="w-full pl-12 pr-32 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-4 focus:ring-amber-500/20 text-lg font-mono tracking-wider outline-none transition-colors"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-6 h-6" />
                 <button 
                   type="submit"
                   disabled={isLoading}
-                  className="absolute right-2 top-2 bottom-2 bg-slate-900 text-white px-6 rounded-xl font-semibold hover:bg-slate-800 transition-colors disabled:opacity-70"
+                  className="absolute right-2 top-2 bottom-2 bg-slate-900 dark:bg-amber-500 dark:hover:bg-amber-600 text-white px-6 rounded-xl font-semibold hover:bg-slate-800 transition-colors disabled:opacity-70"
                 >
                   {isLoading ? 'Searching...' : 'Track'}
                 </button>
               </div>
-              <p className="text-xs text-slate-400 mt-2 text-center">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 text-center">
                 Format: <span className="font-mono font-bold text-amber-600">LIVEMART000022</span> or <span className="font-mono font-bold text-amber-600">#LIVEMART000022</span>
               </p>
             </form>
             
             {error && (
-              <div className="mt-6 inline-flex items-center text-red-600 bg-red-50 px-4 py-2 rounded-lg font-medium shadow-sm">
+              <div className="mt-6 inline-flex items-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg font-medium shadow-sm">
                 <XCircle className="w-5 h-5 mr-2" />
                 {error}
               </div>
@@ -130,8 +130,8 @@ const TrackOrder = () => {
         {isAutoLoaded && isLoading && !orderData && (
           <div className="flex flex-col items-center justify-center py-20 animate-in fade-in duration-500">
             <div className="w-16 h-16 border-4 border-slate-200 border-t-amber-500 rounded-full animate-spin mb-4"></div>
-            <h2 className="text-xl font-bold text-slate-700">Fetching Order Details...</h2>
-            <p className="text-slate-500 text-sm mt-2">Please wait while we securely retrieve your order.</p>
+            <h2 className="text-xl font-bold text-slate-700 dark:text-slate-300">Fetching Order Details...</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">Please wait while we securely retrieve your order.</p>
           </div>
         )}
 
@@ -144,13 +144,13 @@ const TrackOrder = () => {
                   &larr; Back to Profile
                 </Link>
               )}
-              <h1 className="text-3xl font-black text-slate-900">Order Details</h1>
+              <h1 className="text-3xl font-black text-slate-900 dark:text-white">Order Details</h1>
             </div>
             {orderData.customer_name && (
               <button 
                 onClick={handleDownloadInvoice}
                 disabled={isLoading}
-                className="flex items-center gap-2 bg-white border-2 border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-sm"
+                className="flex items-center gap-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-2.5 rounded-xl font-bold hover:border-indigo-500 hover:text-indigo-600 dark:hover:border-indigo-400 dark:hover:text-indigo-400 transition-all shadow-sm"
               >
                 {isLoading ? <div className="w-5 h-5 border-2 border-slate-300 border-t-indigo-600 rounded-full animate-spin" /> : <Download className="w-5 h-5" />}
                 {isLoading ? 'Generating...' : 'Download Invoice'}
@@ -161,7 +161,7 @@ const TrackOrder = () => {
 
         {/* Order Results */}
         {orderData && (
-          <div className="bg-white rounded-[2rem] shadow-2xl shadow-indigo-500/10 overflow-hidden border border-slate-100 mt-4">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] shadow-2xl shadow-indigo-500/10 overflow-hidden border border-slate-100 dark:border-slate-700 mt-4 transition-colors duration-300">
             {/* Top Details - Animated Hero Banner */}
             <div className="relative overflow-hidden">
               {/* Animated premium gradient background */}
@@ -267,8 +267,8 @@ const TrackOrder = () => {
                       <XCircle className="w-11 h-11" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-900 mb-2">Order Cancelled</h3>
-                  <p className="text-slate-500">This order has been cancelled and will not be delivered.</p>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Order Cancelled</h3>
+                  <p className="text-slate-500 dark:text-slate-400">This order has been cancelled and will not be delivered.</p>
                 </div>
               ) : (() => {
                 const steps = [
@@ -285,7 +285,7 @@ const TrackOrder = () => {
                   <div className="relative">
 
                     {/* ── Track rail (desktop) ── */}
-                    <div className="absolute top-7 left-[3.5rem] right-[3.5rem] h-2 rounded-full bg-slate-100 hidden md:block overflow-hidden">
+                    <div className="absolute top-7 left-[3.5rem] right-[3.5rem] h-2 rounded-full bg-slate-100 dark:bg-slate-700 hidden md:block overflow-hidden">
                       {/* Filled portion */}
                       <div
                         className="h-full rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
@@ -335,7 +335,7 @@ const TrackOrder = () => {
                                   'relative z-10 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-500',
                                   isCompleted
                                     ? 'text-white'
-                                    : 'bg-slate-100 text-slate-300 border-2 border-slate-200',
+                                    : 'bg-slate-100 dark:bg-slate-700 text-slate-300 dark:text-slate-500 border-2 border-slate-200 dark:border-slate-600',
                                   isCurrent ? 'scale-110' : isCompleted ? 'hover:scale-110' : '',
                                 ].join(' ')}
                                 style={isCompleted ? {
@@ -359,7 +359,7 @@ const TrackOrder = () => {
                               <h4
                                 className={`text-sm font-black tracking-tight transition-colors ${
                                   isCurrent   ? 'text-amber-600' :
-                                  isCompleted ? 'text-slate-800' :
+                                  isCompleted ? 'text-slate-800 dark:text-slate-200' :
                                                'text-slate-350 text-slate-400'
                                 }`}
                               >
@@ -401,18 +401,18 @@ const TrackOrder = () => {
 
             {/* Delivery Experience (Only if delivered) */}
             {orderData.status === 'Delivered' && (
-              <div className="bg-emerald-50/50 border-t border-emerald-100 p-8 text-center relative overflow-hidden">
+              <div className="bg-emerald-50/50 dark:bg-emerald-900/10 border-t border-emerald-100 dark:border-emerald-900/30 p-8 text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-200/20 rounded-full translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-200/20 rounded-full -translate-x-1/2 translate-y-1/2 blur-2xl"></div>
                 
-                <h3 className="text-2xl font-black text-slate-900 mb-2 relative z-10">How was your delivery experience?</h3>
-                <p className="text-slate-600 mb-6 text-sm font-medium relative z-10">Your feedback helps us improve our service.</p>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 relative z-10">How was your delivery experience?</h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-6 text-sm font-medium relative z-10">Your feedback helps us improve our service.</p>
                 <div className="flex justify-center gap-4 relative z-10">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button 
                       key={star}
                       onClick={() => toast.success('Thanks for your feedback!')}
-                      className="group p-4 bg-white rounded-full border-2 border-emerald-100 hover:border-amber-400 hover:bg-amber-50 transition-all shadow-md hover:shadow-xl hover:shadow-amber-500/20 hover:-translate-y-1"
+                      className="group p-4 bg-white dark:bg-slate-700 rounded-full border-2 border-emerald-100 dark:border-emerald-900/30 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all shadow-md hover:shadow-xl hover:shadow-amber-500/20 hover:-translate-y-1"
                     >
                       <Star className="w-8 h-8 text-slate-200 group-hover:text-amber-400 group-hover:fill-amber-400 transition-colors" />
                     </button>
@@ -422,36 +422,36 @@ const TrackOrder = () => {
             )}
 
             {/* Order Items & Details */}
-            <div className="bg-slate-50 border-t border-slate-100 p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-700 p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
-                <h3 className="font-bold text-slate-900 mb-4 border-b pb-2">Delivery & Payment</h3>
-                <div className="space-y-2 text-sm text-slate-600 mb-6">
-                  <p><span className="font-medium text-slate-900">Name:</span> {orderData.customer_name}</p>
-                  <p><span className="font-medium text-slate-900">Email:</span> {orderData.customer_email || 'Not provided'}</p>
-                  <p><span className="font-medium text-slate-900">Phone:</span> {orderData.customer_phone || 'N/A'}</p>
-                  <p><span className="font-medium text-slate-900">Address:</span> {orderData.customer_address ? `${orderData.customer_address}${orderData.landmark ? `, Landmark: ${orderData.landmark}` : ''}` : 'Not provided'}</p>
-                  <p><span className="font-medium text-slate-900">City/Pincode:</span> {orderData.city}, {orderData.district ? `${orderData.district}, ` : ''}{orderData.pincode}</p>
+                <h3 className="font-bold text-slate-900 dark:text-white mb-4 border-b dark:border-slate-700 pb-2">Delivery & Payment</h3>
+                <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+                  <p><span className="font-medium text-slate-900 dark:text-slate-200">Name:</span> {orderData.customer_name}</p>
+                  <p><span className="font-medium text-slate-900 dark:text-slate-200">Email:</span> {orderData.customer_email || 'Not provided'}</p>
+                  <p><span className="font-medium text-slate-900 dark:text-slate-200">Phone:</span> {orderData.customer_phone || 'N/A'}</p>
+                  <p><span className="font-medium text-slate-900 dark:text-slate-200">Address:</span> {orderData.customer_address ? `${orderData.customer_address}${orderData.landmark ? `, Landmark: ${orderData.landmark}` : ''}` : 'Not provided'}</p>
+                  <p><span className="font-medium text-slate-900 dark:text-slate-200">City/Pincode:</span> {orderData.city}, {orderData.district ? `${orderData.district}, ` : ''}{orderData.pincode}</p>
                 </div>
                 
-                <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                  <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-500">
+                <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                  <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-indigo-500 dark:text-indigo-400">
                     <CreditCard className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Payment Method</p>
-                    <p className="font-bold text-slate-900 text-lg">{orderData.payment_method || 'Cash on Delivery'}</p>
+                    <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Payment Method</p>
+                    <p className="font-bold text-slate-900 dark:text-white text-lg">{orderData.payment_method || 'Cash on Delivery'}</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="font-bold text-slate-900 mb-4 border-b pb-2 flex justify-between items-center">
+                <h3 className="font-bold text-slate-900 dark:text-white mb-4 border-b dark:border-slate-700 pb-2 flex justify-between items-center">
                   <span>Order Summary</span>
-                  <span className="text-sm font-normal text-slate-500">{(orderData.items || orderData.OrderItems || []).length} items</span>
+                  <span className="text-sm font-normal text-slate-500 dark:text-slate-400">{(orderData.items || orderData.OrderItems || []).length} items</span>
                 </h3>
                 <div className="space-y-4">
                   {(orderData.items || orderData.OrderItems || []).map((item, idx) => (
-                    <div key={item.id || idx} className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm transition-all hover:border-amber-200">
+                    <div key={item.id || idx} className="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all hover:border-amber-200 dark:hover:border-amber-700">
                       <div className="flex items-center space-x-4">
                         <Link to={item.product_id ? `/product/${item.product_id}` : '#'} className="shrink-0 relative group">
                           <img src={item.productImage || (item.Product?.images && item.Product.images[0]) || 'https://via.placeholder.com/60'} alt={item.productTitle || item.Product?.title || 'Product'} className="w-16 h-16 rounded-lg object-cover border border-slate-100" />
@@ -461,10 +461,10 @@ const TrackOrder = () => {
                         </Link>
                         
                         <div className="flex-1 min-w-0">
-                          <Link to={item.product_id ? `/product/${item.product_id}` : '#'} className="text-sm font-bold text-slate-900 truncate block hover:text-amber-600 transition-colors">
+                          <Link to={item.product_id ? `/product/${item.product_id}` : '#'} className="text-sm font-bold text-slate-900 dark:text-white truncate block hover:text-amber-600 dark:hover:text-amber-500 transition-colors">
                             {item.productTitle || item.Product?.title || 'Product'}
                           </Link>
-                          <p className="text-xs text-slate-500 mt-1">Qty: {item.quantity} × ₹{item.price}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Qty: {item.quantity} × ₹{item.price}</p>
                           
                           {/* Write Review Button (Only if Delivered) */}
                           {orderData.status === 'Delivered' && (
@@ -481,20 +481,20 @@ const TrackOrder = () => {
                           )}
                         </div>
                         
-                        <div className="text-sm font-black text-slate-900 shrink-0">
+                        <div className="text-sm font-black text-slate-900 dark:text-white shrink-0">
                           ₹{(item.price * item.quantity).toFixed(2)}
                         </div>
                       </div>
                     </div>
                   ))}
                   
-                  <div className="pt-4 mt-2 space-y-2 bg-slate-100/50 p-4 rounded-xl border border-slate-100">
-                    <div className="flex justify-between text-sm text-slate-600 font-medium">
+                  <div className="pt-4 mt-2 space-y-2 bg-slate-100/50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 font-medium">
                       <span>Subtotal</span>
                       <span>₹{((orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)).toFixed(2)}</span>
                     </div>
                     {Number(orderData.total_amount || 0) - (((orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)) - Number(orderData.discountAmount || 0)) > 0.01 && (
-                      <div className="flex justify-between text-sm text-slate-600 font-medium">
+                      <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 font-medium">
                         <span>Shipping & Extra Charges</span>
                         <span>₹{(Number(orderData.total_amount) - (((orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)) - Number(orderData.discountAmount || 0))).toFixed(2)}</span>
                       </div>
@@ -505,7 +505,7 @@ const TrackOrder = () => {
                         <span>-₹{Number(orderData.discountAmount).toFixed(2)}</span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center font-black text-xl text-slate-900 pt-3 border-t border-slate-200 mt-3">
+                    <div className="flex justify-between items-center font-black text-xl text-slate-900 dark:text-white pt-3 border-t border-slate-200 dark:border-slate-700 mt-3">
                       <span>Total Paid</span>
                       <span className="text-indigo-600">₹{Number(orderData.total_amount || (orderData.items || orderData.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0)).toFixed(2)}</span>
                     </div>
@@ -521,7 +521,7 @@ const TrackOrder = () => {
       {/* Product Review Modal */}
       {isReviewModalOpen && reviewProduct && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 relative animate-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-700 relative animate-in zoom-in-95 duration-200">
             <button 
               onClick={() => {
                 setIsReviewModalOpen(false);
@@ -535,14 +535,14 @@ const TrackOrder = () => {
               <XCircle className="w-6 h-6" />
             </button>
             
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">Write a Review</h3>
-            <div className="flex items-center gap-3 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Write a Review</h3>
+            <div className="flex items-center gap-3 mb-6 bg-slate-50 dark:bg-slate-700 p-3 rounded-xl border border-slate-100 dark:border-slate-600">
               <img src={reviewProduct.images?.[0] || 'https://via.placeholder.com/50'} alt="product" className="w-12 h-12 rounded-lg object-cover border border-slate-200" />
-              <p className="font-semibold text-slate-700 text-sm line-clamp-2">{reviewProduct.title}</p>
+              <p className="font-semibold text-slate-700 dark:text-slate-200 text-sm line-clamp-2">{reviewProduct.title}</p>
             </div>
             
             <div className="mb-6 text-center">
-              <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Overall Rating</p>
+              <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Overall Rating</p>
               <div className="flex justify-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -566,13 +566,13 @@ const TrackOrder = () => {
             </div>
             
             <div className="mb-6">
-              <label className="block text-sm font-bold text-slate-700 mb-2">Your Review</label>
+              <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Your Review</label>
               <textarea 
                 rows="4" 
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="What did you like or dislike? How did you use the product?"
-                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none resize-none transition-all"
+                className="w-full p-4 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-600 focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none resize-none transition-all"
               />
             </div>
             
@@ -598,7 +598,7 @@ const TrackOrder = () => {
                   setReviewText('');
                 }, 800);
               }}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              className="w-full bg-slate-900 dark:bg-amber-500 hover:bg-slate-800 dark:hover:bg-amber-600 text-white py-3.5 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
             >
               Submit Review
             </button>
@@ -630,13 +630,13 @@ class TrackOrderErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-50 pt-32 pb-24 flex items-center justify-center">
-          <div className="max-w-3xl w-full bg-white p-8 rounded-2xl shadow-xl border-2 border-red-200">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-32 pb-24 flex items-center justify-center">
+          <div className="max-w-3xl w-full bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border-2 border-red-200 dark:border-red-800">
             <h2 className="text-2xl font-bold text-red-600 mb-4 flex items-center gap-2">
               <XCircle className="w-8 h-8" />
               Oops! The page crashed.
             </h2>
-            <p className="text-slate-700 mb-4 font-medium">Please send a screenshot of this error box back to Antigravity so I can fix it immediately:</p>
+            <p className="text-slate-700 dark:text-slate-300 mb-4 font-medium">Please send a screenshot of this error box back to Antigravity so I can fix it immediately:</p>
             <div className="bg-slate-900 text-red-400 p-4 rounded-xl font-mono text-sm overflow-auto mb-4 max-h-64">
               <strong>{this.state.error && this.state.error.toString()}</strong>
               <br />
