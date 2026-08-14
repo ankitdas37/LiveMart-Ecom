@@ -3,6 +3,11 @@ import { createRoot } from 'react-dom/client'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import './index.css'
 import App from './App.jsx'
+import axios from 'axios'
+
+// Set global base URL for all API requests
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
+axios.defaults.withCredentials = true; // Ensure cookies/sessions work across domains
 
 // Retrieve the Client ID from the frontend/.env file
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
