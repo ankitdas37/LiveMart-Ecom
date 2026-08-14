@@ -28,10 +28,13 @@ const sendEmail = async (options) => {
   const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
   // Build a proper RFC 2822 email message
+  // Encode subject using RFC 2047 to handle Unicode chars (em-dashes, emojis, etc.)
+  const encodeSubject = (subject) => `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
+
   const messageParts = [
     `From: "LiveMart Support" <${emailUser}>`,
     `To: ${options.email}`,
-    `Subject: ${options.subject}`,
+    `Subject: ${encodeSubject(options.subject)}`,
     'MIME-Version: 1.0',
     'Content-Type: text/html; charset=utf-8',
     '',
