@@ -101,6 +101,16 @@ const sendEmail = async (options) => {
     console.log(`📧 Email sent to ${options.email}: ${options.subject}`);
   } catch (err) {
     console.error(`❌ Gmail API failed to send email to ${options.email}:`, err.message);
+    try {
+      const [setting] = await Setting.findOrCreate({
+        where: { key: 'LAST_EMAIL_ERROR' },
+        defaults: { value: '', type: 'STRING' }
+      });
+      setting.value = `${new Date().toISOString()} - To: ${options.email} - Error: ${err.message}`;
+      await setting.save();
+    } catch (dbErr) {
+      // ignore
+    }
     throw err;
   }
 
