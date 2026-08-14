@@ -27,26 +27,65 @@ const sendEmail = async (options) => {
 
   const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-  // Build a proper RFC 2822 email message
   // Encode subject using RFC 2047 to handle Unicode chars (em-dashes, emojis, etc.)
   const encodeSubject = (subject) => `=?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`;
 
-  const messageParts = [
-    `From: "LiveMart Support" <${emailUser}>`,
-    `To: ${options.email}`,
-    `Subject: ${encodeSubject(options.subject)}`,
-    'MIME-Version: 1.0',
-    'Content-Type: text/html; charset=utf-8',
-    '',
-    options.html || `<p>${options.message || ''}</p>`,
-  ];
+  let rawMessage;
+  const hasAttachments = options.attachments && options.attachments.length > 0;
 
-  if (options.cc) {
-    const cc = Array.isArray(options.cc) ? options.cc.join(', ') : options.cc;
-    messageParts.splice(2, 0, `Cc: ${cc}`);
+  if (hasAttachments) {
+    // Build a multipart MIME message with attachments
+    const boundary = `boundary_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+
+    const headers = [
+      `From: "LiveMart Support" <${emailUser}>`,
+      `To: ${options.email}`,
+      options.cc ? `Cc: ${Array.isArray(options.cc) ? options.cc.join(', ') : options.cc}` : '',
+      `Subject: ${encodeSubject(options.subject)}`,
+      'MIME-Version: 1.0',
+      `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    ].filter(Boolean).join('\n');
+
+    // HTML body part
+    const htmlBody = options.html || `<p>${options.message || ''}</p>`;
+    let body = `${headers}\n\n--${boundary}\n`;
+    body += `Content-Type: text/html; charset=utf-8\n\n`;
+    body += `${htmlBody}\n`;
+
+    // Attachment parts
+    for (const att of options.attachments) {
+      const contentBase64 = Buffer.isBuffer(att.content)
+        ? att.content.toString('base64')
+        : Buffer.from(att.content).toString('base64');
+      body += `\n--${boundary}\n`;
+      body += `Content-Type: ${att.contentType || 'application/octet-stream'}; name="${att.filename}"\n`;
+      body += `Content-Disposition: attachment; filename="${att.filename}"\n`;
+      body += `Content-Transfer-Encoding: base64\n\n`;
+      body += `${contentBase64}\n`;
+    }
+
+    body += `\n--${boundary}--`;
+    rawMessage = body;
+  } else {
+    // Simple message without attachments
+    const messageParts = [
+      `From: "LiveMart Support" <${emailUser}>`,
+      `To: ${options.email}`,
+      `Subject: ${encodeSubject(options.subject)}`,
+      'MIME-Version: 1.0',
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      options.html || `<p>${options.message || ''}</p>`,
+    ];
+
+    if (options.cc) {
+      const cc = Array.isArray(options.cc) ? options.cc.join(', ') : options.cc;
+      messageParts.splice(2, 0, `Cc: ${cc}`);
+    }
+
+    rawMessage = messageParts.join('\n');
   }
 
-  const rawMessage = messageParts.join('\n');
   // Base64 URL-encode the message as required by Gmail API
   const encodedMessage = Buffer.from(rawMessage)
     .toString('base64')
@@ -54,10 +93,16 @@ const sendEmail = async (options) => {
     .replace(/\//g, '_')
     .replace(/=+$/, '');
 
-  await gmail.users.messages.send({
-    userId: 'me',
-    requestBody: { raw: encodedMessage },
-  });
+  try {
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: { raw: encodedMessage },
+    });
+    console.log(`📧 Email sent to ${options.email}: ${options.subject}`);
+  } catch (err) {
+    console.error(`❌ Gmail API failed to send email to ${options.email}:`, err.message);
+    throw err;
+  }
 
   // Track total emails sent (fire-and-forget)
   try {
