@@ -1,6 +1,16 @@
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const { Setting } = require('../models');
+const dns = require('dns');
+
+// Force IPv4 resolution to prevent IPv6 blackhole timeouts on Render
+try {
+  if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+  }
+} catch (e) {
+  // ignore if not supported in this Node version
+}
 
 const sendEmail = async (options) => {
   const clientId = process.env.GMAIL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID;
