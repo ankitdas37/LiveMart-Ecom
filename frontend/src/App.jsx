@@ -46,7 +46,7 @@ import AdminSupport from './pages/admin/AdminSupport';
 const StoreLayout = () => (
   <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300">
     <Navbar />
-    <main className="flex-grow pt-16 pb-20 md:pb-0">
+    <main className="flex-grow pt-[84px] md:pt-24 pb-20 md:pb-0">
       <Outlet />
     </main>
     <Footer />

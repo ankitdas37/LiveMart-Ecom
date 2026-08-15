@@ -249,13 +249,13 @@ const Home = () => {
         </div>
 
         {/* Search Bar */}
-        <div ref={searchRef} className="relative z-[60]">
+        <div ref={searchRef} className="relative z-[60] mt-1 mb-2 px-1">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               if (searchQuery) navigate(`/shop?search=${searchQuery}`);
             }}
-            className="relative flex items-center"
+            className="relative w-full flex items-center"
           >
             <Search className="absolute left-4 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
             <input
@@ -264,23 +264,23 @@ const Home = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products..."
-              className="w-full bg-slate-50 dark:bg-slate-800/90 text-slate-900 dark:text-white rounded-full py-3 pl-11 pr-24 text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-inner border border-slate-200 dark:border-slate-700/60 backdrop-blur-sm transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              className="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full py-3.5 pl-11 pr-24 text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm border border-slate-200 dark:border-slate-700 transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
               autoComplete="off"
             />
-            <div className="absolute right-3 flex space-x-2 text-slate-400">
+            <div className="absolute right-2 flex items-center space-x-1.5 text-slate-400">
               <button
                 type="button"
                 onClick={() => setShowCameraAlert(true)}
-                className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full hover:text-slate-600 dark:hover:text-slate-300 transition-colors focus:outline-none"
+                className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full hover:text-slate-600 dark:hover:text-slate-300 transition-colors focus:outline-none"
               >
-                <Camera className="w-5 h-5" />
+                <Camera className="w-4 h-4" />
               </button>
               <button
                 type="button"
                 onClick={startVoiceSearch}
-                className={`p-1.5 rounded-full transition-colors focus:outline-none flex items-center justify-center ${isListening ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 'hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'}`}
+                className={`p-2 rounded-full transition-colors focus:outline-none flex items-center justify-center ${isListening ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 'hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'}`}
               >
-                <Mic className="w-5 h-5" />
+                <Mic className="w-4 h-4" />
                 {isListening && <span className="absolute w-8 h-8 rounded-full border-2 border-red-500/50 animate-ping"></span>}
               </button>
             </div>
