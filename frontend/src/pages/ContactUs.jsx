@@ -69,7 +69,7 @@ const ContactUs = () => {
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-slate-400 font-medium group-hover:text-amber-400 transition-colors">Call us</p>
-                    <p className="text-white font-medium">+91 9876543210</p>
+                    <p className="text-white font-medium">+91 8515081309</p>
                   </div>
                   <div className="text-slate-500 group-hover:text-amber-500 transition-colors">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
