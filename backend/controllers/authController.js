@@ -114,59 +114,18 @@ exports.sendSignupOTP = async (req, res) => {
 
     // Build a beautiful HTML email
     const htmlBody = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify your email – W!FO MART</title>
-</head>
-<body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
-    <tr>
-      <td align="center">
-        <table width="520" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
-          <!-- Header -->
-          <tr>
-            <td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:36px 40px;text-align:center;">
-              <h1 style="margin:0;color:#1e293b;font-size:32px;font-weight:900;letter-spacing:-1px;">W!FO <span style="color:#fff;">MART</span></h1>
-              <p style="margin:6px 0 0;color:#1e293b;font-size:13px;opacity:0.8;font-weight:600;">A BASRIC Company</p>
-            </td>
-          </tr>
-          <!-- Body -->
-          <tr>
-            <td style="padding:40px;">
-              <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">Verify your email address</h2>
-              <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                You're almost there! Enter the verification code below to complete your W!FO MART account setup.
-              </p>
-              <!-- OTP Box -->
-              <div style="background:#0f172a;border:2px solid #f59e0b;border-radius:16px;padding:24px;text-align:center;margin-bottom:28px;">
-                <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Your Verification Code</p>
-                <p style="margin:0;color:#f59e0b;font-size:44px;font-weight:900;letter-spacing:10px;">${otpCode}</p>
-                <p style="margin:10px 0 0;color:#64748b;font-size:12px;">This code expires in <strong style="color:#f59e0b;">10 minutes</strong></p>
-              </div>
-              <!-- Warning -->
-              <div style="background:#1a1a2e;border-left:4px solid #ef4444;padding:14px 18px;border-radius:8px;margin-bottom:28px;">
-                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. W!FO MART will never ask for your OTP.</p>
-              </div>
-              <p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;">
-                If you didn't request this, you can safely ignore this email. Someone may have accidentally entered your email address.
-              </p>
-            </td>
-          </tr>
-          <!-- Footer -->
-          <tr>
-            <td style="background:#0f172a;padding:20px 40px;text-align:center;">
-              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FO MART – A BASRIC Company. All rights reserved.</p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
+  <h2>W!FO MART - Account Verification</h2>
+  <p>Hello,</p>
+  <p>Your email verification code for W!FO MART is:</p>
+  <div style="font-size: 32px; font-weight: bold; padding: 15px; margin: 15px 0; background-color: #f3f4f6; border-radius: 8px; text-align: center; letter-spacing: 5px; color: #d97706;">
+    ${otpCode}
+  </div>
+  <p>This code will expire in 10 minutes.</p>
+  <p>If you didn't request this code, you can safely ignore this email.</p>
+  <br/>
+  <p style="font-size: 14px; color: #666;">Thanks,<br/>The W!FO MART Team</p>
+</div>`;
 
     // Send email asynchronously in the background to speed up frontend response
     sendEmail({
@@ -390,39 +349,18 @@ exports.loginUser = async (req, res) => {
 
       // Send OTP via email (reusing the clean HTML template pattern)
       const htmlBody = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin:0;padding:0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background-color:#0f172a;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0f172a;padding:40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" style="background-color:#1e293b;border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,0.5);">
-          <tr>
-            <td style="padding:40px 40px 30px;text-align:center;">
-              <h1 style="margin:0 0 15px;color:#f8fafc;font-size:28px;font-weight:800;">Login Verification</h1>
-              <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                You are trying to log in to your W!FO MART account. Enter the verification code below to proceed.
-              </p>
-              <div style="background:#0f172a;border:2px solid #f59e0b;border-radius:16px;padding:24px;text-align:center;margin-bottom:28px;">
-                <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Your Verification Code</p>
-                <p style="margin:0;color:#f59e0b;font-size:44px;font-weight:900;letter-spacing:10px;">${otpCode}</p>
-                <p style="margin:10px 0 0;color:#64748b;font-size:12px;">This code expires in <strong style="color:#f59e0b;">10 minutes</strong></p>
-              </div>
-              <div style="background:#1a1a2e;border-left:4px solid #ef4444;padding:14px 18px;border-radius:8px;margin-bottom:28px;">
-                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. W!FO MART will never ask for your OTP.</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
+  <h2>W!FO MART - Login Verification</h2>
+  <p>Hello,</p>
+  <p>You are trying to log in to your W!FO MART account. Here is your verification code:</p>
+  <div style="font-size: 32px; font-weight: bold; padding: 15px; margin: 15px 0; background-color: #f3f4f6; border-radius: 8px; text-align: center; letter-spacing: 5px; color: #d97706;">
+    ${otpCode}
+  </div>
+  <p>This code will expire in 10 minutes.</p>
+  <p>If you didn't request this login, please secure your account immediately.</p>
+  <br/>
+  <p style="font-size: 14px; color: #666;">Thanks,<br/>The W!FO MART Team</p>
+</div>`;
 
       sendEmail({
         email,
@@ -542,13 +480,17 @@ exports.forgotPassword = async (req, res) => {
     // OTP sent via email. Removed console.log to prevent OTP exposure in logs.
 
     const htmlBody = `
-    <div style="font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; max-width: 500px; margin: 0 auto;">
-      <h1 style="color: #4f46e5; margin-bottom: 20px;">Reset Your Password</h1>
-      <p style="color: #334155; font-size: 16px;">Hi ${user.name},</p>
-      <p style="color: #334155; font-size: 16px;">You recently requested to reset your password for your W!FO MART account. Use the following secure OTP to proceed:</p>
-      <h2 style="letter-spacing: 6px; color: #1e293b; background: #e0e7ff; padding: 15px 20px; display: inline-block; border-radius: 8px; border: 1px dashed #818cf8; margin: 20px 0;">${resetOTP}</h2>
-      <p style="color: #64748b; font-size: 14px;">This code expires in 10 minutes. If you didn't request this, please safely ignore this email.</p>
-    </div>`;
+<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
+  <h2>W!FO MART - Password Reset</h2>
+  <p>Hi ${user.name},</p>
+  <p>You recently requested to reset your password for your W!FO MART account. Use the following code to proceed:</p>
+  <div style="font-size: 32px; font-weight: bold; padding: 15px; margin: 15px 0; background-color: #f3f4f6; border-radius: 8px; text-align: center; letter-spacing: 5px; color: #4f46e5;">
+    ${resetOTP}
+  </div>
+  <p>This code expires in 10 minutes. If you didn't request this, please safely ignore this email.</p>
+  <br/>
+  <p style="font-size: 14px; color: #666;">Thanks,<br/>The W!FO MART Team</p>
+</div>`;
 
     try {
       await sendEmail({
