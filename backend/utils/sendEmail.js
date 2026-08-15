@@ -32,58 +32,77 @@ const sendEmail = async (options) => {
 
   let rawMessage;
   const hasAttachments = options.attachments && options.attachments.length > 0;
+  
+  const boundaryMixed = `boundary_mixed_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  const boundaryAlt = `boundary_alt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  
+  const baseHeaders = [
+    `From: "LiveMart Support" <${emailUser}>`,
+    `To: ${options.email}`,
+    options.cc ? `Cc: ${Array.isArray(options.cc) ? options.cc.join(', ') : options.cc}` : '',
+    `Reply-To: ${emailUser}`,
+    `Subject: ${encodeSubject(options.subject)}`,
+    'MIME-Version: 1.0',
+  ].filter(Boolean);
+
+  const plainTextBody = options.message || 'Please view this email in an HTML-compatible email client.';
+  const htmlBody = options.html || `<p>${options.message || ''}</p>`;
+
+  let body = '';
 
   if (hasAttachments) {
-    // Build a multipart MIME message with attachments
-    const boundary = `boundary_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-
-    const headers = [
-      `From: "LiveMart Support" <${emailUser}>`,
-      `To: ${options.email}`,
-      options.cc ? `Cc: ${Array.isArray(options.cc) ? options.cc.join(', ') : options.cc}` : '',
-      `Subject: ${encodeSubject(options.subject)}`,
-      'MIME-Version: 1.0',
-      `Content-Type: multipart/mixed; boundary="${boundary}"`,
-    ].filter(Boolean).join('\n');
-
-    // HTML body part
-    const htmlBody = options.html || `<p>${options.message || ''}</p>`;
-    let body = `${headers}\n\n--${boundary}\n`;
+    // multipart/mixed wrapper for attachments
+    body += baseHeaders.join('\n') + '\n';
+    body += `Content-Type: multipart/mixed; boundary="${boundaryMixed}"\n\n`;
+    
+    // Add the multipart/alternative body inside the mixed boundary
+    body += `--${boundaryMixed}\n`;
+    body += `Content-Type: multipart/alternative; boundary="${boundaryAlt}"\n\n`;
+    
+    // Plain text part
+    body += `--${boundaryAlt}\n`;
+    body += `Content-Type: text/plain; charset=utf-8\n\n`;
+    body += `${plainTextBody}\n\n`;
+    
+    // HTML part
+    body += `--${boundaryAlt}\n`;
     body += `Content-Type: text/html; charset=utf-8\n\n`;
-    body += `${htmlBody}\n`;
+    body += `${htmlBody}\n\n`;
+    
+    body += `--${boundaryAlt}--\n\n`; // End of alternative
 
-    // Attachment parts
+    // Attachments
     for (const att of options.attachments) {
       const contentBase64 = Buffer.isBuffer(att.content)
         ? att.content.toString('base64')
         : Buffer.from(att.content).toString('base64');
-      body += `\n--${boundary}\n`;
+      
+      body += `--${boundaryMixed}\n`;
       body += `Content-Type: ${att.contentType || 'application/octet-stream'}; name="${att.filename}"\n`;
       body += `Content-Disposition: attachment; filename="${att.filename}"\n`;
       body += `Content-Transfer-Encoding: base64\n\n`;
-      body += `${contentBase64}\n`;
+      body += `${contentBase64}\n\n`;
     }
-
-    body += `\n--${boundary}--`;
+    
+    body += `--${boundaryMixed}--`;
     rawMessage = body;
   } else {
-    // Simple message without attachments
-    const messageParts = [
-      `From: "LiveMart Support" <${emailUser}>`,
-      `To: ${options.email}`,
-      `Subject: ${encodeSubject(options.subject)}`,
-      'MIME-Version: 1.0',
-      'Content-Type: text/html; charset=utf-8',
-      '',
-      options.html || `<p>${options.message || ''}</p>`,
-    ];
-
-    if (options.cc) {
-      const cc = Array.isArray(options.cc) ? options.cc.join(', ') : options.cc;
-      messageParts.splice(2, 0, `Cc: ${cc}`);
-    }
-
-    rawMessage = messageParts.join('\n');
+    // Just multipart/alternative since there are no attachments
+    body += baseHeaders.join('\n') + '\n';
+    body += `Content-Type: multipart/alternative; boundary="${boundaryAlt}"\n\n`;
+    
+    // Plain text part
+    body += `--${boundaryAlt}\n`;
+    body += `Content-Type: text/plain; charset=utf-8\n\n`;
+    body += `${plainTextBody}\n\n`;
+    
+    // HTML part
+    body += `--${boundaryAlt}\n`;
+    body += `Content-Type: text/html; charset=utf-8\n\n`;
+    body += `${htmlBody}\n\n`;
+    
+    body += `--${boundaryAlt}--`;
+    rawMessage = body;
   }
 
   // Base64 URL-encode the message as required by Gmail API
