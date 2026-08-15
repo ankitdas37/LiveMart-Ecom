@@ -87,10 +87,21 @@ export const CartProvider = ({ children }) => {
       return;
     }
 
+    const maxStock = product.stock || 100;
+    const existing = cartItems.find(i => i.id === product.id);
+    const currentQty = existing ? existing.quantity : 0;
+    
+    if (currentQty + quantity > maxStock) {
+      import('react-hot-toast').then((module) => {
+        module.toast.error(`Only ${maxStock} items available in stock.`);
+      });
+      return; // Do not add to cart
+    }
+
     // Optimistic update
     setCartItems(prev => {
-      const existing = prev.find(i => i.id === product.id);
-      if (existing) {
+      const itemExisting = prev.find(i => i.id === product.id);
+      if (itemExisting) {
         return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + quantity } : i);
       }
       return [...prev, { ...product, quantity }];

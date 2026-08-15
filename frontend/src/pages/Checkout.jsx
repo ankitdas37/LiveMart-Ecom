@@ -857,7 +857,14 @@ const Checkout = () => {
                           >−</button>
                           <span className="w-7 text-center text-sm font-bold text-slate-900 dark:text-white">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, Math.min(item.stock || 100, item.quantity + 1))}
+                            onClick={() => {
+                              const maxStock = item.stock || 100;
+                              if (item.quantity >= maxStock) {
+                                toast.error(`Only ${maxStock} items available in stock.`);
+                              } else {
+                                updateQuantity(item.id, item.quantity + 1);
+                              }
+                            }}
                             className="w-6 h-6 flex items-center justify-center rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-colors font-bold text-sm leading-none"
                           >+</button>
                           <button
