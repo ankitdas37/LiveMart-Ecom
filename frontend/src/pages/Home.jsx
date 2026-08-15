@@ -249,7 +249,7 @@ const Home = () => {
         </div>
 
         {/* Search Bar */}
-        <div ref={searchRef} className="relative z-[60] mt-1 mb-2 px-1">
+        <div ref={searchRef} className="sticky top-[60px] z-[40] mt-1 -mx-3 px-4 py-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
           <form
             onSubmit={(e) => {
               e.preventDefault();
