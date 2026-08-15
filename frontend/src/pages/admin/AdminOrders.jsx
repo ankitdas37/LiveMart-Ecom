@@ -733,7 +733,7 @@ ${orderNotesHTML}
       case 'Cancelled':
         return <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Cancelled</span>;
       default:
-        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">{status}</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 border border-slate-200 dark:border-slate-700">{status}</span>;
     }
   };
 
@@ -741,15 +741,15 @@ ${orderNotesHTML}
   const tabs = ['Pending Confirmation', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
   if (isLoading) {
-    return <div className="p-8 text-center text-slate-500">Loading orders...</div>;
+    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading orders...</div>;
   }
 
   return (
     <div className="space-y-6">
       <Toaster position="top-right" />
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Orders Management</h1>
-        <p className="text-slate-500">Review, edit, delete, and approve incoming orders</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Orders Management</h1>
+        <p className="text-slate-500 dark:text-slate-400">Review, edit, delete, and approve incoming orders</p>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -780,20 +780,20 @@ ${orderNotesHTML}
       </div>
 
       {filteredOrders.length > 0 && (
-        <div className="flex items-center px-6 py-3 bg-slate-50 border border-slate-200 rounded-2xl">
+        <div className="flex items-center px-6 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
           <input
             type="checkbox"
             className="w-5 h-5 mr-3 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
             checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
             onChange={handleSelectAll}
           />
-          <span className="text-sm font-semibold text-slate-700">Select All in {activeTab}</span>
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Select All in {activeTab}</span>
         </div>
       )}
 
       <div className="space-y-4">
         {filteredOrders.length === 0 ? (
-          <div className="bg-white p-8 rounded-2xl text-center text-slate-500 border border-slate-100">
+          <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl text-center text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-800">
             No orders found.
           </div>
         ) : (
@@ -801,7 +801,7 @@ ${orderNotesHTML}
             <div key={order.id} id={`order-row-${order.id}`} className={`bg-white rounded-2xl shadow-sm border overflow-hidden ${expandedOrderId === order.id ? 'border-amber-400 shadow-md ring-2 ring-amber-100' : 'border-slate-100'}`}>
               {/* Order Header (Always Visible) */}
               <div
-                className="p-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between hover:bg-slate-50 transition-colors"
+                className="p-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 onClick={() => toggleExpand(order.id)}
               >
                 <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-8">
@@ -814,25 +814,25 @@ ${orderNotesHTML}
                     />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-medium">Order ID</p>
-                    <p className="font-bold text-slate-900">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Order ID</p>
+                    <p className="font-bold text-slate-900 dark:text-white">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-medium">Date & Time</p>
-                    <p className="font-semibold text-slate-700">{new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Date & Time</p>
+                    <p className="font-semibold text-slate-700 dark:text-slate-300">{new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-medium">Customer</p>
-                    <p className="font-semibold text-slate-700 flex items-center space-x-2">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Customer</p>
+                    <p className="font-semibold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
                       <span>{order.customer_name}</span>
                       {order.is_registered_user
                         ? <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-800">Registered</span>
-                        : <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Guest</span>
+                        : <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Guest</span>
                       }
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-medium">Total</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total</p>
                     <p className="font-bold text-amber-600">₹{order.total_amount}</p>
                   </div>
                   <div>
@@ -846,12 +846,12 @@ ${orderNotesHTML}
 
               {/* Order Details (Expanded) */}
               {expandedOrderId === order.id && (
-                <div className="p-6 border-t border-slate-100 bg-slate-50/50">
+                <div className="p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                     {/* Customer Info */}
                     <div className="space-y-4">
-                      <h3 className="font-bold text-slate-900 border-b pb-2 flex justify-between items-center">
+                      <h3 className="font-bold text-slate-900 dark:text-white border-b pb-2 flex justify-between items-center">
                         Customer Details
                         <div className="flex space-x-2">
                           <button onClick={(e) => { e.stopPropagation(); setNoteOrder(order.id); setQuickNote(''); setIsNotePublic(true); removeQuickNoteFile(); }} className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Add Note to Order">
@@ -869,18 +869,18 @@ ${orderNotesHTML}
                         </div>
                       </h3>
                       <div className="space-y-2 text-sm">
-                        <div className="flex items-start text-slate-700">
+                        <div className="flex items-start text-slate-700 dark:text-slate-300">
                           <Mail className="w-4 h-4 mr-2 mt-0.5 text-slate-400 flex-shrink-0" />
                           <span>{order.customer_email}</span>
                         </div>
-                        <div className="flex items-start text-slate-700">
+                        <div className="flex items-start text-slate-700 dark:text-slate-300">
                           <Phone className="w-4 h-4 mr-2 mt-0.5 text-slate-400 flex-shrink-0" />
                           <div>
                             <div>{order.customer_phone}</div>
-                            {order.alt_phone && <div className="text-slate-500">Alt: {order.alt_phone}</div>}
+                            {order.alt_phone && <div className="text-slate-500 dark:text-slate-400">Alt: {order.alt_phone}</div>}
                           </div>
                         </div>
-                        <div className="flex items-start text-slate-700">
+                        <div className="flex items-start text-slate-700 dark:text-slate-300">
                           <MapPin className="w-4 h-4 mr-2 mt-0.5 text-slate-400 flex-shrink-0" />
                           <div>
                             <p>{order.customer_address}</p>
@@ -889,14 +889,14 @@ ${orderNotesHTML}
                             <p>{order.country} - {order.pincode}</p>
                             {order.location_lat && order.location_lng && (
                               <div className="mt-2 p-2 bg-blue-50 border border-blue-100 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <p className="text-xs text-slate-700">
+                                <p className="text-xs text-slate-700 dark:text-slate-300">
                                   <span className="font-semibold text-blue-800">Exact GPS:</span> {order.location_lat}, {order.location_lng}
                                 </p>
                                 <a
                                   href={`https://www.google.com/maps/search/?api=1&query=${order.location_lat},${order.location_lng}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center bg-white px-3 py-1.5 rounded shadow-sm border border-blue-200 w-max transition-colors"
+                                  className="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center bg-white dark:bg-slate-900 px-3 py-1.5 rounded shadow-sm border border-blue-200 w-max transition-colors"
                                 >
                                   <MapPin className="w-3 h-3 mr-1" /> View on Map
                                 </a>
@@ -905,24 +905,24 @@ ${orderNotesHTML}
                           </div>
                         </div>
                         {order.order_notes && (
-                          <div className="mt-4 p-3 bg-white rounded-lg border border-amber-100">
+                          <div className="mt-4 p-3 bg-white dark:bg-slate-900 rounded-lg border border-amber-100">
                             <p className="text-xs font-semibold text-amber-800 mb-1">Order Notes:</p>
-                            <p className="text-slate-700">{order.order_notes}</p>
+                            <p className="text-slate-700 dark:text-slate-300">{order.order_notes}</p>
                           </div>
                         )}
-                        <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                          <p className="text-xs font-semibold text-slate-800 border-b border-slate-200 pb-1 mb-2">Payment Details:</p>
-                          <p className="text-sm text-slate-700">Method: <span className="font-bold text-slate-900">{order.payment_method}</span></p>
+                        <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
+                          <p className="text-xs font-semibold text-slate-800 border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">Payment Details:</p>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">Method: <span className="font-bold text-slate-900 dark:text-white">{order.payment_method}</span></p>
                           {order.payment_method === 'Online' && order.payment_receipt && (
                             <div className="mt-2">
-                              <p className="text-xs text-slate-500 mb-1">Payment Receipt:</p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Payment Receipt:</p>
                               <button type="button" onClick={(e) => { e.stopPropagation(); setViewImage(order.payment_receipt); }}>
                                 <img src={order.payment_receipt} alt="Receipt" className="h-20 w-20 object-cover rounded border border-slate-300 shadow-sm hover:opacity-80 transition-opacity" />
                               </button>
                             </div>
                           )}
                           {order.estimated_delivery_time && (
-                            <p className="text-sm text-slate-700 mt-2">Est. Delivery: <span className="font-semibold text-emerald-600">{order.estimated_delivery_time}</span></p>
+                            <p className="text-sm text-slate-700 dark:text-slate-300 mt-2">Est. Delivery: <span className="font-semibold text-emerald-600">{order.estimated_delivery_time}</span></p>
                           )}
                           {order.is_registered_user && (
                             <div className="mt-2 text-xs font-bold text-emerald-600 bg-emerald-50 inline-block px-2 py-1 rounded">✓ Registered User</div>
@@ -933,10 +933,10 @@ ${orderNotesHTML}
 
                     {/* Products Ordered */}
                     <div className="lg:col-span-2 space-y-4">
-                      <h3 className="font-bold text-slate-900 border-b pb-2">Order Items</h3>
+                      <h3 className="font-bold text-slate-900 dark:text-white border-b pb-2">Order Items</h3>
                       <div className="space-y-3">
                         {order.OrderItems.map((item) => (
-                          <div key={item.id} className="flex flex-col bg-white p-3 rounded-xl border border-slate-100 relative">
+                          <div key={item.id} className="flex flex-col bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 relative">
                             <div className="flex items-center space-x-4">
                               <img
                                 src={(item.Product?.images && item.Product.images.length > 0 ? item.Product.images[0] : null) || 'https://via.placeholder.com/100'}
@@ -944,14 +944,14 @@ ${orderNotesHTML}
                                 className="w-16 h-16 object-cover rounded-lg"
                               />
                               <div className="flex-grow">
-                                <p className="font-semibold text-slate-900">{item.Product?.title || 'Unknown Product'}</p>
-                                <p className="text-sm text-slate-500">Qty: {item.quantity} x ₹{item.price}</p>
+                                <p className="font-semibold text-slate-900 dark:text-white">{item.Product?.title || 'Unknown Product'}</p>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">Qty: {item.quantity} x ₹{item.price}</p>
                               </div>
                               <div className="flex flex-col items-end">
                                 {item.Product?.discount_price && (
                                   <span className="text-xs text-slate-400 line-through font-medium">₹{(item.Product.discount_price * item.quantity).toFixed(2)}</span>
                                 )}
-                                <span className="font-bold text-slate-900">
+                                <span className="font-bold text-slate-900 dark:text-white">
                                   ₹{(item.quantity * item.price).toFixed(2)}
                                 </span>
                                 {item.Product?.discount_price && (
@@ -962,7 +962,7 @@ ${orderNotesHTML}
 
                             {/* Return Request UI */}
                             {item.return_status && item.return_status !== 'None' && (
-                              <div className="mt-3 pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-50/50 p-3 rounded-lg border border-amber-100/50">
+                              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-50/50 p-3 rounded-lg border border-amber-100/50">
                                 <div>
                                   <p className="text-xs font-bold text-amber-800 flex items-center gap-1 mb-1">
                                     <RefreshCw className="w-3 h-3" /> Return {item.return_status}
@@ -1010,14 +1010,14 @@ ${orderNotesHTML}
                         });
 
                         return (
-                          <div className="bg-white p-4 rounded-xl border border-slate-100 mt-4 space-y-2">
-                            <div className="flex justify-between text-sm text-slate-600">
+                          <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 mt-4 space-y-2">
+                            <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
                               <span>Subtotal ({order.OrderItems.length} {order.OrderItems.length === 1 ? 'item' : 'items'})</span>
                               <span>₹{subtotal.toFixed(2)}</span>
                             </div>
 
                             {charges > 0 && (
-                              <div className="flex justify-between text-sm text-slate-600">
+                              <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
                                 <span>Delivery & Extra Charges</span>
                                 <span>+₹{charges.toFixed(2)}</span>
                               </div>
@@ -1030,7 +1030,7 @@ ${orderNotesHTML}
                               </div>
                             )}
 
-                            <div className="flex justify-between font-bold text-lg text-slate-900 pt-2 border-t mt-2">
+                            <div className="flex justify-between font-bold text-lg text-slate-900 dark:text-white pt-2 border-t mt-2">
                               <span>Final Total</span>
                               <span>₹{total.toFixed(2)}</span>
                             </div>
@@ -1077,18 +1077,18 @@ ${orderNotesHTML}
                   </div>
 
                   {/* Inline Order Notes Section */}
-                  <div className="mt-6 pt-6 border-t border-slate-200">
+                  <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="font-bold text-slate-900">Order Notes & Attachments</h3>
+                      <h3 className="font-bold text-slate-900 dark:text-white">Order Notes & Attachments</h3>
                       <button onClick={() => { setNoteOrder(order.id); setQuickNote(''); setIsNotePublic(true); removeQuickNoteFile(); }} className="px-3 py-1.5 text-xs font-bold text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors flex items-center">
                         <FileText className="w-3 h-3 mr-1.5" /> Add Note
                       </button>
                     </div>
 
                     {isLoadingNotes ? (
-                      <div className="text-slate-500 text-sm">Loading notes...</div>
+                      <div className="text-slate-500 dark:text-slate-400 text-sm">Loading notes...</div>
                     ) : expandedOrderNotes.length === 0 ? (
-                      <div className="text-slate-500 text-sm italic bg-slate-50 p-4 rounded-xl border border-slate-100">No notes found for this order.</div>
+                      <div className="text-slate-500 dark:text-slate-400 text-sm italic bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800">No notes found for this order.</div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {expandedOrderNotes.map(note => (
@@ -1105,16 +1105,16 @@ ${orderNotesHTML}
                                 >
                                   {note.is_active ? 'Public' : 'Internal'}
                                 </button>
-                                <button onClick={() => deleteOrderNote(note.id)} className="text-slate-400 hover:text-red-600 p-1 bg-slate-50 hover:bg-red-50 rounded transition-colors" title="Delete Note">
+                                <button onClick={() => deleteOrderNote(note.id)} className="text-slate-400 hover:text-red-600 p-1 bg-slate-50 dark:bg-slate-800/50 hover:bg-red-50 rounded transition-colors" title="Delete Note">
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             </div>
-                            {note.content && <p className="text-xs text-slate-600 whitespace-pre-wrap mb-3 leading-relaxed">{note.content}</p>}
+                            {note.content && <p className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap mb-3 leading-relaxed">{note.content}</p>}
                             {note.file_url && (
                               <div className="mt-2 pt-3 border-t border-slate-100/80">
                                 {note.file_type === 'image' ? (
-                                  <img src={note.file_url} alt="Attachment" className="max-h-20 rounded-lg object-contain cursor-pointer border border-slate-200 hover:border-amber-400 transition-colors bg-slate-50" onClick={() => setViewImage(note.file_url)} />
+                                  <img src={note.file_url} alt="Attachment" className="max-h-20 rounded-lg object-contain cursor-pointer border border-slate-200 dark:border-slate-700 hover:border-amber-400 transition-colors bg-slate-50 dark:bg-slate-800/50" onClick={() => setViewImage(note.file_url)} />
                                 ) : (
                                   <a href={note.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-indigo-600 font-medium hover:underline flex items-center bg-indigo-50 w-max px-3 py-1.5 rounded-lg">
                                     <FileText className="w-3.5 h-3.5 mr-1.5" /> View Attached File
@@ -1136,9 +1136,9 @@ ${orderNotesHTML}
       {/* Edit Modal */}
       {editingOrder && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-slate-900">Edit Order #{editingOrder} Details</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Edit Order #{editingOrder} Details</h2>
               <button onClick={() => setEditingOrder(null)} className="text-slate-400 hover:text-slate-600">
                 <XCircle className="w-6 h-6" />
               </button>
@@ -1147,39 +1147,39 @@ ${orderNotesHTML}
               <form id="editOrderForm" onSubmit={handleEditSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Customer Name</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Customer Name</label>
                     <input type="text" name="customer_name" value={editFormData.customer_name || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
                     <input type="email" name="customer_email" value={editFormData.customer_email || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone</label>
                     <input type="text" name="customer_phone" value={editFormData.customer_phone || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Alt Phone</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Alt Phone</label>
                     <input type="text" name="alt_phone" value={editFormData.alt_phone || ''} onChange={handleEditChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Address</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Address</label>
                     <input type="text" name="customer_address" value={editFormData.customer_address || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">City</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">City</label>
                     <input type="text" name="city" value={editFormData.city || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">District</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">District</label>
                     <input type="text" name="district" value={editFormData.district || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Pincode</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Pincode</label>
                     <input type="text" name="pincode" value={editFormData.pincode || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
                     <select name="status" value={editFormData.status || ''} onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
                       <option value="Pending Confirmation">Pending Confirmation</option>
                       <option value="Confirmed">Confirmed</option>
@@ -1191,32 +1191,32 @@ ${orderNotesHTML}
                   </div>
 
                   {/* Timeline Overrides */}
-                  <div className="md:col-span-2 pt-4 border-t border-slate-100 mt-2">
-                    <h3 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Timeline Dates (Overrides)</h3>
+                  <div className="md:col-span-2 pt-4 border-t border-slate-100 dark:border-slate-800 mt-2">
+                    <h3 className="font-bold text-slate-900 dark:text-white mb-4 text-sm uppercase tracking-wider">Timeline Dates (Overrides)</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 mb-1">Confirmed At</label>
+                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Confirmed At</label>
                         <input type="datetime-local" name="confirmedAt" value={toLocalISOString(editFormData.confirmedAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 mb-1">Processing At</label>
+                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Processing At</label>
                         <input type="datetime-local" name="processingAt" value={toLocalISOString(editFormData.processingAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 mb-1">Shipped At</label>
+                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Shipped At</label>
                         <input type="datetime-local" name="shippedAt" value={toLocalISOString(editFormData.shippedAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 mb-1">Delivered At</label>
+                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Delivered At</label>
                         <input type="datetime-local" name="deliveredAt" value={toLocalISOString(editFormData.deliveredAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 mb-1">Cancelled At</label>
+                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Cancelled At</label>
                         <input type="datetime-local" name="cancelledAt" value={toLocalISOString(editFormData.cancelledAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
                       </div>
                       <div className="md:col-span-1 lg:col-span-1 bg-amber-50 p-2 rounded-lg border border-amber-200">
                         <label className="block text-xs font-bold text-amber-900 mb-1">Override Delivery Date</label>
-                        <input type="datetime-local" name="updatedDeliveryDate" value={toLocalISOString(editFormData.updatedDeliveryDate)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-amber-300 rounded focus:ring-2 focus:ring-amber-600 outline-none text-sm bg-white" />
+                        <input type="datetime-local" name="updatedDeliveryDate" value={toLocalISOString(editFormData.updatedDeliveryDate)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-amber-300 rounded focus:ring-2 focus:ring-amber-600 outline-none text-sm bg-white dark:bg-slate-900" />
                         <p className="text-[10px] text-amber-700 mt-1">Crosses out original expected date</p>
                       </div>
                     </div>
@@ -1224,8 +1224,8 @@ ${orderNotesHTML}
                 </div>
               </form>
             </div>
-            <div className="p-6 border-t border-slate-100 flex justify-end space-x-4 bg-slate-50">
-              <button type="button" onClick={() => setEditingOrder(null)} className="px-6 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-200 transition-colors">
+            <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end space-x-4 bg-slate-50 dark:bg-slate-800/50">
+              <button type="button" onClick={() => setEditingOrder(null)} className="px-6 py-2 rounded-xl font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors">
                 Cancel
               </button>
               <button type="submit" form="editOrderForm" disabled={isSaving} className="px-6 py-2 rounded-xl font-bold text-white bg-amber-600 hover:bg-amber-700 transition-colors disabled:opacity-70">
@@ -1247,15 +1247,15 @@ ${orderNotesHTML}
       {/* Quick Note Modal */}
       {noteOrder && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-slate-900">Add Note to Order #{noteOrder}</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Add Note to Order #{noteOrder}</h2>
               <button onClick={() => setNoteOrder(null)} className="text-slate-400 hover:text-slate-600">
                 <XCircle className="w-6 h-6" />
               </button>
             </div>
             <div className="p-6">
-              <p className="text-sm text-slate-500 mb-4">Add a note to this order. It will appear on invoices.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Add a note to this order. It will appear on invoices.</p>
               <form id="quickNoteForm" onSubmit={submitQuickNote}>
                 <textarea
                   value={quickNote}
@@ -1267,13 +1267,13 @@ ${orderNotesHTML}
 
                 {/* File Upload for Quick Note */}
                 <div className="w-full">
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Attachment</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Attachment</label>
                   {!quickNoteFileUrl ? (
-                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 transition-colors relative">
+                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors relative">
                       <input type="file" onChange={handleQuickNoteFileUpload} disabled={isUploadingQuickNote} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed" accept="image/*,.pdf" />
                       <div className="flex flex-col items-center justify-center space-y-1 pointer-events-none">
                         <Upload className="w-6 h-6 text-slate-400" />
-                        <div className="text-sm font-medium text-slate-900">
+                        <div className="text-sm font-medium text-slate-900 dark:text-white">
                           {isUploadingQuickNote ? 'Uploading...' : 'Click to attach file'}
                         </div>
                       </div>
@@ -1285,7 +1285,7 @@ ${orderNotesHTML}
                           {quickNoteFileType === 'image' ? <ImageIcon className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
                         </div>
                         <div className="truncate">
-                          <p className="text-xs font-bold text-slate-900 truncate">{quickNoteFileName || 'Attached File'}</p>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{quickNoteFileName || 'Attached File'}</p>
                           <a href={quickNoteFileUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-indigo-600 hover:underline">View</a>
                         </div>
                       </div>
@@ -1296,22 +1296,22 @@ ${orderNotesHTML}
                   )}
                 </div>
 
-                <div className="mt-6 flex items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div className="mt-6 flex items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700">
                   <input
                     type="checkbox"
                     id="isNotePublicCheckbox"
                     checked={isNotePublic}
                     onChange={(e) => setIsNotePublic(e.target.checked)}
-                    className="w-5 h-5 text-amber-600 bg-white border-slate-300 rounded focus:ring-amber-500 focus:ring-2 cursor-pointer"
+                    className="w-5 h-5 text-amber-600 bg-white dark:bg-slate-900 border-slate-300 rounded focus:ring-amber-500 focus:ring-2 cursor-pointer"
                   />
-                  <label htmlFor="isNotePublicCheckbox" className="ml-3 text-sm font-bold text-slate-700 cursor-pointer">
+                  <label htmlFor="isNotePublicCheckbox" className="ml-3 text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
                     Visible to Customer (Show on User PDF)
                   </label>
                 </div>
               </form>
             </div>
-            <div className="p-6 border-t border-slate-100 flex justify-end space-x-4 bg-slate-50">
-              <button onClick={() => setNoteOrder(null)} className="px-6 py-2 rounded-xl font-medium text-slate-600 hover:bg-slate-200 transition-colors">
+            <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex justify-end space-x-4 bg-slate-50 dark:bg-slate-800/50">
+              <button onClick={() => setNoteOrder(null)} className="px-6 py-2 rounded-xl font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-200 transition-colors">
                 Cancel
               </button>
               <button
