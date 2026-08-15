@@ -27,19 +27,12 @@ const sendEmail = async (options) => {
   oauth2Client.setCredentials({ refresh_token: refreshToken });
 
   try {
-    const accessToken = await oauth2Client.getAccessToken();
+    const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-    // Configure Nodemailer transporter using OAuth2
+    // Configure Nodemailer just to build the perfect MIME string (no SMTP)
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: emailUser,
-        clientId: clientId,
-        clientSecret: clientSecret,
-        refreshToken: refreshToken,
-        accessToken: accessToken?.token,
-      },
+      streamTransport: true,
+      buffer: true
     });
 
     const domain = emailUser.includes('@') ? emailUser.split('@')[1] : 'wiformart.com';
@@ -69,7 +62,21 @@ const sendEmail = async (options) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`📧 Email sent to ${options.email}: ${options.subject} [${info.messageId}]`);
+    
+    // Base64 URL-encode the compiled message as required by Gmail API
+    const encodedMessage = info.message
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    // Send using Gmail REST API (bypasses local SMTP IPv6 routing issues)
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: { raw: encodedMessage },
+    });
+
+    console.log(`📧 Email sent to ${options.email}: ${options.subject}`);
 
     // Track total emails sent (fire-and-forget)
     try {
