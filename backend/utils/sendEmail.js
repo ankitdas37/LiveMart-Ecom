@@ -36,12 +36,17 @@ const sendEmail = async (options) => {
   const boundaryMixed = `boundary_mixed_${Date.now()}_${Math.random().toString(36).slice(2)}`;
   const boundaryAlt = `boundary_alt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
   
+  const domain = emailUser && emailUser.includes('@') ? emailUser.split('@')[1] : 'wiformart.com';
+  const messageId = `<${Date.now()}.${Math.random().toString(36).substring(2)}@${domain}>`;
+  
   const baseHeaders = [
     `From: "W!FO MART Support" <${emailUser}>`,
     `To: ${options.email}`,
     options.cc ? `Cc: ${Array.isArray(options.cc) ? options.cc.join(', ') : options.cc}` : '',
     `Reply-To: ${emailUser}`,
     `Subject: ${encodeSubject(options.subject)}`,
+    `Message-ID: ${messageId}`,
+    `Date: ${new Date().toUTCString()}`,
     'MIME-Version: 1.0',
   ].filter(Boolean);
 
