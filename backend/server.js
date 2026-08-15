@@ -167,7 +167,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // ─── 7. ROUTES ───────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
-  res.json({ message: 'LiveMart API is running', version: '1.0.0' });
+  res.json({ message: 'W!FO MART API is running', version: '1.0.0' });
 });
 
 app.use('/api/products', productRoutes);

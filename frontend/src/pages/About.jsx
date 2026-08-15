@@ -119,7 +119,7 @@ const About = () => {
         <div className="text-center pt-10 pb-12">
           <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-xs font-black tracking-[0.2em] uppercase mb-6 shadow-[0_0_15px_rgba(236,72,153,0.2)]">
             <span className="w-2 h-2 rounded-full bg-pink-500 mr-2 animate-ping"></span>
-            Welcome to LiveMart
+            Welcome to W!FO MART
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 mb-6 tracking-tighter drop-shadow-[0_0_25px_rgba(168,85,247,0.4)]">
             OUR STORY & <br className="hidden md:block"/> THE MINDS BEHIND IT
@@ -236,7 +236,7 @@ const About = () => {
                 The Visionary
               </h2>
               <p className="text-slate-400 text-lg mb-8 leading-relaxed max-w-xl ml-auto">
-                Dedicated to bridging the gap between quality products and seamless accessibility. The driving force behind LiveMart's mission to revolutionize online shopping.
+                Dedicated to bridging the gap between quality products and seamless accessibility. The driving force behind W!FO MART's mission to revolutionize online shopping.
               </p>
               
               <div className="flex flex-wrap justify-center md:justify-end gap-4">

@@ -816,7 +816,7 @@ const UserProfile = () => {
            </div>
            <div>
              <h2 className="text-xl font-bold text-white leading-tight">{user.name}</h2>
-             <p className="text-sm text-indigo-200 mt-0.5">Explore LiveMart</p>
+             <p className="text-sm text-indigo-200 mt-0.5">Explore W!FO MART</p>
            </div>
          </div>
          <div className="relative z-10 bg-indigo-800/80 px-3 py-1.5 rounded-full border border-indigo-500/50 flex items-center gap-1.5">
