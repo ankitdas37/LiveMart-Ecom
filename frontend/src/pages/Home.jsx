@@ -98,6 +98,25 @@ const Home = () => {
     setTouchEnd(e.targetTouches[0].clientX);
     setIsSwiping(true);
   };
+  
+  const handleLinkNavigation = (link) => {
+    if (!link) {
+      navigate('/shop');
+      return;
+    }
+    try {
+      // If it's a full URL, extract just the path+query part
+      if (link.startsWith('http://') || link.startsWith('https://')) {
+        const url = new URL(link);
+        navigate(url.pathname + url.search + url.hash);
+      } else {
+        navigate(link);
+      }
+    } catch {
+      navigate('/shop');
+    }
+  };
+
   const onTouchEndHandler = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
@@ -339,7 +358,7 @@ const Home = () => {
         {heroSlides.length > 0 ? heroSlides.map((slide, index) => (
           <div
             key={slide.id}
-            onClick={() => !isSwiping && navigate(slide.button1Link || defaultSlide.button1Link || '/shop')}
+            onClick={() => !isSwiping && handleLinkNavigation(slide.button1Link || defaultSlide.button1Link || '/shop')}
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out cursor-pointer ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
           >
             <div className="absolute inset-0 bg-slate-900">
@@ -354,7 +373,7 @@ const Home = () => {
         )) : (
           <div 
             className="absolute inset-0 z-10 cursor-pointer"
-            onClick={() => !isSwiping && navigate(defaultSlide.button1Link || '/shop')}
+            onClick={() => !isSwiping && handleLinkNavigation(defaultSlide.button1Link || '/shop')}
           >
             <div className="absolute inset-0 bg-slate-900">
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10 hidden md:block"></div>
@@ -385,14 +404,14 @@ const Home = () => {
             </p>
             <div className="flex space-x-4 animate-fade-in-up animation-delay-300">
               {activeSlide.button1Text && (
-                <Link to={activeSlide.button1Link || '/shop'} className="px-8 py-4 bg-amber-600 text-white font-medium rounded-full hover:bg-amber-700 transition-all shadow-lg hover:shadow-amber-500/30 flex items-center">
+                <button onClick={() => handleLinkNavigation(activeSlide.button1Link || '/shop')} className="px-8 py-4 bg-amber-600 text-white font-medium rounded-full hover:bg-amber-700 transition-all shadow-lg hover:shadow-amber-500/30 flex items-center">
                   {activeSlide.button1Text} <ArrowRight className="w-5 h-5 ml-2" />
-                </Link>
+                </button>
               )}
               {activeSlide.button2Text && (
-                <Link to={activeSlide.button2Link || '/shop'} className="px-8 py-4 bg-white/10 text-white font-medium rounded-full hover:bg-white/20 transition-all backdrop-blur-sm">
+                <button onClick={() => handleLinkNavigation(activeSlide.button2Link || '/shop')} className="px-8 py-4 bg-white/10 text-white font-medium rounded-full hover:bg-white/20 transition-all backdrop-blur-sm">
                   {activeSlide.button2Text}
-                </Link>
+                </button>
               )}
             </div>
           </div>
