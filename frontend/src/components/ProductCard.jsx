@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -12,6 +12,12 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const isInCart = cartItems.some(item => item.id === product.id);
   const [isWishlisted, setIsWishlisted] = useState(false);
+
+  // Price logic: discount_price = MRP (original/crossed), price = selling price
+  const sellingPrice = parseFloat(product.price);
+  const mrp = product.discount_price ? parseFloat(product.discount_price) : null;
+  const hasDiscount = mrp && mrp > sellingPrice;
+  const discountPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
 
   const handleWishlist = async (e) => {
     e.preventDefault();
@@ -46,17 +52,22 @@ const ProductCard = ({ product }) => {
             onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400?text=No+Image'; }}
           />
         </Link>
-        {/* Badges */}
+
+        {/* Badges — top left */}
         <div className="absolute top-2 left-2 flex flex-col space-y-1">
-          {product.is_new_arrival && (
+          {hasDiscount && (
+            <span className="bg-[#ff6161] text-white text-[10px] font-black px-2 py-0.5 rounded-sm shadow-sm">{discountPct}% OFF</span>
+          )}
+          {product.is_new_arrival && !hasDiscount && (
             <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow-sm">NEW</span>
           )}
-          {product.is_bestseller && (
+          {product.is_bestseller && !hasDiscount && (
             <span className="bg-[#ff9f00] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow-sm">BEST SELLER</span>
           )}
         </div>
-        {/* Quick Actions */}
-        <div className="absolute top-2 right-2 flex flex-col space-y-2">
+
+        {/* Wishlist — top right */}
+        <div className="absolute top-2 right-2">
           <button
             onClick={handleWishlist}
             className={`p-1.5 rounded-full transition-colors bg-white shadow-sm border border-slate-100 ${isWishlisted ? 'text-[#ff4343]' : 'text-slate-300 hover:text-[#ff4343]'}`}
@@ -72,7 +83,7 @@ const ProductCard = ({ product }) => {
         <Link to={`/product/${product.id}`} className="block mb-1.5">
           <h3 className="text-sm font-medium text-slate-800 dark:text-slate-100 line-clamp-2 group-hover:text-[#2874f0] dark:group-hover:text-[#2874f0] transition-colors leading-snug">{product.title}</h3>
         </Link>
-        
+
         {/* Rating */}
         {product.reviews_count > 0 ? (
           <div className="flex items-center gap-1.5 mb-1.5">
@@ -85,8 +96,21 @@ const ProductCard = ({ product }) => {
           <div className="h-5 mb-1.5"></div>
         )}
 
-        <div className="mt-auto pt-2 flex items-center justify-between gap-2">
-          <span className="text-[17px] sm:text-[19px] font-bold text-slate-900 dark:text-white">₹{parseFloat(product.price).toFixed(2)}</span>
+        {/* Price + Button */}
+        <div className="mt-auto pt-2 flex items-end justify-between gap-2">
+          <div className="flex flex-col min-w-0">
+            <span className="text-[17px] sm:text-[19px] font-bold text-slate-900 dark:text-white leading-tight">
+              ₹{sellingPrice.toFixed(2)}
+            </span>
+            {hasDiscount && (
+              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                <span className="text-[11px] text-slate-400 dark:text-slate-500 line-through font-medium">₹{mrp.toFixed(2)}</span>
+                <span className="text-[10px] font-black text-[#ff6161]">{discountPct}% off</span>
+                <span className="text-[10px] font-black text-[#388e3c]">· Save ₹{(mrp - sellingPrice).toFixed(0)}</span>
+              </div>
+            )}
+          </div>
+
           {isInCart ? (
             <button
               onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}
