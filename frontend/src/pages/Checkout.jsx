@@ -844,11 +844,19 @@ const Checkout = () => {
                   const discountPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
                   return (
                     <div key={item.id} className="flex items-start space-x-3">
-                      <div className="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">
-                        <img src={item.image_url || item.images?.[0] || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt={item.title} className="w-full h-full object-cover" />
+                      <div 
+                        className="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
+                        onClick={() => navigate(`/product/${item.id}`)}
+                      >
+                        <img src={item.image_url || item.images?.[0] || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <h4 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1">{item.title}</h4>
+                        <h4 
+                          className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1 cursor-pointer hover:text-amber-500 transition-colors"
+                          onClick={() => navigate(`/product/${item.id}`)}
+                        >
+                          {item.title}
+                        </h4>
                         {/* Quantity +/- controls */}
                         <div className="flex items-center space-x-1 mt-1.5">
                           <button
