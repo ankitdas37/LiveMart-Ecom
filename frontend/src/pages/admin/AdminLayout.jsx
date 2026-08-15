@@ -1,13 +1,15 @@
 import { useState, useContext } from 'react';
 import { Link, Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Package, Tags, Settings, LogOut, Menu, X, MapPin, Star, Image as ImageIcon, Award, ShoppingBag, Ticket, Zap, CreditCard, FileText, Users, Headset } from 'lucide-react';
+import { LayoutDashboard, Package, Tags, Settings, LogOut, Menu, X, MapPin, Star, Image as ImageIcon, Award, ShoppingBag, Ticket, Zap, CreditCard, FileText, Users, Headset, Moon, Sun } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { adminUser: user, adminLogout: logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   // 🔒 Guard: redirect to admin login if not logged in as admin
   if (!user || user.role !== 'admin') {
@@ -116,6 +118,14 @@ const AdminLayout = () => {
           </button>
 
           <div className="flex items-center space-x-4 ml-auto">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
 
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm overflow-hidden border-2 border-amber-300">
