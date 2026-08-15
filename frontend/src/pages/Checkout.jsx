@@ -652,17 +652,17 @@ const Checkout = () => {
                       <div
                         key={addr.id}
                         onClick={() => handleSelectAddress(addr)}
-                        className={`p-4 border rounded-xl cursor-pointer transition-all ${selectedAddressId === addr.id
-                            ? 'border-amber-500 bg-amber-50 ring-1 ring-amber-500'
-                            : 'border-slate-200 dark:border-slate-600 hover:border-amber-300 hover:bg-slate-50 dark:bg-slate-900 transition-colors'
+                        className={`relative p-4 border rounded-xl cursor-pointer transition-all duration-300 overflow-hidden ${selectedAddressId === addr.id
+                            ? 'border-amber-500 bg-amber-50 dark:bg-amber-500/10 shadow-md ring-1 ring-amber-500'
+                            : 'border-slate-200 dark:border-slate-700 hover:border-amber-300 hover:shadow-sm dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800'
                           }`}
                       >
                         <div className="flex justify-between items-start mb-2">
-                          <span className="inline-block px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded uppercase">
+                          <span className={`inline-block px-2.5 py-1 text-xs font-bold rounded-md tracking-wider ${selectedAddressId === addr.id ? 'bg-amber-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}>
                             {addr.addressType || 'Home'}
                           </span>
                           {selectedAddressId === addr.id && (
-                            <span className="text-amber-600"><CheckCircle2 className="w-5 h-5" /></span>
+                            <span className="text-amber-500 drop-shadow-sm"><CheckCircle2 className="w-5 h-5 fill-amber-100 dark:fill-amber-900/30" /></span>
                           )}
                         </div>
                         <h4 className="font-bold text-slate-900 dark:text-white">{addr.fullName}</h4>
@@ -672,14 +672,14 @@ const Checkout = () => {
                           📞 {addr.phone}
                         </p>
                         {selectedAddressId === addr.id && pincodeStatus === 'error' && (
-                          <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-xs flex items-center font-medium">
-                            <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                          <div className="mt-3 p-2.5 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-lg text-red-600 dark:text-red-400 text-sm flex items-center font-medium">
+                            <AlertCircle className="w-4 h-4 mr-1.5 flex-shrink-0" />
                             {pincodeMessage || "Delivery not available"}
                           </div>
                         )}
                         {selectedAddressId === addr.id && pincodeStatus === 'success' && (
-                          <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-green-700 text-xs flex items-center font-medium">
-                            <ShieldCheck className="w-3.5 h-3.5 mr-1" />
+                          <div className="mt-3 p-2.5 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-lg text-green-700 dark:text-green-400 text-sm flex items-center font-medium">
+                            <ShieldCheck className="w-4 h-4 mr-1.5 flex-shrink-0" />
                             {pincodeMessage}
                           </div>
                         )}
