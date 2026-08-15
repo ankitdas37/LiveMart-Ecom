@@ -837,61 +837,72 @@ const Checkout = () => {
                   Your cart is empty.
                 </div>
               ) : (
-                cartItems.map((item) => (
-                  <div key={item.id} className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">
-                      <img src={item.image_url || item.images?.[0] || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt={item.title} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-grow">
-                      <h4 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1">{item.title}</h4>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <input
-                          type="number"
-                          min="1"
-                          max={Math.max(100, item.stock || 100)}
-                          value={item.quantity}
-                          onChange={(e) => updateQuantity(item.id, Number(e.target.value))}
-                          className="w-16 text-center text-xs border border-slate-200 dark:border-slate-600 rounded px-1 py-1 bg-slate-50 dark:bg-slate-900 transition-colors focus:outline-none focus:ring-1 focus:ring-amber-500"
-                        />
-                        <button
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-slate-400 hover:text-red-500 transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                cartItems.map((item) => {
+                  const sellingPrice = Number(item.price);
+                  const mrp = Number(item.discount_price) || 0;
+                  const hasDiscount = mrp > sellingPrice;
+                  const discountPct = hasDiscount ? Math.round(((mrp - sellingPrice) / mrp) * 100) : 0;
+                  return (
+                    <div key={item.id} className="flex items-start space-x-3">
+                      <div className="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">
+                        <img src={item.image_url || item.images?.[0] || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt={item.title} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <h4 className="text-sm font-medium text-slate-900 dark:text-white line-clamp-1">{item.title}</h4>
+                        {/* Quantity +/- controls */}
+                        <div className="flex items-center space-x-1 mt-1.5">
+                          <button
+                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                            className="w-6 h-6 flex items-center justify-center rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-colors font-bold text-sm leading-none"
+                          >−</button>
+                          <span className="w-7 text-center text-sm font-bold text-slate-900 dark:text-white">{item.quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(item.id, Math.min(item.stock || 100, item.quantity + 1))}
+                            className="w-6 h-6 flex items-center justify-center rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-colors font-bold text-sm leading-none"
+                          >+</button>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="ml-1 text-slate-400 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="font-semibold text-slate-900 dark:text-white text-sm flex flex-col items-end flex-shrink-0">
+                        {hasDiscount && (
+                          <span className="text-[11px] text-slate-400 line-through font-medium">₹{(mrp * item.quantity).toFixed(2)}</span>
+                        )}
+                        <span className="text-base font-bold">₹{(sellingPrice * item.quantity).toFixed(2)}</span>
+                        {hasDiscount && (
+                          <div className="flex flex-col items-end gap-0.5 mt-0.5">
+                            <span className="text-[10px] font-black text-[#ff6161]">{discountPct}% off</span>
+                            <span className="text-[10px] text-green-600 font-bold bg-green-50 dark:bg-green-900/30 px-1.5 py-0.5 rounded whitespace-nowrap">Save ₹{((mrp - sellingPrice) * item.quantity).toFixed(0)}</span>
+                          </div>
+                        )}
+                        {(() => {
+                          let charges = item.extra_charges;
+                          if (typeof charges === 'string') {
+                            try { charges = JSON.parse(charges); } catch (e) { charges = []; }
+                          }
+                          if (charges && Array.isArray(charges)) {
+                            return charges.map(chargeId => {
+                              const charge = activeExtraCharges.find(c => c.id === chargeId);
+                              if (charge) {
+                                return (
+                                  <span key={charge.id} className="text-xs text-amber-600 font-medium">
+                                    + ₹{(Number(charge.price) * item.quantity).toFixed(2)} ({charge.name})
+                                  </span>
+                                );
+                              }
+                              return null;
+                            });
+                          }
+                          return null;
+                        })()}
                       </div>
                     </div>
-                    <div className="font-semibold text-slate-900 dark:text-white text-sm flex flex-col items-end">
-                      {item.discount_price && (
-                        <span className="text-xs text-slate-400 line-through font-medium">₹{(item.discount_price * item.quantity).toFixed(2)}</span>
-                      )}
-                      <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-                      {item.discount_price && (
-                        <span className="text-xs text-green-600 font-bold bg-green-50 px-1 rounded mt-0.5 whitespace-nowrap">Save ₹{((item.discount_price - item.price) * item.quantity).toFixed(2)}</span>
-                      )}
-                      {(() => {
-                        let charges = item.extra_charges;
-                        if (typeof charges === 'string') {
-                          try { charges = JSON.parse(charges); } catch (e) { charges = []; }
-                        }
-                        if (charges && Array.isArray(charges)) {
-                          return charges.map(chargeId => {
-                            const charge = activeExtraCharges.find(c => c.id === chargeId);
-                            if (charge) {
-                              return (
-                                <span key={charge.id} className="text-xs text-amber-600 font-medium">
-                                  + ₹{(Number(charge.price) * item.quantity).toFixed(2)} ({charge.name})
-                                </span>
-                              );
-                            }
-                            return null;
-                          });
-                        }
-                        return null;
-                      })()}
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 
@@ -996,12 +1007,24 @@ const Checkout = () => {
                 <span>₹{cartTotal > 0 ? (cartTotal - (appliedCoupon ? appliedCoupon.calculatedDiscount : 0) + actualShippingCharge + totalExtraCharges).toFixed(2) : '0.00'}</span>
               </div>
 
-              {totalSaved > 0 && cartTotal > 0 && (
-                <div className="flex justify-between font-bold text-sm text-green-700 bg-green-50 p-3 rounded-xl mt-2 border border-green-100">
-                  <span>Total Saved on this order</span>
-                  <span>₹{totalSaved.toFixed(2)}</span>
-                </div>
-              )}
+              {totalSaved > 0 && cartTotal > 0 && (() => {
+                const originalTotal = cartItems.reduce((sum, item) => {
+                  const mrp = Number(item.discount_price) || Number(item.price);
+                  return sum + mrp * item.quantity;
+                }, 0);
+                const totalSavedPct = originalTotal > 0 ? Math.round((totalSaved / originalTotal) * 100) : 0;
+                return (
+                  <div className="flex justify-between font-bold text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-3 rounded-xl mt-2 border border-green-100 dark:border-green-800/40">
+                    <div className="flex flex-col">
+                      <span>Total Saved on this order</span>
+                      {totalSavedPct > 0 && (
+                        <span className="text-[11px] font-black text-[#ff6161] mt-0.5">{totalSavedPct}% overall discount</span>
+                      )}
+                    </div>
+                    <span className="text-base">₹{totalSaved.toFixed(2)}</span>
+                  </div>
+                );
+              })()}
 
               {/* Expected Delivery Date */}
               {cartTotal > 0 && (

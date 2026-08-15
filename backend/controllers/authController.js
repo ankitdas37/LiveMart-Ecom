@@ -119,7 +119,7 @@ exports.sendSignupOTP = async (req, res) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify your email – LiveMart</title>
+  <title>Verify your email – W!FO MART</title>
 </head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
@@ -129,8 +129,8 @@ exports.sendSignupOTP = async (req, res) => {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:36px 40px;text-align:center;">
-              <h1 style="margin:0;color:#1e293b;font-size:32px;font-weight:900;letter-spacing:-1px;">Live<span style="color:#fff;">Mart</span></h1>
-              <p style="margin:6px 0 0;color:#1e293b;font-size:13px;opacity:0.8;font-weight:600;">Your trusted online store</p>
+              <h1 style="margin:0;color:#1e293b;font-size:32px;font-weight:900;letter-spacing:-1px;">W!FO <span style="color:#fff;">MART</span></h1>
+              <p style="margin:6px 0 0;color:#1e293b;font-size:13px;opacity:0.8;font-weight:600;">A BASRIC Company</p>
             </td>
           </tr>
           <!-- Body -->
@@ -138,7 +138,7 @@ exports.sendSignupOTP = async (req, res) => {
             <td style="padding:40px;">
               <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">Verify your email address</h2>
               <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                You're almost there! Enter the verification code below to complete your LiveMart account setup.
+                You're almost there! Enter the verification code below to complete your W!FO MART account setup.
               </p>
               <!-- OTP Box -->
               <div style="background:#0f172a;border:2px solid #f59e0b;border-radius:16px;padding:24px;text-align:center;margin-bottom:28px;">
@@ -148,7 +148,7 @@ exports.sendSignupOTP = async (req, res) => {
               </div>
               <!-- Warning -->
               <div style="background:#1a1a2e;border-left:4px solid #ef4444;padding:14px 18px;border-radius:8px;margin-bottom:28px;">
-                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. LiveMart will never ask for your OTP.</p>
+                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. W!FO MART will never ask for your OTP.</p>
               </div>
               <p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;">
                 If you didn't request this, you can safely ignore this email. Someone may have accidentally entered your email address.
@@ -158,7 +158,7 @@ exports.sendSignupOTP = async (req, res) => {
           <!-- Footer -->
           <tr>
             <td style="background:#0f172a;padding:20px 40px;text-align:center;">
-              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} LiveMart. All rights reserved.</p>
+              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FO MART – A BASRIC Company. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -171,7 +171,7 @@ exports.sendSignupOTP = async (req, res) => {
     // Send email asynchronously in the background to speed up frontend response
     sendEmail({
       email,
-      subject: 'LiveMart – Verify your email address',
+      subject: 'Verify your W!FO MART account',
       message: `Your signup verification code is: ${otpCode}. It expires in 10 minutes.`,
       html: htmlBody,
     }).catch(emailError => {
@@ -405,7 +405,7 @@ exports.loginUser = async (req, res) => {
             <td style="padding:40px 40px 30px;text-align:center;">
               <h1 style="margin:0 0 15px;color:#f8fafc;font-size:28px;font-weight:800;">Login Verification</h1>
               <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                You are trying to log in to your LiveMart account. Enter the verification code below to proceed.
+                You are trying to log in to your W!FO MART account. Enter the verification code below to proceed.
               </p>
               <div style="background:#0f172a;border:2px solid #f59e0b;border-radius:16px;padding:24px;text-align:center;margin-bottom:28px;">
                 <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;text-transform:uppercase;letter-spacing:2px;font-weight:600;">Your Verification Code</p>
@@ -413,7 +413,7 @@ exports.loginUser = async (req, res) => {
                 <p style="margin:10px 0 0;color:#64748b;font-size:12px;">This code expires in <strong style="color:#f59e0b;">10 minutes</strong></p>
               </div>
               <div style="background:#1a1a2e;border-left:4px solid #ef4444;padding:14px 18px;border-radius:8px;margin-bottom:28px;">
-                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. LiveMart will never ask for your OTP.</p>
+                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. W!FO MART will never ask for your OTP.</p>
               </div>
             </td>
           </tr>
@@ -426,7 +426,7 @@ exports.loginUser = async (req, res) => {
 
       sendEmail({
         email,
-        subject: 'LiveMart – Login Verification Code',
+        subject: 'Your W!FO MART login code',
         message: `Your login verification code is: ${otpCode}. It expires in 10 minutes.`,
         html: htmlBody,
       }).catch(emailError => {
@@ -545,7 +545,7 @@ exports.forgotPassword = async (req, res) => {
     <div style="font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; max-width: 500px; margin: 0 auto;">
       <h1 style="color: #4f46e5; margin-bottom: 20px;">Reset Your Password</h1>
       <p style="color: #334155; font-size: 16px;">Hi ${user.name},</p>
-      <p style="color: #334155; font-size: 16px;">You recently requested to reset your password for your LiveMart account. Use the following secure OTP to proceed:</p>
+      <p style="color: #334155; font-size: 16px;">You recently requested to reset your password for your W!FO MART account. Use the following secure OTP to proceed:</p>
       <h2 style="letter-spacing: 6px; color: #1e293b; background: #e0e7ff; padding: 15px 20px; display: inline-block; border-radius: 8px; border: 1px dashed #818cf8; margin: 20px 0;">${resetOTP}</h2>
       <p style="color: #64748b; font-size: 14px;">This code expires in 10 minutes. If you didn't request this, please safely ignore this email.</p>
     </div>`;
@@ -553,7 +553,7 @@ exports.forgotPassword = async (req, res) => {
     try {
       await sendEmail({
         email: user.email,
-        subject: 'LiveMart - Password Reset OTP',
+        subject: 'Your W!FO MART password reset code',
         message: `Your OTP is: ${resetOTP}`,
         html: htmlBody,
       });
