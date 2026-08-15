@@ -57,13 +57,16 @@ const AdminLayout = () => {
       `}>
         <div className="p-6 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="LiveMart" className="h-10 w-10 rounded-xl object-contain shadow-sm bg-white p-0.5" />
+            <img src="/logo.png" alt="W!FO MART" className="h-10 w-10 rounded-xl object-contain shadow-sm bg-white p-0.5" />
             <div className="flex flex-col">
-              <div className="text-2xl font-extrabold tracking-tight flex leading-none">
-                <span className="text-white">Live</span>
-                <span className="text-[#FF8C00]">Mart</span>
+              <div className="text-2xl font-black tracking-tighter flex leading-none">
+                <span className="text-white">W!FO</span>
+                <span className="text-[#FF8C00] ml-1.5">MART</span>
               </div>
-              <span className="text-[10px] text-slate-400 font-medium uppercase tracking-widest mt-1">Admin Panel</span>
+              <div className="flex flex-col mt-1">
+                <span className="text-[8px] font-black text-[#A0705E] tracking-[0.1em] leading-none">A BASRIC Company</span>
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-1">Admin Panel</span>
+              </div>
             </div>
           </Link>
           <button className="md:hidden text-slate-400 hover:text-white" onClick={() => setIsSidebarOpen(false)}>

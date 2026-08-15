@@ -75,7 +75,7 @@ const Signup = () => {
     if (result.success) {
       await syncLocalCartToDb();
       if (result.isNewUser) {
-        toast.success('🎉 Account created successfully! Welcome to LiveMart!');
+        toast.success('🎉 Account created successfully! Welcome to W!FO MART!');
       } else {
         toast.success('Welcome back! Signed in with Google.');
       }
@@ -132,13 +132,17 @@ const Signup = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
         <div className="relative z-10 p-12 text-center flex flex-col items-center">
           <Link to="/" className="flex items-center gap-4 mb-6 hover:scale-105 transition-transform">
-            <img src="/logo.png" alt="LiveMart" className="h-16 w-16 rounded-2xl object-contain shadow-lg" />
-            <div className="text-6xl font-black tracking-tighter">
-              <span className="text-white">Live</span><span className="text-[#FF8C00]">Mart</span>
+            <img src="/logo.png" alt="W!FO MART" className="h-16 w-16 rounded-2xl object-contain shadow-lg" />
+            <div className="flex flex-col">
+              <div className="text-6xl font-black tracking-tighter leading-none">
+                <span className="text-white">W!FO</span>
+                <span className="text-[#FF8C00] ml-2">MART</span>
+              </div>
+              <span className="text-sm font-black text-[#A0705E] tracking-[0.3em] mt-2">A BASRIC Company</span>
             </div>
           </Link>
           <p className="text-xl text-slate-300 max-w-md leading-relaxed font-medium">
-            Join the LiveMart family today and unlock exclusive benefits, early access to new snacks, and special discounts.
+            Join the W!FO MART family today and unlock exclusive benefits, early access to new snacks, and special discounts.
           </p>
         </div>
       </div>
@@ -154,16 +158,20 @@ const Signup = () => {
 
             <div className="text-center mb-8">
               <Link to="/" className="lg:hidden flex items-center justify-center gap-2 mb-6 hover:scale-105 transition-transform">
-                <img src="/logo.png" alt="LiveMart" className="h-10 w-10 rounded-xl object-contain shadow-sm" />
-                <div className="text-4xl font-black tracking-tighter">
-                  <span className="text-white">Live</span><span className="text-[#FF8C00]">Mart</span>
+                <img src="/logo.png" alt="W!FO MART" className="h-10 w-10 rounded-xl object-contain shadow-sm" />
+                <div className="flex flex-col items-start justify-center">
+                  <div className="text-4xl font-black tracking-tighter leading-none">
+                    <span className="text-white">W!FO</span>
+                    <span className="text-[#FF8C00] ml-1.5">MART</span>
+                  </div>
+                  <span className="text-[10px] font-black text-[#A0705E] tracking-widest mt-1">A BASRIC Company</span>
                 </div>
               </Link>
               <h2 className="text-3xl font-bold tracking-tight text-white">
                 Create Account
               </h2>
               <p className="mt-2 text-sm text-slate-300">
-                Join LiveMart to unlock exclusive benefits
+                Join W!FO MART to unlock exclusive benefits
               </p>
             </div>
 
@@ -400,13 +408,13 @@ const Signup = () => {
               )}
             </form>
 
-            <div className="mt-8 text-center text-sm text-slate-400">
-              Already have an account?{' '}
+            <div className="mt-8 pt-6 border-t border-white/10 text-center">
+              <p className="text-sm text-slate-400 mb-4">Already have an account?</p>
               <Link
                 to={redirect ? `/login?redirect=${redirect}` : '/login'}
-                className="font-medium text-white hover:text-amber-400 transition-colors"
+                className="inline-flex justify-center items-center w-full py-3 px-4 bg-amber-500/10 border-2 border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-slate-900 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(245,158,11,0.15)]"
               >
-                Sign in here
+                SIGN IN HERE
               </Link>
             </div>
           </div>

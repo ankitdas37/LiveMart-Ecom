@@ -46,7 +46,7 @@ const AdminLogin = () => {
     setIsSubmitting(true);
     const result = await adminLogin(email, password);
     setIsSubmitting(false);
-    
+
     if (result.success) {
       if (result.requireOTP) {
         setOtpStep(true);
@@ -66,7 +66,7 @@ const AdminLogin = () => {
     setIsSubmitting(true);
     const result = await adminVerifyLogin(email, otp);
     setIsSubmitting(false);
-    
+
     if (result.success) {
       handleSuccess(JSON.parse(localStorage.getItem('adminInfo'))?.name);
     } else {
@@ -98,11 +98,14 @@ const AdminLogin = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/30 mb-4">
             <Shield className="w-8 h-8 text-amber-400" />
           </div>
-          <div className="text-3xl font-black tracking-tighter">
-            <span className="text-white">Live</span>
-            <span className="text-[#FF8C00]">Mart</span>
+          <div className="flex flex-col items-center">
+            <div className="text-4xl font-black tracking-tighter leading-none">
+              <span className="text-white">W!FO</span>
+              <span className="text-[#FF8C00] ml-1.5">MART</span>
+            </div>
+            <span className="text-[10px] font-black text-[#A0705E] tracking-[0.3em] mt-1.5">A BASRIC Company</span>
           </div>
-          <p className="text-slate-400 text-sm mt-1 font-medium">Admin Panel Access</p>
+          <p className="text-slate-400 text-sm mt-3 font-medium">Admin Panel Access</p>
         </div>
 
         {/* Card */}
@@ -227,7 +230,7 @@ const AdminLogin = () => {
               <p className="text-sm text-slate-300 text-center mb-4">
                 Enter the 6-digit verification code sent to <span className="text-amber-400">{email}</span>
               </p>
-              
+
               <div>
                 <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">Verification Code</label>
                 <div className="relative">

@@ -216,10 +216,13 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
-            <img src="/logo.png" alt="LiveMart" className="h-9 w-9 rounded-xl object-contain shadow-sm" />
-            <div className="flex">
-              <span className="text-slate-900 dark:text-white">Live</span>
-              <span className="text-[#FF8C00]">Mart</span>
+            <img src="/logo.png" alt="W!FO MART" className="h-9 w-9 rounded-xl object-contain shadow-sm" />
+            <div className="flex flex-col">
+              <div className="flex leading-none">
+                <span className="text-slate-900 dark:text-white">W!FO</span>
+                <span className="text-[#FF8C00] ml-1.5">MART</span>
+              </div>
+              <span className="text-[9px] font-black text-[#A0705E] tracking-widest mt-0.5">A BASRIC Company</span>
             </div>
           </Link>
 
@@ -237,26 +240,23 @@ const Navbar = () => {
 
           {/* Icons and Auth */}
           <div className="hidden md:flex items-center space-x-5">
-            
+
             {/* Dark Mode Toggle — Premium Pill */}
             <button
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 text-xs font-bold select-none ${
-                theme === 'dark'
+              className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 text-xs font-bold select-none ${theme === 'dark'
                   ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700'
                   : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
-              }`}
+                }`}
             >
               <span className={`transition-all duration-300 ${theme === 'dark' ? 'opacity-100 scale-100' : 'opacity-0 scale-75 absolute'}`}>
                 <Moon className="w-3.5 h-3.5" />
               </span>
-              <span className={`w-8 h-4 rounded-full relative transition-all duration-300 ${
-                theme === 'dark' ? 'bg-amber-500' : 'bg-slate-300'
-              }`}>
-                <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-all duration-300 ${
-                  theme === 'dark' ? 'left-[18px]' : 'left-0.5'
-                }`} />
+              <span className={`w-8 h-4 rounded-full relative transition-all duration-300 ${theme === 'dark' ? 'bg-amber-500' : 'bg-slate-300'
+                }`}>
+                <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-all duration-300 ${theme === 'dark' ? 'left-[18px]' : 'left-0.5'
+                  }`} />
               </span>
               <span className={`transition-all duration-300 ${theme === 'dark' ? 'opacity-0 scale-75 absolute' : 'opacity-100 scale-100'}`}>
                 <Sun className="w-3.5 h-3.5" />
@@ -516,7 +516,7 @@ const Navbar = () => {
             </button>
 
             {!user ? (
-              <button 
+              <button
                 onClick={() => document.getElementById('login-link-mobile').click()}
                 className="text-sm font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full"
               >
@@ -584,11 +584,10 @@ const Navbar = () => {
               </form>
 
               {deliveryMessage && (
-                <div className={`mt-4 p-3 rounded-lg text-sm font-medium ${
-                  deliveryMessage.type === 'success'
+                <div className={`mt-4 p-3 rounded-lg text-sm font-medium ${deliveryMessage.type === 'success'
                     ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                     : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
-                }`}>
+                  }`}>
                   {deliveryMessage.text}
                 </div>
               )}

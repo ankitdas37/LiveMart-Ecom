@@ -37,7 +37,7 @@ const sendEmail = async (options) => {
   const boundaryAlt = `boundary_alt_${Date.now()}_${Math.random().toString(36).slice(2)}`;
   
   const baseHeaders = [
-    `From: "LiveMart Support" <${emailUser}>`,
+    `From: "W!FO MART Support" <${emailUser}>`,
     `To: ${options.email}`,
     options.cc ? `Cc: ${Array.isArray(options.cc) ? options.cc.join(', ') : options.cc}` : '',
     `Reply-To: ${emailUser}`,

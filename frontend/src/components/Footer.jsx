@@ -36,10 +36,13 @@ const Footer = () => {
           {/* Brand Info */}
           <div className="mb-6 md:mb-0 border-b border-slate-800 pb-8 md:border-0 md:pb-0">
             <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2 mb-4 md:mb-6">
-              <img src="/logo.png" alt="LiveMart" className="h-8 w-8 md:h-9 md:w-9 rounded-xl object-contain shadow-sm" />
-              <div className="flex">
-                <span className="text-white">Live</span>
-                <span className="text-[#FF8C00]">Mart</span>
+              <img src="/logo.png" alt="W!FO MART" className="h-8 w-8 md:h-9 md:w-9 rounded-xl object-contain shadow-sm" />
+              <div className="flex flex-col">
+                <div className="flex leading-none">
+                  <span className="text-white">W!FO</span>
+                  <span className="text-[#FF8C00] ml-1.5">MART</span>
+                </div>
+                <span className="text-[9px] font-black text-[#A0705E] tracking-widest mt-0.5">A BASRIC Company</span>
               </div>
             </Link>
             <p className="text-sm leading-relaxed mb-6">
@@ -162,7 +165,7 @@ const Footer = () => {
 
         <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-xs text-slate-500 mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} <span className="text-white">Live</span><span className="text-[#FF8C00]">Mart</span>. All rights reserved.
+            &copy; {new Date().getFullYear()} <span className="text-white font-bold">W!FO</span><span className="text-[#FF8C00] font-bold ml-1">MART</span>. A BASRIC Company. All rights reserved.
           </p>
           <div className="flex space-x-4">
             <a href="" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors bg-slate-800 p-2 rounded flex items-center justify-center">

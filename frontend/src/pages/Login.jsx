@@ -14,7 +14,7 @@ const Login = () => {
   const [authMethod, setAuthMethod] = useState('select');
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // OTP States
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState('');
@@ -91,7 +91,7 @@ const Login = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMsg('');
-    
+
     const result = await verifyLogin(email, otp);
     setIsSubmitting(false);
 
@@ -108,7 +108,7 @@ const Login = () => {
   const resendOtpHandler = async () => {
     if (resendTimer > 0) return;
     setIsSubmitting(true);
-    const result = await login(email, password); 
+    const result = await login(email, password);
     setIsSubmitting(false);
     if (result.success && result.requireOTP) {
       setResendTimer(60);
@@ -127,9 +127,13 @@ const Login = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
         <div className="relative z-10 p-12 text-center flex flex-col items-center">
           <Link to="/" className="flex items-center gap-4 mb-6 hover:scale-105 transition-transform">
-            <img src="/logo.png" alt="LiveMart" className="h-16 w-16 rounded-2xl object-contain shadow-lg" />
-            <div className="text-6xl font-black tracking-tighter">
-              <span className="text-white">Live</span><span className="text-[#FF8C00]">Mart</span>
+            <img src="/logo.png" alt="W!FO MART" className="h-16 w-16 rounded-2xl object-contain shadow-lg" />
+            <div className="flex flex-col">
+              <div className="text-6xl font-black tracking-tighter leading-none">
+                <span className="text-white">W!FO</span>
+                <span className="text-[#FF8C00] ml-2">MART</span>
+              </div>
+              <span className="text-sm font-black text-[#A0705E] tracking-[0.3em] mt-2">A BASRIC Company</span>
             </div>
           </Link>
           <p className="text-xl text-slate-300 max-w-md leading-relaxed font-medium">
@@ -149,16 +153,20 @@ const Login = () => {
 
             <div className="text-center mb-8">
               <Link to="/" className="lg:hidden flex items-center justify-center gap-2 mb-6 hover:scale-105 transition-transform">
-                <img src="/logo.png" alt="LiveMart" className="h-10 w-10 rounded-xl object-contain shadow-sm" />
-                <div className="text-4xl font-black tracking-tighter">
-                  <span className="text-white">Live</span><span className="text-[#FF8C00]">Mart</span>
+                <img src="/logo.png" alt="W!FO MART" className="h-10 w-10 rounded-xl object-contain shadow-sm" />
+                <div className="flex flex-col items-start justify-center">
+                  <div className="text-4xl font-black tracking-tighter leading-none">
+                    <span className="text-white">W!FO</span>
+                    <span className="text-[#FF8C00] ml-1.5">MART</span>
+                  </div>
+                  <span className="text-[10px] font-black text-[#A0705E] tracking-widest mt-1">A BASRIC Company</span>
                 </div>
               </Link>
               <h2 className="text-3xl font-bold tracking-tight text-white">
                 {otpStep ? 'Verification Required' : 'Welcome Back'}
               </h2>
               <p className="mt-2 text-sm text-slate-300">
-                {otpStep ? `Enter the 6-digit code sent to ${email}` : 'Log in to your LiveMart account'}
+                {otpStep ? `Enter the 6-digit code sent to ${email}` : 'Log in to your W!FO MART account'}
               </p>
             </div>
 
@@ -175,7 +183,7 @@ const Login = () => {
               <>
                 {authMethod === 'select' && (
                   <div className="w-full max-w-sm mx-auto flex flex-col items-center">
-                    
+
                     <button
                       onClick={() => setAuthMethod('email')}
                       className="w-full py-3.5 px-4 bg-[#3B5998] hover:bg-[#314a80] text-white rounded-full font-bold text-sm tracking-wide transition-colors mb-6 shadow-md"
@@ -201,10 +209,10 @@ const Login = () => {
                         </div>
                         <button className="w-full relative flex justify-center items-center py-3.5 px-4 bg-transparent border border-slate-600 hover:border-slate-400 hover:bg-slate-800/50 text-white rounded-full font-bold text-sm tracking-wide transition-all">
                           <svg className="absolute left-4 w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                           </svg>
                           LOGIN WITH GOOGLE
                         </button>
@@ -273,7 +281,7 @@ const Login = () => {
                     {isSubmitting ? 'Logging in...' : 'Login'}
                     {!isSubmitting && <ArrowRight className="ml-2 h-5 w-5 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />}
                   </button>
-                  
+
                   {authMethod === 'email' && (
                     <button
                       type="button"
@@ -336,13 +344,13 @@ const Login = () => {
               </form>
             )}
 
-            <div className="mt-8 text-center text-sm text-slate-400">
-              Don't have an account?{' '}
+            <div className="mt-8 pt-6 border-t border-white/10 text-center">
+              <p className="text-sm text-slate-400 mb-4">Don't have an account?</p>
               <Link
                 to={redirect ? `/signup?redirect=${redirect}` : '/signup'}
-                className="font-medium text-white hover:text-amber-400 transition-colors"
+                className="inline-flex justify-center items-center w-full py-3 px-4 bg-amber-500/10 border-2 border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-slate-900 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(245,158,11,0.15)]"
               >
-                Create one now
+                CREATE AN ACCOUNT
               </Link>
             </div>
           </div>

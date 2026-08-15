@@ -35,31 +35,31 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="group flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800">
+    <div className="group flex flex-col bg-white dark:bg-[#1f2937] rounded-sm overflow-hidden hover:shadow-[0_3px_16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_3px_16px_rgba(0,0,0,0.4)] transition-all duration-200 border border-slate-200 dark:border-slate-700">
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
+      <div className="relative aspect-square overflow-hidden bg-white p-3">
         <Link to={`/product/${product.id}`}>
           <img
             src={(product.images && product.images.filter(i => i && i.trim()).length > 0 ? product.images.filter(i => i && i.trim())[0] : null) || 'https://placehold.co/400x400?text=No+Image'}
             alt={product.title}
-            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
             onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400?text=No+Image'; }}
           />
         </Link>
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex flex-col space-y-2">
+        <div className="absolute top-2 left-2 flex flex-col space-y-1">
           {product.is_new_arrival && (
-            <span className="bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">NEW</span>
+            <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow-sm">NEW</span>
           )}
           {product.is_bestseller && (
-            <span className="bg-slate-900 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">BEST SELLER</span>
+            <span className="bg-[#ff9f00] text-white text-[10px] font-bold px-2 py-0.5 rounded-sm shadow-sm">BEST SELLER</span>
           )}
         </div>
         {/* Quick Actions */}
         <div className="absolute top-2 right-2 flex flex-col space-y-2">
           <button
             onClick={handleWishlist}
-            className={`p-1.5 rounded-full transition-colors shadow-sm bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm ${isWishlisted ? 'text-red-500' : 'text-slate-400 hover:text-red-500 dark:hover:text-red-500'}`}
+            className={`p-1.5 rounded-full transition-colors bg-white shadow-sm border border-slate-100 ${isWishlisted ? 'text-[#ff4343]' : 'text-slate-300 hover:text-[#ff4343]'}`}
           >
             <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
           </button>
@@ -67,37 +67,37 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Content */}
-      <div className="p-2 sm:p-3 flex-grow flex flex-col">
-        <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-0.5 uppercase tracking-wider font-medium line-clamp-1">{product.category_name || ''}</div>
-        <Link to={`/product/${product.id}`} className="block mb-1">
-          <h3 className="text-sm sm:text-base font-semibold text-slate-800 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">{product.title}</h3>
+      <div className="p-3 sm:p-4 flex-grow flex flex-col">
+        <div className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mb-1 font-medium uppercase tracking-wider line-clamp-1">{product.category_name || ''}</div>
+        <Link to={`/product/${product.id}`} className="block mb-1.5">
+          <h3 className="text-sm font-medium text-slate-800 dark:text-slate-100 line-clamp-2 group-hover:text-[#2874f0] dark:group-hover:text-[#2874f0] transition-colors leading-snug">{product.title}</h3>
         </Link>
         
         {/* Rating */}
         {product.reviews_count > 0 ? (
-          <div className="flex items-center gap-1.5 mb-1">
-            <div className="flex items-center bg-green-600 text-white px-1 py-0.5 rounded text-[10px] sm:text-xs font-bold">
-              {Number(product.rating).toFixed(1)} <span className="ml-0.5 text-[8px] sm:text-[10px]">★</span>
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <div className="flex items-center bg-[#388e3c] text-white px-1.5 py-0.5 rounded-[3px] text-[11px] font-bold">
+              {Number(product.rating).toFixed(1)} <span className="ml-0.5 text-[9px]">★</span>
             </div>
-            <span className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium">({product.reviews_count})</span>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">({product.reviews_count})</span>
           </div>
         ) : (
-          <div className="h-4 sm:h-5 mb-1"></div>
+          <div className="h-5 mb-1.5"></div>
         )}
 
         <div className="mt-auto pt-2 flex items-center justify-between gap-2">
-          <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">₹{parseFloat(product.price).toFixed(2)}</span>
+          <span className="text-[17px] sm:text-[19px] font-bold text-slate-900 dark:text-white">₹{parseFloat(product.price).toFixed(2)}</span>
           {isInCart ? (
             <button
               onClick={(e) => { e.preventDefault(); navigate('/checkout'); }}
-              className="bg-green-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-md hover:bg-green-700 transition-colors shadow-sm whitespace-nowrap flex-shrink-0"
+              className="bg-[#ff9f00] text-white text-[11px] sm:text-xs font-bold px-4 py-1.5 rounded-sm hover:bg-[#f39800] transition-colors shadow-sm whitespace-nowrap uppercase flex-shrink-0"
             >
               Go to Cart
             </button>
           ) : (
             <button
               onClick={(e) => { e.preventDefault(); addToCart(product); }}
-              className="bg-white border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-white text-[10px] sm:text-xs font-bold px-4 py-1.5 rounded-md hover:border-amber-500 hover:text-amber-600 transition-colors shadow-sm whitespace-nowrap flex-shrink-0 dark:bg-slate-800"
+              className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-[#2874f0] dark:text-[#4285f4] text-[11px] sm:text-[13px] font-bold px-6 py-1.5 rounded-sm hover:border-[#2874f0] dark:hover:border-[#4285f4] transition-colors whitespace-nowrap uppercase shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex-shrink-0"
             >
               Add
             </button>

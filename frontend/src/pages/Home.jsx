@@ -32,26 +32,26 @@ const Home = () => {
           axios.get('/api/products'),
           axios.get('/api/settings').catch(() => ({ data: {} }))
         ]);
-        
+
         if (settingsRes.data && settingsRes.data.HERO_SLIDES) {
-           try {
-             const parsed = JSON.parse(settingsRes.data.HERO_SLIDES);
-             if (Array.isArray(parsed) && parsed.length > 0) {
-               setHeroSlides(parsed);
-             }
-           } catch(e) { console.error('Failed parsing slides', e); }
+          try {
+            const parsed = JSON.parse(settingsRes.data.HERO_SLIDES);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setHeroSlides(parsed);
+            }
+          } catch (e) { console.error('Failed parsing slides', e); }
         }
         if (settingsRes.data?.BEST_SELLER_TITLE) setBestSellerTitle(settingsRes.data.BEST_SELLER_TITLE);
         if (settingsRes.data?.BEST_SELLER_SUBTITLE) setBestSellerSubtitle(settingsRes.data.BEST_SELLER_SUBTITLE);
-        
+
         // Filter published categories
         const activeCategories = catRes.data.filter(c => c.is_published && !c.is_paused);
         setCategories(activeCategories); // Store all categories for mobile horizontal scroll
-        
+
         // Filter published products and get top 4 bestsellers
         const availableProducts = prodRes.data.filter(p => p.is_published && !p.is_paused);
         const bestSellers = availableProducts.filter(p => p.is_bestseller);
-        
+
         setProducts(bestSellers.slice(0, 4));
       } catch (error) {
         console.error('Failed to fetch home data:', error);
@@ -88,16 +88,23 @@ const Home = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [heroSlides.length]);
 
+  const [isSwiping, setIsSwiping] = useState(false);
   const onTouchStart = (e) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
+    setIsSwiping(false);
   };
-  const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+    setIsSwiping(true);
+  };
   const onTouchEndHandler = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
-    if (distance > 50) nextSlide();
-    if (distance < -50) prevSlide();
+    if (Math.abs(distance) > 50) {
+      if (distance > 50) nextSlide();
+      if (distance < -50) prevSlide();
+    }
   };
 
   const defaultSlide = {
@@ -117,20 +124,20 @@ const Home = () => {
       setIsSearching(true);
       const fetchSearchResults = async () => {
         try {
-           const res = await axios.get('/api/products');
-           const published = res.data.filter(p => p.is_published && !p.is_paused);
-           const q = searchQuery.toLowerCase().trim();
-           const matchedProducts = published.filter(p =>
-             p.title?.toLowerCase().includes(q) ||
-             p.description?.toLowerCase().includes(q) ||
-             p.sku?.toLowerCase().includes(q) ||
-             p.category?.toLowerCase().includes(q)
-           ).slice(0, 5);
-           setSearchResults(matchedProducts);
+          const res = await axios.get('/api/products');
+          const published = res.data.filter(p => p.is_published && !p.is_paused);
+          const q = searchQuery.toLowerCase().trim();
+          const matchedProducts = published.filter(p =>
+            p.title?.toLowerCase().includes(q) ||
+            p.description?.toLowerCase().includes(q) ||
+            p.sku?.toLowerCase().includes(q) ||
+            p.category?.toLowerCase().includes(q)
+          ).slice(0, 5);
+          setSearchResults(matchedProducts);
         } catch (error) {
-           console.error("Failed to search products", error);
+          console.error("Failed to search products", error);
         } finally {
-           setIsSearching(false);
+          setIsSearching(false);
         }
       };
       const debounceTimer = setTimeout(fetchSearchResults, 300);
@@ -158,7 +165,7 @@ const Home = () => {
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
-    
+
     recognition.lang = 'en-US';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
@@ -192,10 +199,10 @@ const Home = () => {
     <div className="w-full">
       {/* Mobile Sub-Header (Premium E-com Style) */}
       <div className="md:hidden bg-gradient-to-b from-orange-50 to-white dark:from-slate-900 dark:to-slate-900 pt-3 pb-3 px-3 space-y-4">
-        
+
         {/* Top Row: Address, Track, and Points */}
         <div className="flex justify-between items-center gap-2">
-          <button 
+          <button
             onClick={() => window.dispatchEvent(new Event('openDeliveryModal'))}
             className="flex-1 flex items-center bg-white dark:bg-slate-800/80 backdrop-blur-md rounded-full py-1.5 px-3 border border-slate-100 dark:border-slate-700/50 shadow-sm min-w-0"
           >
@@ -208,10 +215,10 @@ const Home = () => {
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 ml-1 flex-shrink-0" />
           </button>
-          
+
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Link 
-              to="/track-order" 
+            <Link
+              to="/track-order"
               className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm shadow-blue-500/30 rounded-lg py-1.5 px-2.5 transition-transform active:scale-95"
             >
               <Truck className="w-3 h-3 mr-1" />
@@ -224,32 +231,32 @@ const Home = () => {
 
         {/* Search Bar */}
         <div ref={searchRef} className="relative z-[60]">
-          <form 
+          <form
             onSubmit={(e) => {
               e.preventDefault();
               if (searchQuery) navigate(`/shop?search=${searchQuery}`);
-            }} 
+            }}
             className="relative flex items-center"
           >
             <Search className="absolute left-4 w-5 h-5 text-slate-400 dark:text-slate-500 pointer-events-none" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products..." 
-              className="w-full bg-slate-50 dark:bg-slate-800/90 text-slate-900 dark:text-white rounded-full py-3 pl-11 pr-24 text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-inner border border-slate-200 dark:border-slate-700/60 backdrop-blur-sm transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500" 
+              placeholder="Search products..."
+              className="w-full bg-slate-50 dark:bg-slate-800/90 text-slate-900 dark:text-white rounded-full py-3 pl-11 pr-24 text-[15px] focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-inner border border-slate-200 dark:border-slate-700/60 backdrop-blur-sm transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
               autoComplete="off"
             />
             <div className="absolute right-3 flex space-x-2 text-slate-400">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => setShowCameraAlert(true)}
                 className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full hover:text-slate-600 dark:hover:text-slate-300 transition-colors focus:outline-none"
               >
                 <Camera className="w-5 h-5" />
               </button>
-              <button 
+              <button
                 type="button"
                 onClick={startVoiceSearch}
                 className={`p-1.5 rounded-full transition-colors focus:outline-none flex items-center justify-center ${isListening ? 'text-red-500 bg-red-50 dark:bg-red-900/20' : 'hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'}`}
@@ -306,7 +313,7 @@ const Home = () => {
             <span className="text-[11px] font-bold text-slate-800 dark:text-white">For You</span>
             <div className="w-4 h-0.5 bg-orange-500 rounded-full"></div>
           </Link>
-          
+
           {categories.map(cat => (
             <Link key={cat.id} to={`/shop?category=${cat.id}`} className="flex flex-col items-center min-w-max space-y-1.5 pt-0.5 group">
               <div className="w-14 h-14 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden shadow-sm transform group-active:scale-95 transition-transform p-2.5">
@@ -323,33 +330,37 @@ const Home = () => {
       </div>
 
       {/* Hero Section */}
-      <section 
+      <section
         className="relative h-[22vh] md:h-[85vh] bg-slate-900 flex items-center overflow-hidden group mt-2 mx-2 md:mt-0 md:mx-0 rounded-2xl md:rounded-none shadow-sm md:shadow-none"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEndHandler}
       >
         {heroSlides.length > 0 ? heroSlides.map((slide, index) => (
-          <div 
-            key={slide.id} 
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+          <div
+            key={slide.id}
+            onClick={() => !isSwiping && navigate(slide.button1Link || defaultSlide.button1Link || '/shop')}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out cursor-pointer ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
           >
             <div className="absolute inset-0 bg-slate-900">
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10"></div>
-              <img 
-                src={slide.image_url || defaultSlide.image_url} 
-                alt={slide.title} 
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10 hidden md:block"></div>
+              <img
+                src={slide.image_url || defaultSlide.image_url}
+                alt={slide.title}
                 className="w-full h-full object-cover opacity-90"
               />
             </div>
           </div>
         )) : (
-          <div className="absolute inset-0 z-10">
+          <div 
+            className="absolute inset-0 z-10 cursor-pointer"
+            onClick={() => !isSwiping && navigate(defaultSlide.button1Link || '/shop')}
+          >
             <div className="absolute inset-0 bg-slate-900">
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10"></div>
-              <img 
-                src={defaultSlide.image_url} 
-                alt="Default" 
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10 hidden md:block"></div>
+              <img
+                src={defaultSlide.image_url}
+                alt="Default"
                 className="w-full h-full object-cover opacity-90"
               />
             </div>
@@ -390,13 +401,13 @@ const Home = () => {
         {/* Carousel Controls */}
         {heroSlides.length > 1 && (
           <>
-            <button 
+            <button
               onClick={prevSlide}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 text-white hover:bg-black/40 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={nextSlide}
               className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-2 rounded-full bg-black/20 text-white hover:bg-black/40 backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
             >
@@ -428,7 +439,7 @@ const Home = () => {
               <p className="text-xs md:text-base text-slate-500 dark:text-slate-400">Find exactly what you're looking for</p>
             </div>
           </div>
-          
+
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
@@ -437,10 +448,10 @@ const Home = () => {
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 px-2 md:px-0">
               {categories.slice(0, 4).map((cat) => (
                 <Link key={cat.id} to={`/shop?category=${cat.id}`} className="group relative h-[160px] md:h-[400px] rounded-xl md:rounded-2xl overflow-hidden">
-                  <img 
-                    src={cat.image_url || "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
-                    alt={cat.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                  <img
+                    src={cat.image_url || "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
+                    alt={cat.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent flex flex-col justify-end p-3 md:p-8">
                     <h3 className="text-sm md:text-2xl font-bold text-white mb-0.5 md:mb-2">{cat.name}</h3>
@@ -464,7 +475,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-2 md:px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-lg md:text-3xl font-bold text-slate-900 dark:text-white mb-0.5 md:mb-2">{bestSellerTitle}</h2>
           <p className="text-xs md:text-base text-slate-500 dark:text-slate-400 mb-4 md:mb-12">{bestSellerSubtitle}</p>
-          
+
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600"></div>
@@ -502,7 +513,7 @@ const Home = () => {
             <p className="text-slate-500 dark:text-slate-400 text-center mb-6 text-sm">
               We're working hard to bring AI-powered visual search to you. Soon you'll be able to snap a photo to find matching products instantly!
             </p>
-            <button 
+            <button
               onClick={() => setShowCameraAlert(false)}
               className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-3.5 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm"
             >
@@ -516,3 +527,4 @@ const Home = () => {
 };
 
 export default Home;
+
