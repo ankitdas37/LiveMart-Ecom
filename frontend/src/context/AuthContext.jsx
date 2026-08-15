@@ -163,6 +163,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
       const { data } = await axios.post('/api/auth/login', { email, password }, config);
+      
+      if (data.requireOTP) {
+        return { success: true, requireOTP: true, message: data.message };
+      }
+
       if (data.role !== 'admin') {
         return { success: false, error: 'Access denied. This account does not have admin privileges.' };
       }
@@ -206,12 +211,31 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  const adminVerifyLogin = async (email, otp) => {
+    try {
+      const config = { headers: { 'Content-Type': 'application/json' } };
+      const { data } = await axios.post('/api/auth/login-verify', { email, otp }, config);
+      if (data.role !== 'admin') {
+        return { success: false, error: 'Access denied. This account does not have admin privileges.' };
+      }
+      setAdminUser(data);
+      localStorage.setItem('adminInfo', JSON.stringify(data));
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      return { success: true, user: data };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response && error.response.data.message ? error.response.data.message : error.message,
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       // User session
       user, login, verifyLogin, googleLogin, sendOTP, register, logout, updateUserSession, loading,
       // Admin session (separate)
-      adminUser, adminLogin, adminGoogleLogin, adminLogout,
+      adminUser, adminLogin, adminVerifyLogin, adminGoogleLogin, adminLogout,
     }}>
       {!loading && children}
     </AuthContext.Provider>
