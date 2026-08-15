@@ -123,14 +123,14 @@ const ReviewsAdmin = () => {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-slate-500">Loading reviews...</div>;
+  if (loading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading reviews...</div>;
 
   return (
     <div className="p-4 sm:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Manage Reviews</h1>
-          <p className="text-slate-500 mt-1">Approve, edit, create, or delete reviews.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Manage Reviews</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">Approve, edit, create, or delete reviews.</p>
         </div>
         <button 
           onClick={openCreateModal}
@@ -141,11 +141,11 @@ const ReviewsAdmin = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-sm text-slate-500 font-semibold uppercase tracking-wider">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
                 <th className="p-4">Product</th>
                 <th className="p-4">User</th>
                 <th className="p-4">Rating</th>
@@ -156,11 +156,11 @@ const ReviewsAdmin = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {reviews.map((review) => (
-                <tr key={review.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="p-4 text-sm font-medium text-slate-900 max-w-[200px] truncate" title={review.Product?.title}>
+                <tr key={review.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td className="p-4 text-sm font-medium text-slate-900 dark:text-white max-w-[200px] truncate" title={review.Product?.title}>
                     {review.Product?.title || 'Unknown Product'}
                   </td>
-                  <td className="p-4 text-sm text-slate-600">
+                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
                     <div className="font-medium">{review.User?.name || 'Admin'}</div>
                     <div className="text-xs text-slate-400">{review.User?.email}</div>
                   </td>
@@ -169,7 +169,7 @@ const ReviewsAdmin = () => {
                       {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
                     </div>
                   </td>
-                  <td className="p-4 text-sm text-slate-600 max-w-xs truncate" title={review.comment}>
+                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400 max-w-xs truncate" title={review.comment}>
                     {review.comment || <span className="text-slate-400 italic">No comment</span>}
                   </td>
                   <td className="p-4">
@@ -214,7 +214,7 @@ const ReviewsAdmin = () => {
               ))}
               {reviews.length === 0 && (
                 <tr>
-                  <td colSpan="6" className="p-8 text-center text-slate-500">
+                  <td colSpan="6" className="p-8 text-center text-slate-500 dark:text-slate-400">
                     No reviews found.
                   </td>
                 </tr>
@@ -227,9 +227,9 @@ const ReviewsAdmin = () => {
       {/* Modal for Create/Edit Review */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate-900">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 {formData.id ? 'Edit Review' : 'Add New Review'}
               </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
@@ -240,11 +240,11 @@ const ReviewsAdmin = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               {!formData.id && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Product *</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Product *</label>
                   <select 
                     value={formData.productId}
                     onChange={(e) => setFormData({...formData, productId: e.target.value})}
-                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+                    className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
                     required
                   >
                     <option value="">Select a Product</option>
@@ -256,7 +256,7 @@ const ReviewsAdmin = () => {
               )}
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Rating (1-5) *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Rating (1-5) *</label>
                 <div className="flex items-center space-x-2">
                   <input 
                     type="range" 
@@ -271,12 +271,12 @@ const ReviewsAdmin = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Comment</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Comment</label>
                 <textarea 
                   rows="4"
                   value={formData.comment}
                   onChange={(e) => setFormData({...formData, comment: e.target.value})}
-                  className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
+                  className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all"
                   placeholder="Write your review comment here..."
                 ></textarea>
               </div>
@@ -285,7 +285,7 @@ const ReviewsAdmin = () => {
                 <button 
                   type="button" 
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 font-medium rounded-lg transition-colors"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 font-medium rounded-lg transition-colors"
                 >
                   Cancel
                 </button>

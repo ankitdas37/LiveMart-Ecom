@@ -127,8 +127,8 @@ const AdminExtraCharges = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Extra Charges</h1>
-          <p className="text-slate-500">Manage additional fees like Gift Wrap, Extended Warranty, etc.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Extra Charges</h1>
+          <p className="text-slate-500 dark:text-slate-400">Manage additional fees like Gift Wrap, Extended Warranty, etc.</p>
         </div>
         <button 
           onClick={() => {
@@ -145,7 +145,7 @@ const AdminExtraCharges = () => {
       </div>
 
       {showForm && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-6">
           <h2 className="text-xl font-bold mb-4">{editingId ? 'Edit Extra Charge' : 'Create New Extra Charge'}</h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -162,18 +162,18 @@ const AdminExtraCharges = () => {
             </div>
 
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-              <div className="border border-slate-200 rounded-lg p-4 bg-slate-50 h-48 overflow-y-auto">
-                <label className="block text-sm font-bold text-slate-700 border-b pb-2 mb-2">Apply to Categories (One-Time Bulk Update)</label>
-                {categories.length === 0 ? <p className="text-xs text-slate-500">No categories found.</p> : categories.map(cat => (
+              <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-800/50 h-48 overflow-y-auto">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 border-b pb-2 mb-2">Apply to Categories (One-Time Bulk Update)</label>
+                {categories.length === 0 ? <p className="text-xs text-slate-500 dark:text-slate-400">No categories found.</p> : categories.map(cat => (
                   <label key={cat.id} className="flex items-center space-x-2 py-1 cursor-pointer">
                     <input type="checkbox" checked={formData.targetCategories.includes(cat.id)} onChange={() => handleArrayToggle('targetCategories', cat.id)} className="text-amber-600 rounded" />
                     <span className="text-sm">{cat.name}</span>
                   </label>
                 ))}
               </div>
-              <div className="border border-slate-200 rounded-lg p-4 bg-slate-50 h-48 overflow-y-auto">
-                <label className="block text-sm font-bold text-slate-700 border-b pb-2 mb-2">Apply to Specific Products (One-Time Update)</label>
-                {products.length === 0 ? <p className="text-xs text-slate-500">No products found.</p> : products.map(prod => (
+              <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-800/50 h-48 overflow-y-auto">
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 border-b pb-2 mb-2">Apply to Specific Products (One-Time Update)</label>
+                {products.length === 0 ? <p className="text-xs text-slate-500 dark:text-slate-400">No products found.</p> : products.map(prod => (
                   <label key={prod.id} className="flex items-center space-x-2 py-1 cursor-pointer">
                     <input type="checkbox" checked={formData.targetProducts.includes(prod.id)} onChange={() => handleArrayToggle('targetProducts', prod.id)} className="text-amber-600 rounded" />
                     <span className="text-sm truncate">{prod.title}</span>
@@ -197,33 +197,33 @@ const AdminExtraCharges = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="p-4 font-semibold text-sm text-slate-600">Name</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Description</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Price</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Status</th>
-                <th className="p-4 font-semibold text-sm text-slate-600 text-right">Actions</th>
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Name</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Description</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Price</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Status</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-slate-500">Loading extra charges...</td>
+                  <td colSpan="5" className="p-8 text-center text-slate-500 dark:text-slate-400">Loading extra charges...</td>
                 </tr>
               ) : charges.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-slate-500">No extra charges found. Create one above!</td>
+                  <td colSpan="5" className="p-8 text-center text-slate-500 dark:text-slate-400">No extra charges found. Create one above!</td>
                 </tr>
               ) : (
                 charges.map((charge) => (
                   <tr key={charge.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="p-4 font-bold text-slate-900">{charge.name}</td>
-                    <td className="p-4 text-sm text-slate-500">{charge.description || '-'}</td>
-                    <td className="p-4 font-semibold text-slate-900">₹{charge.price}</td>
+                    <td className="p-4 font-bold text-slate-900 dark:text-white">{charge.name}</td>
+                    <td className="p-4 text-sm text-slate-500 dark:text-slate-400">{charge.description || '-'}</td>
+                    <td className="p-4 font-semibold text-slate-900 dark:text-white">₹{charge.price}</td>
                     <td className="p-4">
                       <button 
                         onClick={() => handleToggleActive(charge)}

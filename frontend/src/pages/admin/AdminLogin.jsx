@@ -130,7 +130,7 @@ const AdminLogin = () => {
                   {/* Email Button */}
                   <button
                     onClick={() => { setAuthMethod('email'); setErrorMsg(''); }}
-                    className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] flex items-center justify-center gap-2"
+                    className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 dark:text-white font-black rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] flex items-center justify-center gap-2"
                   >
                     <Mail className="w-5 h-5" />
                     SIGN IN WITH EMAIL
@@ -139,7 +139,7 @@ const AdminLogin = () => {
                   {/* Divider */}
                   <div className="flex items-center gap-3">
                     <div className="flex-1 h-px bg-white/10"></div>
-                    <span className="text-slate-500 text-sm">Or</span>
+                    <span className="text-slate-500 dark:text-slate-400 text-sm">Or</span>
                     <div className="flex-1 h-px bg-white/10"></div>
                   </div>
 
@@ -164,7 +164,7 @@ const AdminLogin = () => {
                     <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">Admin Email</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Mail className="h-5 w-5 text-slate-500" />
+                        <Mail className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                       </div>
                       <input
                         type="email"
@@ -182,7 +182,7 @@ const AdminLogin = () => {
                     <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">Password</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Lock className="h-5 w-5 text-slate-500" />
+                        <Lock className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                       </div>
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -195,7 +195,7 @@ const AdminLogin = () => {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 dark:text-slate-400 hover:text-slate-300 transition-colors"
                       >
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
@@ -213,7 +213,7 @@ const AdminLogin = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-60 flex items-center justify-center gap-2"
+                      className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 dark:text-white font-black rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-60 flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <><div className="w-5 h-5 border-2 border-slate-900/40 border-t-slate-900 rounded-full animate-spin"></div> Verifying...</>
@@ -261,7 +261,7 @@ const AdminLogin = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting || otp.length !== 6}
-                  className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="flex-1 py-3 px-4 bg-amber-500 hover:bg-amber-400 text-slate-900 dark:text-white font-black rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <><div className="w-5 h-5 border-2 border-slate-900/40 border-t-slate-900 rounded-full animate-spin"></div></>
@@ -273,13 +273,13 @@ const AdminLogin = () => {
             </form>
           )}
 
-          <p className="text-center text-xs text-slate-600 mt-6">
+          <p className="text-center text-xs text-slate-600 dark:text-slate-400 mt-6">
             Only authorized administrators can access this panel.
           </p>
         </div>
 
         <p className="text-center mt-6">
-          <a href="/" className="text-slate-500 hover:text-slate-300 text-sm transition-colors">
+          <a href="/" className="text-slate-500 dark:text-slate-400 hover:text-slate-300 text-sm transition-colors">
             ← Back to Store
           </a>
         </p>

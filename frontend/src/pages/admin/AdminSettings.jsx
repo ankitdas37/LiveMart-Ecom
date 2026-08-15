@@ -123,16 +123,16 @@ const AdminSettings = () => {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center text-slate-500">Loading settings...</div>;
+    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading settings...</div>;
   }
 
   return (
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center space-x-3 mb-6">
-        <SettingsIcon className="w-8 h-8 text-slate-700" />
+        <SettingsIcon className="w-8 h-8 text-slate-700 dark:text-slate-300" />
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Global Settings</h1>
-          <p className="text-slate-500">Manage store configuration and charges</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Global Settings</h1>
+          <p className="text-slate-500 dark:text-slate-400">Manage store configuration and charges</p>
         </div>
       </div>
 
@@ -143,16 +143,16 @@ const AdminSettings = () => {
       )}
 
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4">Checkout Settings</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Checkout Settings</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Flat Shipping Charge (₹)
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-medium">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 dark:text-slate-400 font-medium">
                   ₹
                 </span>
                 <input 
@@ -163,10 +163,10 @@ const AdminSettings = () => {
                   required 
                   min="0"
                   step="0.01"
-                  className="w-full pl-8 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full pl-8 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 This amount will be added to every order as a shipping fee. Set to 0 for free shipping.
               </p>
             </div>
@@ -174,12 +174,12 @@ const AdminSettings = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4">Payment Settings</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Payment Settings</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Merchant UPI ID
               </label>
               <input 
@@ -187,13 +187,13 @@ const AdminSettings = () => {
                 name="PAYMENT_UPI_ID" 
                 value={settings.PAYMENT_UPI_ID || ''} 
                 onChange={handleChange} 
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="e.g. merchant@upi"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Payment QR Code Image
               </label>
               <div className="flex items-center space-x-4">
@@ -215,7 +215,7 @@ const AdminSettings = () => {
                     accept="image/*"
                     onChange={handleQRUpload}
                     disabled={isUploadingQR}
-                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 transition-colors cursor-pointer"
+                    className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 transition-colors cursor-pointer"
                   />
                   {isUploadingQR && <p className="text-xs text-amber-600 mt-1">Uploading...</p>}
                 </div>
@@ -223,8 +223,8 @@ const AdminSettings = () => {
             </div>
           </div>
 
-          <div className="border-t border-slate-100 pt-6">
-            <h3 className="text-sm font-semibold text-slate-800 mb-4">Enabled Payment Methods</h3>
+          <div className="border-t border-slate-100 dark:border-slate-800 pt-6">
+            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-4">Enabled Payment Methods</h3>
             <div className="flex flex-col space-y-3">
               <label className="flex items-center space-x-3 cursor-pointer">
                 <input 
@@ -232,9 +232,9 @@ const AdminSettings = () => {
                   name="PAYMENT_COD_ENABLED"
                   checked={settings.PAYMENT_COD_ENABLED}
                   onChange={handleChange}
-                  className="w-5 h-5 text-amber-600 rounded border-slate-300 focus:ring-amber-500"
+                  className="w-5 h-5 text-amber-600 rounded border-slate-300 dark:border-slate-600 focus:ring-amber-500"
                 />
-                <span className="text-slate-700 font-medium">Cash on Delivery (COD)</span>
+                <span className="text-slate-700 dark:text-slate-300 font-medium">Cash on Delivery (COD)</span>
               </label>
 
               <label className="flex items-center space-x-3 cursor-pointer">
@@ -243,38 +243,38 @@ const AdminSettings = () => {
                   name="PAYMENT_ONLINE_ENABLED"
                   checked={settings.PAYMENT_ONLINE_ENABLED}
                   onChange={handleChange}
-                  className="w-5 h-5 text-amber-600 rounded border-slate-300 focus:ring-amber-500"
+                  className="w-5 h-5 text-amber-600 rounded border-slate-300 dark:border-slate-600 focus:ring-amber-500"
                 />
-                <span className="text-slate-700 font-medium">Pay Online (Manual UPI / Bank Transfer)</span>
+                <span className="text-slate-700 dark:text-slate-300 font-medium">Pay Online (Manual UPI / Bank Transfer)</span>
               </label>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4">Contact Details (shown on invoices &amp; receipts)</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Contact Details (shown on invoices &amp; receipts)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Contact Phone Number</label>
-              <input type="text" name="CONTACT_PHONE" value={settings.CONTACT_PHONE || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. +91 9876543210" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Contact Phone Number</label>
+              <input type="text" name="CONTACT_PHONE" value={settings.CONTACT_PHONE || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. +91 9876543210" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Contact Email</label>
-              <input type="email" name="CONTACT_EMAIL" value={settings.CONTACT_EMAIL || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. support@livemart.in" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Contact Email</label>
+              <input type="email" name="CONTACT_EMAIL" value={settings.CONTACT_EMAIL || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. support@livemart.in" />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-slate-700 mb-2">Business Address</label>
-              <input type="text" name="CONTACT_ADDRESS" value={settings.CONTACT_ADDRESS || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. 123 Main Street, Kolkata, WB" />
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Business Address</label>
+              <input type="text" name="CONTACT_ADDRESS" value={settings.CONTACT_ADDRESS || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. 123 Main Street, Kolkata, WB" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4">Authentication Pages</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Authentication Pages</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Login Page Background Image
               </label>
               <div className="flex items-center space-x-4">
@@ -296,7 +296,7 @@ const AdminSettings = () => {
                     accept="image/*"
                     onChange={(e) => handleAuthImageUpload(e, 'LOGIN_BG_IMAGE')}
                     disabled={isUploadingLogin}
-                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 transition-colors cursor-pointer"
+                    className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 transition-colors cursor-pointer"
                   />
                   {isUploadingLogin && <p className="text-xs text-amber-600 mt-1">Uploading...</p>}
                 </div>
@@ -304,7 +304,7 @@ const AdminSettings = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Signup Page Background Image
               </label>
               <div className="flex items-center space-x-4">
@@ -326,7 +326,7 @@ const AdminSettings = () => {
                     accept="image/*"
                     onChange={(e) => handleAuthImageUpload(e, 'SIGNUP_BG_IMAGE')}
                     disabled={isUploadingSignup}
-                    className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 transition-colors cursor-pointer"
+                    className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 transition-colors cursor-pointer"
                   />
                   {isUploadingSignup && <p className="text-xs text-amber-600 mt-1">Uploading...</p>}
                 </div>
@@ -335,12 +335,12 @@ const AdminSettings = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          <h2 className="text-xl font-bold text-slate-900 mb-6 border-b pb-4">Home Page Settings</h2>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Home Page Settings</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Best Sellers Section Title
               </label>
               <input 
@@ -348,13 +348,13 @@ const AdminSettings = () => {
                 name="BEST_SELLER_TITLE" 
                 value={settings.BEST_SELLER_TITLE || ''} 
                 onChange={handleChange} 
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="e.g. Best Sellers"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Best Sellers Section Subtitle
               </label>
               <input 
@@ -362,7 +362,7 @@ const AdminSettings = () => {
                 name="BEST_SELLER_SUBTITLE" 
                 value={settings.BEST_SELLER_SUBTITLE || ''} 
                 onChange={handleChange} 
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="e.g. Our most loved products"
               />
             </div>

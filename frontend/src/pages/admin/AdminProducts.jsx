@@ -99,8 +99,8 @@ const AdminProducts = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Products</h1>
-          <p className="text-sm text-slate-500">Manage your store inventory</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Products</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Manage your store inventory</p>
         </div>
         <Link
           to="/admin/products/new"
@@ -112,7 +112,7 @@ const AdminProducts = () => {
       </div>
 
       {/* Filters/Search */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
@@ -120,7 +120,7 @@ const AdminProducts = () => {
             placeholder="Search products by name or SKU..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           />
         </div>
       </div>
@@ -148,17 +148,17 @@ const AdminProducts = () => {
       )}
 
       {/* Responsive Table/Cards */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300 hover:shadow-md">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-800 overflow-hidden transition-all duration-300 hover:shadow-md">
         <div className="overflow-x-auto md:overflow-visible">
           <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400 block md:table">
-            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700 hidden md:table-header-group">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700 hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 w-12">
                   <input
                     type="checkbox"
                     checked={selectedProducts.length === filteredProducts.length && filteredProducts.length > 0}
                     onChange={handleSelectAll}
-                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-amber-600 focus:ring-amber-500"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:bg-slate-800 text-amber-600 focus:ring-amber-500"
                   />
                 </th>
                 <th className="px-6 py-4">Product</th>
@@ -171,14 +171,14 @@ const AdminProducts = () => {
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 block md:table-row-group">
               {isLoading ? (
-                <tr className="block md:table-row"><td colSpan="7" className="px-6 py-12 text-center text-slate-500 block md:table-cell">Loading amazing products...</td></tr>
+                <tr className="block md:table-row"><td colSpan="7" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400 block md:table-cell">Loading amazing products...</td></tr>
               ) : filteredProducts.length === 0 ? (
-                <tr className="block md:table-row"><td colSpan="7" className="px-6 py-12 text-center text-slate-500 block md:table-cell">No products found. Start adding some!</td></tr>
+                <tr className="block md:table-row"><td colSpan="7" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400 block md:table-cell">No products found. Start adding some!</td></tr>
               ) : (
                 filteredProducts.map((product) => {
                   const isSelected = selectedProducts.includes(product.id);
                   return (
-                  <tr key={product.id} className={`group block md:table-row transition-all duration-300 mb-4 md:mb-0 border border-slate-200 md:border-0 dark:border-slate-700 rounded-2xl mx-4 md:mx-0 shadow-sm md:shadow-none bg-white dark:bg-slate-900 ${isSelected ? 'bg-amber-50/50 dark:bg-amber-900/10 md:ring-0 ring-2 ring-amber-400' : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50 md:hover:shadow-lg md:hover:-translate-y-0.5'}`}>
+                  <tr key={product.id} className={`group block md:table-row transition-all duration-300 mb-4 md:mb-0 border border-slate-200 dark:border-slate-700 md:border-0 dark:border-slate-700 rounded-2xl mx-4 md:mx-0 shadow-sm md:shadow-none bg-white dark:bg-slate-900 ${isSelected ? 'bg-amber-50/50 dark:bg-amber-900/10 md:ring-0 ring-2 ring-amber-400' : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/50 md:hover:shadow-lg md:hover:-translate-y-0.5'}`}>
                     <td className="px-4 py-3 md:px-6 md:py-4 flex md:table-cell items-center justify-between border-b md:border-b-0 border-slate-100 dark:border-slate-800/50">
                       <span className="md:hidden font-semibold text-xs text-slate-400 uppercase tracking-wider">Select</span>
                       <input
@@ -191,7 +191,7 @@ const AdminProducts = () => {
                             setSelectedProducts(selectedProducts.filter(id => id !== product.id));
                           }
                         }}
-                        className="w-5 h-5 md:w-4 md:h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-amber-600 focus:ring-amber-500 transition-transform active:scale-90"
+                        className="w-5 h-5 md:w-4 md:h-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:bg-slate-800 text-amber-600 focus:ring-amber-500 transition-transform active:scale-90"
                       />
                     </td>
                     <td className="px-4 py-4 md:px-6 md:py-4 font-bold text-slate-900 dark:text-white block md:table-cell border-b md:border-b-0 border-slate-100 dark:border-slate-800/50">
@@ -208,11 +208,11 @@ const AdminProducts = () => {
                     </td>
                     <td className="px-4 py-3 md:px-6 md:py-4 flex md:table-cell items-center justify-between border-b md:border-b-0 border-slate-100 dark:border-slate-800/50">
                        <span className="md:hidden font-semibold text-xs text-slate-400 uppercase tracking-wider">SKU</span>
-                       <span className="font-mono text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">{product.sku || 'N/A'}</span>
+                       <span className="font-mono text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md text-slate-600 dark:text-slate-400 dark:text-slate-300 border border-slate-200 dark:border-slate-700">{product.sku || 'N/A'}</span>
                     </td>
                     <td className="px-4 py-3 md:px-6 md:py-4 flex md:table-cell items-center justify-between border-b md:border-b-0 border-slate-100 dark:border-slate-800/50">
                        <span className="md:hidden font-semibold text-xs text-slate-400 uppercase tracking-wider">Price</span>
-                       <span className="font-black text-lg md:text-sm text-slate-900 dark:text-amber-400">₹{product.price}</span>
+                       <span className="font-black text-lg md:text-sm text-slate-900 dark:text-white dark:text-amber-400">₹{product.price}</span>
                     </td>
                     <td className="px-4 py-3 md:px-6 md:py-4 flex md:table-cell items-center justify-between border-b md:border-b-0 border-slate-100 dark:border-slate-800/50">
                       <span className="md:hidden font-semibold text-xs text-slate-400 uppercase tracking-wider">Stock</span>
@@ -222,11 +222,11 @@ const AdminProducts = () => {
                     </td>
                     <td className="px-4 py-3 md:px-6 md:py-4 flex md:table-cell items-center justify-between border-b md:border-b-0 border-slate-100 dark:border-slate-800/50">
                       <span className="md:hidden font-semibold text-xs text-slate-400 uppercase tracking-wider">Status</span>
-                      <span className={`inline-flex items-center px-3 py-1 md:px-2.5 md:py-0.5 rounded-full text-xs font-bold border ${product.is_paused ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800/50' : product.is_published ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50' : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'}`}>
+                      <span className={`inline-flex items-center px-3 py-1 md:px-2.5 md:py-0.5 rounded-full text-xs font-bold border ${product.is_paused ? 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800/50' : product.is_published ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50' : 'bg-slate-100 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'}`}>
                         {product.is_paused ? 'Paused' : product.is_published ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td className="px-4 py-4 md:px-6 md:py-4 block md:table-cell bg-slate-50/50 dark:bg-slate-900 md:bg-transparent">
+                    <td className="px-4 py-4 md:px-6 md:py-4 block md:table-cell bg-slate-50/50 dark:bg-slate-900/50 dark:bg-slate-900 md:bg-transparent">
                       <div className="flex items-center justify-end md:justify-end space-x-2 md:space-x-3">
                         <button
                           onClick={() => handleTogglePause(product.id)}

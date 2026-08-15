@@ -81,8 +81,8 @@ const AdminOnlinePayments = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Online Payments History</h1>
-          <p className="text-slate-500">Review all UPI/Bank Transfer transactions and screenshots</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Online Payments History</h1>
+          <p className="text-slate-500 dark:text-slate-400">Review all UPI/Bank Transfer transactions and screenshots</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -94,7 +94,7 @@ const AdminOnlinePayments = () => {
               className={`flex items-center gap-2 px-3 py-2 rounded-xl border font-semibold text-sm transition-all ${
                 isAllSelected
                   ? 'bg-amber-100 border-amber-400 text-amber-700'
-                  : 'bg-white border-slate-200 text-slate-600 hover:border-amber-400 hover:text-amber-700'
+                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-amber-400 hover:text-amber-700'
               }`}
             >
               {isAllSelected ? (
@@ -125,7 +125,7 @@ const AdminOnlinePayments = () => {
               placeholder="Search by name, ID, phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
+              className="pl-10 pr-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 w-64"
             />
           </div>
         </div>
@@ -150,12 +150,12 @@ const AdminOnlinePayments = () => {
       )}
 
       {isLoading ? (
-        <div className="text-center py-12 text-slate-500">Loading transactions...</div>
+        <div className="text-center py-12 text-slate-500 dark:text-slate-400">Loading transactions...</div>
       ) : filteredOrders.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-12 text-center">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 p-12 text-center">
           <ImageIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-900 mb-1">No Online Payments Found</h3>
-          <p className="text-slate-500">There are no orders paid via Online Transfer yet.</p>
+          <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-1">No Online Payments Found</h3>
+          <p className="text-slate-500 dark:text-slate-400">There are no orders paid via Online Transfer yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -164,14 +164,14 @@ const AdminOnlinePayments = () => {
             return (
               <div
                 key={order.id}
-                className={`bg-white rounded-xl shadow-sm border-2 overflow-hidden hover:shadow-md transition-all duration-200 ${
+                className={`bg-white dark:bg-slate-900 rounded-xl shadow-sm border-2 overflow-hidden hover:shadow-md transition-all duration-200 ${
                   isSelected
                     ? 'border-amber-400 shadow-amber-100'
-                    : 'border-slate-200 hover:border-slate-300'
+                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                 }`}
               >
                 {/* Screenshot Area */}
-                <div className="aspect-[4/3] bg-slate-100 relative group cursor-pointer border-b border-slate-100 flex items-center justify-center overflow-hidden">
+                <div className="aspect-[4/3] bg-slate-100 dark:bg-slate-800 relative group cursor-pointer border-b border-slate-100 dark:border-slate-800 flex items-center justify-center overflow-hidden">
                   {order.payment_receipt ? (
                     <button onClick={() => setViewImage(order.payment_receipt)} className="w-full h-full relative group">
                       <img
@@ -210,7 +210,7 @@ const AdminOnlinePayments = () => {
                       className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all shadow-sm ${
                         isSelected
                           ? 'bg-amber-500 border-amber-500 text-white'
-                          : 'bg-white/80 border-slate-300 text-transparent hover:border-amber-400 hover:bg-amber-50'
+                          : 'bg-white dark:bg-slate-900/80 border-slate-300 dark:border-slate-600 text-transparent hover:border-amber-400 hover:bg-amber-50'
                       }`}
                       title={isSelected ? 'Deselect' : 'Select for deletion'}
                     >
@@ -228,15 +228,15 @@ const AdminOnlinePayments = () => {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Order #{'LIVEMART' + order.id.toString().padStart(6, '0')}</p>
-                      <h3 className="font-bold text-slate-900 text-lg">{order.customer_name}</h3>
+                      <h3 className="font-bold text-slate-900 dark:text-white text-lg">{order.customer_name}</h3>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs font-medium text-slate-500 mb-1">Amount</p>
+                      <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Amount</p>
                       <p className="font-extrabold text-indigo-600 text-lg">₹{Number(order.total_amount).toFixed(2)}</p>
                     </div>
                   </div>
 
-                  <div className="space-y-2 mb-6 text-sm text-slate-600">
+                  <div className="space-y-2 mb-6 text-sm text-slate-600 dark:text-slate-400">
                     <div className="flex items-center">
                       <Mail className="w-4 h-4 mr-2 text-slate-400" />
                       <span className="truncate">{order.customer_email}</span>
@@ -249,10 +249,10 @@ const AdminOnlinePayments = () => {
                     </div>
 
                     {/* Deep Link */}
-                    <div className="mt-2 pt-2 border-t border-slate-100">
+                    <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                       <button
                         onClick={() => navigate('/admin/orders', { state: { highlightOrderId: order.id } })}
-                        className="w-full mt-1 flex items-center justify-center bg-slate-100 text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors py-2 rounded-lg font-bold text-xs uppercase tracking-wider"
+                        className="w-full mt-1 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-50 hover:text-amber-700 transition-colors py-2 rounded-lg font-bold text-xs uppercase tracking-wider"
                       >
                         <Settings className="w-3.5 h-3.5 mr-1.5" />
                         Show All Order Details

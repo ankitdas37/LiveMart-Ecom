@@ -143,8 +143,8 @@ const AdminCategories = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Categories</h1>
-          <p className="text-sm text-slate-500">Manage your product categories</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Categories</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Manage your product categories</p>
         </div>
         <button
           onClick={openModal}
@@ -156,7 +156,7 @@ const AdminCategories = () => {
       </div>
 
       {/* Filters/Search */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
@@ -164,7 +164,7 @@ const AdminCategories = () => {
             placeholder="Search categories..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+            className="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
           />
         </div>
       </div>
@@ -192,17 +192,17 @@ const AdminCategories = () => {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600">
-            <thead className="bg-slate-50 text-slate-900 font-medium border-b border-slate-200">
+          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white font-medium border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-4 w-12">
                   <input
                     type="checkbox"
                     checked={selectedCategories.length === filteredCategories.length && filteredCategories.length > 0}
                     onChange={handleSelectAll}
-                    className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
                   />
                 </th>
                 <th className="px-6 py-4">Name</th>
@@ -232,10 +232,10 @@ const AdminCategories = () => {
                             setSelectedCategories(selectedCategories.filter(id => id !== category.id));
                           }
                         }}
-                        className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
                       />
                     </td>
-                    <td className="px-6 py-4 font-medium text-slate-900">{category.name}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{category.name}</td>
                     <td className="px-6 py-4">{category.description || '-'}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${category.is_paused ? 'bg-orange-100 text-orange-800' : category.is_published ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800'}`}>
@@ -300,9 +300,9 @@ const AdminCategories = () => {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-slate-900">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md shadow-xl overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 {formData.id ? 'Edit Category' : 'Add Category'}
               </h3>
               <button onClick={closeModal} className="text-slate-400 hover:text-slate-600">
@@ -311,29 +311,29 @@ const AdminCategories = () => {
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Name *</label>
                 <input
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
                 <textarea
                   rows="3"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                 ></textarea>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Image</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Image</label>
                 <div className="flex items-center space-x-4">
                   {formData.image_url && (
-                    <img src={formData.image_url} alt="Category" className="w-16 h-16 object-cover rounded-lg border border-slate-200" />
+                    <img src={formData.image_url} alt="Category" className="w-16 h-16 object-cover rounded-lg border border-slate-200 dark:border-slate-700" />
                   )}
                   <div className="flex-1">
                     <input
@@ -341,7 +341,7 @@ const AdminCategories = () => {
                       accept="image/*"
                       onChange={handleImageUpload}
                       disabled={isUploading}
-                      className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+                      className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
                     />
                     {isUploading && <p className="text-xs text-amber-600 mt-1">Uploading...</p>}
                   </div>
@@ -354,28 +354,28 @@ const AdminCategories = () => {
                     type="checkbox"
                     checked={formData.is_published}
                     onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-                    className="w-5 h-5 text-amber-600 rounded border-slate-300 focus:ring-amber-500"
+                    className="w-5 h-5 text-amber-600 rounded border-slate-300 dark:border-slate-600 focus:ring-amber-500"
                   />
-                  <span className="text-sm font-medium text-slate-700">Publish Category</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Publish Category</span>
                 </label>
-                <p className="text-xs text-slate-500 mt-1 ml-8 mb-4">If unchecked, category will be hidden from store.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-8 mb-4">If unchecked, category will be hidden from store.</p>
 
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.is_paused}
                     onChange={(e) => setFormData({ ...formData, is_paused: e.target.checked })}
-                    className="w-5 h-5 text-orange-600 rounded border-slate-300 focus:ring-orange-500"
+                    className="w-5 h-5 text-orange-600 rounded border-slate-300 dark:border-slate-600 focus:ring-orange-500"
                   />
-                  <span className="text-sm font-medium text-slate-700">Pause Category</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Pause Category</span>
                 </label>
-                <p className="text-xs text-slate-500 mt-1 ml-8">If checked, category shows as temporarily unavailable.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-8">If checked, category shows as temporarily unavailable.</p>
               </div>
               <div className="pt-4 flex justify-end space-x-3">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 font-medium rounded-lg transition-colors"
+                  className="px-4 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 font-medium rounded-lg transition-colors"
                 >
                   Cancel
                 </button>

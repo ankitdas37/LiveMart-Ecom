@@ -43,7 +43,7 @@ const AdminLayout = () => {
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex transition-colors duration-300 pb-16 md:pb-0">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 flex transition-colors duration-300 pb-16 md:pb-0">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div
@@ -60,7 +60,7 @@ const AdminLayout = () => {
       `}>
         <div className="p-6 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="W!FO MART" className="h-10 w-10 rounded-xl object-contain shadow-sm bg-white p-0.5" />
+            <img src="/logo.png" alt="W!FO MART" className="h-10 w-10 rounded-xl object-contain shadow-sm bg-white dark:bg-slate-900 p-0.5" />
             <div className="flex flex-col">
               <div className="text-2xl font-black tracking-tighter flex leading-none">
                 <span className="text-white">W!FO</span>
@@ -110,13 +110,13 @@ const AdminLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 transition-colors duration-300 shadow-sm relative z-10">
+        <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 dark:border-slate-800 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0 transition-colors duration-300 shadow-sm relative z-10">
           <div className="flex items-center">
             {/* Desktop logo placeholder or title if needed */}
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white hidden md:block">
+            <h1 className="text-xl font-bold text-slate-800 dark:text-slate-200 dark:text-white hidden md:block">
               {navItems.find(item => isActive(item.path) && !(item.path === '/admin' && location.pathname !== '/admin'))?.name || 'Dashboard'}
             </h1>
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white md:hidden">
+            <h1 className="text-xl font-bold text-slate-800 dark:text-slate-200 dark:text-white md:hidden">
               W!FO MART
             </h1>
           </div>
@@ -125,7 +125,7 @@ const AdminLayout = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+              className="p-2.5 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors focus:outline-none"
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -140,7 +140,7 @@ const AdminLayout = () => {
                 )}
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-none mb-1">{user?.name?.split(' ')[0] || 'Admin'}</p>
+                <p className="text-sm font-bold text-slate-700 dark:text-slate-300 dark:text-slate-200 leading-none mb-1">{user?.name?.split(' ')[0] || 'Admin'}</p>
                 <p className="text-[10px] text-amber-600 dark:text-amber-400 font-black uppercase tracking-wider leading-none">Administrator</p>
               </div>
             </div>
@@ -148,7 +148,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Main Area */}
-        <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+        <main className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900 text-slate-900 dark:text-white dark:text-slate-100 transition-colors duration-300">
           <Outlet />
         </main>
       </div>

@@ -42,18 +42,18 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white dark:text-white">Dashboard Overview</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400">Welcome back to your store's admin panel.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Dashboard Overview</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Welcome back to your store's admin panel.</p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 dark:text-slate-400 mb-1">Total Products</p>
-              <h3 className="text-3xl font-bold text-slate-900 dark:text-white dark:text-white">{stats.totalProducts}</h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Products</p>
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white">{stats.totalProducts}</h3>
             </div>
             <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
               <Package className="w-6 h-6" />
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Orders</p>
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Customers</p>
@@ -85,7 +85,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Low Stock</p>
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Emails Sent (Today)</p>
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Emails Sent (Total)</p>
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Pending Orders</p>
@@ -138,7 +138,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Confirmed Orders</p>
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Cancelled Orders</p>
@@ -162,13 +162,13 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h2>
            <div className="space-y-3">
-             <Link to="/admin/products/new" className="block w-full text-left px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:text-amber-600 transition-colors font-medium text-slate-700 flex items-center">
+             <Link to="/admin/products/new" className="block w-full text-left px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:text-amber-600 transition-colors font-medium text-slate-700 dark:text-slate-300 flex items-center">
                <Package className="w-4 h-4 mr-3 text-slate-400" /> Add Product
              </Link>
-             <Link to="/admin/categories" className="block w-full text-left px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:text-amber-600 transition-colors font-medium text-slate-700 flex items-center">
+             <Link to="/admin/categories" className="block w-full text-left px-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-amber-500 hover:text-amber-600 transition-colors font-medium text-slate-700 dark:text-slate-300 flex items-center">
                <Tags className="w-4 h-4 mr-3 text-slate-400" /> Categories
              </Link>
            </div>
@@ -177,14 +177,14 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Orders Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-8">
+      <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-8">
         <div className="px-6 py-5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Recent Orders</h2>
           <Link to="/admin/orders" className="text-sm font-medium text-amber-600 hover:text-amber-700">View All</Link>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white font-medium border-b border-slate-200 dark:border-slate-700">
+          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 text-slate-900 dark:text-white font-medium border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-4">Order ID</th>
                 <th className="px-6 py-4">Customer</th>
@@ -196,9 +196,9 @@ const AdminDashboard = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {stats.recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-slate-50 dark:bg-slate-900/50 transition-colors">
+                <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 dark:bg-slate-900/50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">{order.customer_name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400 dark:text-slate-300">{order.customer_name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">₹{parseFloat(order.total_amount).toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -226,13 +226,13 @@ const AdminDashboard = () => {
       </div>
 
       {/* Today's Emails Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-8">
+      <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-8">
         <div className="px-6 py-5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Today's Emails Sent</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-            <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white font-medium border-b border-slate-200 dark:border-slate-700">
+          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 text-slate-900 dark:text-white font-medium border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="px-6 py-4">User Email</th>
                 <th className="px-6 py-4">Subject</th>
@@ -241,9 +241,9 @@ const AdminDashboard = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {stats.todayEmails && stats.todayEmails.map((email) => (
-                <tr key={email.id} className="hover:bg-slate-50 dark:bg-slate-900/50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-300">{email.toEmail}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300">{email.subject}</td>
+                <tr key={email.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 dark:bg-slate-900/50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400 dark:text-slate-300">{email.toEmail}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400 dark:text-slate-300">{email.subject}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">
                     {new Date(email.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>

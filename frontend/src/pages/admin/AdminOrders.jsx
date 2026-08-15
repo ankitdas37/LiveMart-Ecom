@@ -733,7 +733,7 @@ ${orderNotesHTML}
       case 'Cancelled':
         return <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Cancelled</span>;
       default:
-        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 border border-slate-200 dark:border-slate-700">{status}</span>;
+        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">{status}</span>;
     }
   };
 
@@ -761,7 +761,7 @@ ${orderNotesHTML}
               onClick={() => { setActiveTab(tab); setSelectedOrders([]); }}
               className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${activeTab === tab
                 ? 'bg-amber-600 text-white shadow-md'
-                : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-slate-200'
                 }`}
             >
               {tab}
@@ -783,7 +783,7 @@ ${orderNotesHTML}
         <div className="flex items-center px-6 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl">
           <input
             type="checkbox"
-            className="w-5 h-5 mr-3 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
+            className="w-5 h-5 mr-3 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500 cursor-pointer"
             checked={selectedOrders.length === filteredOrders.length && filteredOrders.length > 0}
             onChange={handleSelectAll}
           />
@@ -798,7 +798,7 @@ ${orderNotesHTML}
           </div>
         ) : (
           filteredOrders.map((order) => (
-            <div key={order.id} id={`order-row-${order.id}`} className={`bg-white rounded-2xl shadow-sm border overflow-hidden ${expandedOrderId === order.id ? 'border-amber-400 shadow-md ring-2 ring-amber-100' : 'border-slate-100'}`}>
+            <div key={order.id} id={`order-row-${order.id}`} className={`bg-white dark:bg-slate-900 rounded-2xl shadow-sm border overflow-hidden ${expandedOrderId === order.id ? 'border-amber-400 shadow-md ring-2 ring-amber-100' : 'border-slate-100'}`}>
               {/* Order Header (Always Visible) */}
               <div
                 className="p-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
@@ -808,7 +808,7 @@ ${orderNotesHTML}
                   <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
-                      className="w-5 h-5 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                      className="w-5 h-5 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500 cursor-pointer"
                       checked={selectedOrders.includes(order.id)}
                       onChange={() => handleSelectOrder(order.id)}
                     />
@@ -911,13 +911,13 @@ ${orderNotesHTML}
                           </div>
                         )}
                         <div className="mt-4 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 space-y-2">
-                          <p className="text-xs font-semibold text-slate-800 border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">Payment Details:</p>
+                          <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">Payment Details:</p>
                           <p className="text-sm text-slate-700 dark:text-slate-300">Method: <span className="font-bold text-slate-900 dark:text-white">{order.payment_method}</span></p>
                           {order.payment_method === 'Online' && order.payment_receipt && (
                             <div className="mt-2">
                               <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Payment Receipt:</p>
                               <button type="button" onClick={(e) => { e.stopPropagation(); setViewImage(order.payment_receipt); }}>
-                                <img src={order.payment_receipt} alt="Receipt" className="h-20 w-20 object-cover rounded border border-slate-300 shadow-sm hover:opacity-80 transition-opacity" />
+                                <img src={order.payment_receipt} alt="Receipt" className="h-20 w-20 object-cover rounded border border-slate-300 dark:border-slate-600 shadow-sm hover:opacity-80 transition-opacity" />
                               </button>
                             </div>
                           )}
@@ -1092,15 +1092,15 @@ ${orderNotesHTML}
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {expandedOrderNotes.map(note => (
-                          <div key={note.id} className={`bg-white p-4 rounded-xl border shadow-sm relative ${!note.is_active ? 'border-red-200 bg-red-50/30' : 'border-slate-200'}`}>
+                          <div key={note.id} className={`bg-white dark:bg-slate-900 p-4 rounded-xl border shadow-sm relative ${!note.is_active ? 'border-red-200 bg-red-50/30' : 'border-slate-200 dark:border-slate-700'}`}>
                             <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-bold text-slate-800 text-sm flex items-center">
+                              <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm flex items-center">
                                 {note.title}
                               </h4>
                               <div className="flex space-x-1 ml-2">
                                 <button
                                   onClick={() => toggleNoteVisibility(note)}
-                                  className={`px-2 py-1 text-[10px] font-bold rounded flex items-center transition-colors ${note.is_active ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`}
+                                  className={`px-2 py-1 text-[10px] font-bold rounded flex items-center transition-colors ${note.is_active ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-slate-200 text-slate-700 dark:text-slate-300 hover:bg-slate-300'}`}
                                   title="Toggle Visibility"
                                 >
                                   {note.is_active ? 'Public' : 'Internal'}
@@ -1269,7 +1269,7 @@ ${orderNotesHTML}
                 <div className="w-full">
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Attachment</label>
                   {!quickNoteFileUrl ? (
-                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors relative">
+                    <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors relative">
                       <input type="file" onChange={handleQuickNoteFileUpload} disabled={isUploadingQuickNote} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed" accept="image/*,.pdf" />
                       <div className="flex flex-col items-center justify-center space-y-1 pointer-events-none">
                         <Upload className="w-6 h-6 text-slate-400" />
@@ -1302,7 +1302,7 @@ ${orderNotesHTML}
                     id="isNotePublicCheckbox"
                     checked={isNotePublic}
                     onChange={(e) => setIsNotePublic(e.target.checked)}
-                    className="w-5 h-5 text-amber-600 bg-white dark:bg-slate-900 border-slate-300 rounded focus:ring-amber-500 focus:ring-2 cursor-pointer"
+                    className="w-5 h-5 text-amber-600 bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 rounded focus:ring-amber-500 focus:ring-2 cursor-pointer"
                   />
                   <label htmlFor="isNotePublicCheckbox" className="ml-3 text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
                     Visible to Customer (Show on User PDF)

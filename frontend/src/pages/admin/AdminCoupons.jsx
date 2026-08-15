@@ -136,8 +136,8 @@ const AdminCoupons = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Coupons</h1>
-          <p className="text-slate-500">Manage your discount codes</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Coupons</h1>
+          <p className="text-slate-500 dark:text-slate-400">Manage your discount codes</p>
         </div>
         <button
           onClick={() => {
@@ -154,7 +154,7 @@ const AdminCoupons = () => {
       </div>
 
       {showForm && (
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 mb-6">
           <h2 className="text-xl font-bold mb-4">{editingId ? 'Edit Coupon' : 'Create New Coupon'}</h2>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -163,7 +163,7 @@ const AdminCoupons = () => {
             </div>
             <div>
               <label className="block text-sm font-medium mb-1">Discount Type</label>
-              <select name="discountType" value={formData.discountType} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
+              <select name="discountType" value={formData.discountType} onChange={handleChange} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-slate-900">
                 <option value="PERCENTAGE">Percentage (%)</option>
                 <option value="FIXED">Fixed Amount (₹)</option>
               </select>
@@ -229,37 +229,37 @@ const AdminCoupons = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
+              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
                 <th className="p-4 w-12">
                   <input
                     type="checkbox"
                     checked={selectedCoupons.length === coupons.length && coupons.length > 0}
                     onChange={handleSelectAll}
-                    className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
                   />
                 </th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Code</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Discount</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Min Order</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Uses</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Expires</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Visibility</th>
-                <th className="p-4 font-semibold text-sm text-slate-600">Status</th>
-                <th className="p-4 font-semibold text-sm text-slate-600 text-right">Actions</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Code</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Discount</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Min Order</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Uses</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Expires</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Visibility</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400">Status</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan="9" className="p-8 text-center text-slate-500">Loading coupons...</td>
+                  <td colSpan="9" className="p-8 text-center text-slate-500 dark:text-slate-400">Loading coupons...</td>
                 </tr>
               ) : coupons.length === 0 ? (
                 <tr>
-                  <td colSpan="9" className="p-8 text-center text-slate-500">No coupons found. Create one above!</td>
+                  <td colSpan="9" className="p-8 text-center text-slate-500 dark:text-slate-400">No coupons found. Create one above!</td>
                 </tr>
               ) : (
                 coupons.map((coupon) => {
@@ -277,20 +277,20 @@ const AdminCoupons = () => {
                             setSelectedCoupons(selectedCoupons.filter(id => id !== coupon.id));
                           }
                         }}
-                        className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                        className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
                       />
                     </td>
-                    <td className="p-4 font-bold text-slate-900">{coupon.code}</td>
+                    <td className="p-4 font-bold text-slate-900 dark:text-white">{coupon.code}</td>
                     <td className="p-4">
                       {coupon.discountType === 'PERCENTAGE'
                         ? `${coupon.discountValue}%`
                         : `₹${coupon.discountValue}`}
                     </td>
                     <td className="p-4">₹{coupon.minCartValue}</td>
-                    <td className="p-4 text-sm font-medium text-slate-700">
+                    <td className="p-4 text-sm font-medium text-slate-700 dark:text-slate-300">
                       {coupon.usedCount || 0} / {coupon.usageLimit ? coupon.usageLimit : '∞'}
                     </td>
-                    <td className="p-4 text-sm text-slate-500">
+                    <td className="p-4 text-sm text-slate-500 dark:text-slate-400">
                       {new Date(coupon.expiryDate).toLocaleDateString()}
                     </td>
                     <td className="p-4">
@@ -299,7 +299,7 @@ const AdminCoupons = () => {
                           Public
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
                           Hidden
                         </span>
                       )}

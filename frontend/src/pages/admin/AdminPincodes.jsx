@@ -127,7 +127,7 @@ const AdminPincodes = () => {
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">Manage Delivery Pincodes</h1>
       
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md mb-8">
+      <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold mb-4">{isEditing ? 'Edit Pincode' : 'Add New Pincode'}</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -225,14 +225,14 @@ const AdminPincodes = () => {
               <button 
                 type="button" 
                 onClick={() => setFormData({...formData, estimated_days: 0})}
-                className={`whitespace-nowrap px-3 py-2 rounded text-xs font-bold border transition-colors ${Number(formData.estimated_days) === 0 ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'}`}
+                className={`whitespace-nowrap px-3 py-2 rounded text-xs font-bold border transition-colors ${Number(formData.estimated_days) === 0 ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : 'bg-slate-100 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-200'}`}
               >
                 Set Today
               </button>
               <button 
                 type="button" 
                 onClick={() => setFormData({...formData, estimated_days: 1})}
-                className={`whitespace-nowrap px-3 py-2 rounded text-xs font-bold border transition-colors ${Number(formData.estimated_days) === 1 ? 'bg-amber-100 text-amber-700 border-amber-300' : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'}`}
+                className={`whitespace-nowrap px-3 py-2 rounded text-xs font-bold border transition-colors ${Number(formData.estimated_days) === 1 ? 'bg-amber-100 text-amber-700 border-amber-300' : 'bg-slate-100 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-200'}`}
               >
                 Set Tomorrow
               </button>
@@ -249,10 +249,10 @@ const AdminPincodes = () => {
         </form>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-100 dark:bg-slate-700">
+            <tr className="bg-slate-100 dark:bg-slate-800 dark:bg-slate-700">
               <th className="p-4 border-b dark:border-slate-600">Pincode</th>
               <th className="p-4 border-b dark:border-slate-600">Area</th>
               <th className="p-4 border-b dark:border-slate-600">Charge</th>
@@ -263,7 +263,7 @@ const AdminPincodes = () => {
           </thead>
           <tbody>
             {pincodes.map((pc) => (
-              <tr key={pc.id} className="hover:bg-slate-50 dark:hover:bg-slate-750">
+              <tr key={pc.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 dark:hover:bg-slate-750">
                 <td className="p-4 border-b dark:border-slate-600">{pc.pincode}</td>
                 <td className="p-4 border-b dark:border-slate-600">{pc.area_name}, {pc.city}</td>
                 <td className="p-4 border-b dark:border-slate-600">₹{pc.delivery_charge}</td>
@@ -284,7 +284,7 @@ const AdminPincodes = () => {
             ))}
             {pincodes.length === 0 && (
               <tr>
-                <td colSpan="6" className="p-4 text-center text-slate-500">No pincodes added yet.</td>
+                <td colSpan="6" className="p-4 text-center text-slate-500 dark:text-slate-400">No pincodes added yet.</td>
               </tr>
             )}
           </tbody>

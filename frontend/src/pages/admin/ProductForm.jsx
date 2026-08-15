@@ -192,14 +192,14 @@ const ProductForm = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center space-x-4 mb-8">
-        <Link to="/admin/products" className="p-2 rounded-full hover:bg-slate-200 text-slate-600 transition-colors">
+        <Link to="/admin/products" className="p-2 rounded-full hover:bg-slate-200 text-slate-600 dark:text-slate-400 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             {isEditing ? 'Edit Product' : 'Add New Product'}
           </h1>
-          <p className="text-sm text-slate-500">Fill in the details below to save your product.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Fill in the details below to save your product.</p>
         </div>
       </div>
 
@@ -208,51 +208,51 @@ const ProductForm = () => {
           
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Basic Information</h2>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Basic Information</h2>
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Product Title *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Product Title *</label>
                 <input 
                   type="text" 
                   name="title"
                   required
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="e.g. Premium Choco Chip Cookies"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Short Description (Summary)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Short Description (Summary)</label>
                 <textarea 
                   name="description" 
                   value={formData.description} 
                   onChange={handleChange} 
                   required 
                   rows="3"
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="A brief summary of the product (appears at the top of the page)"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">About this product (Long Description)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">About this product (Long Description)</label>
                 <textarea 
                   name="about_text" 
                   value={formData.about_text} 
                   onChange={handleChange} 
                   rows="8"
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="Detailed description for the 'About' tab..."
                 />
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Specifications</h2>
-              <p className="text-sm text-slate-500 mb-4">Add key features (e.g., Size, Weight, Material).</p>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Specifications</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Add key features (e.g., Size, Weight, Material).</p>
               
               <div className="space-y-3">
                 {formData.specifications.map((spec, index) => (
@@ -262,19 +262,19 @@ const ProductForm = () => {
                       value={spec.key}
                       onChange={(e) => handleSpecChange(index, 'key', e.target.value)}
                       placeholder="e.g. Color"
-                      className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                      className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                     />
                     <input
                       type="text"
                       value={spec.value}
                       onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
                       placeholder="e.g. Red"
-                      className="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                      className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                     />
                     <button 
                       type="button" 
                       onClick={() => removeSpecField(index)}
-                      className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 hover:bg-red-50 rounded-lg"
+                      className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 dark:bg-slate-800/50 hover:bg-red-50 rounded-lg"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -290,9 +290,9 @@ const ProductForm = () => {
               </button>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Images</h2>
-              <p className="text-sm text-slate-500 mb-4">The first image will be the <strong>Main Front Cover</strong>.</p>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Images</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">The first image will be the <strong>Main Front Cover</strong>.</p>
               
               <div className="space-y-3">
                 {formData.images.map((img, index) => (
@@ -301,12 +301,12 @@ const ProductForm = () => {
                     <div className="flex-1 space-y-2">
                       {img ? (
                          <div className="flex items-center space-x-3">
-                           <img src={img} alt="Product" className="h-12 w-12 object-cover rounded border border-slate-200" />
+                           <img src={img} alt="Product" className="h-12 w-12 object-cover rounded border border-slate-200 dark:border-slate-700" />
                            <input 
                              type="url"
                              value={img}
                              onChange={(e) => handleImageChange(index, e.target.value)}
-                             className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                             className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                            />
                          </div>
                       ) : (
@@ -315,7 +315,7 @@ const ProductForm = () => {
                            accept="image/*"
                            onChange={(e) => handleImageUpload(index, e.target.files[0])}
                            disabled={uploadingIndex === index}
-                           className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+                           className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
                          />
                       )}
                       {uploadingIndex === index && <p className="text-xs text-amber-600">Uploading image to Cloudinary...</p>}
@@ -323,7 +323,7 @@ const ProductForm = () => {
                     <button 
                       type="button" 
                       onClick={() => removeImageField(index)}
-                      className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 hover:bg-red-50 rounded-lg"
+                      className="p-2 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 dark:bg-slate-800/50 hover:bg-red-50 rounded-lg"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -334,7 +334,7 @@ const ProductForm = () => {
               <button 
                 type="button"
                 onClick={addImageField}
-                className="mt-2 inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 focus:outline-none"
+                className="mt-2 inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 shadow-sm text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/50 focus:outline-none bg-white dark:bg-slate-800 dark:text-white"
               >
                 <Plus className="w-4 h-4 mr-2" /> Add Another Image
               </button>
@@ -343,11 +343,11 @@ const ProductForm = () => {
 
           {/* Sidebar Info */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Pricing</h2>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Pricing</h2>
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Regular Price (₹) *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Regular Price (₹) *</label>
                 <input 
                   type="number" 
                   step="0.01"
@@ -355,55 +355,55 @@ const ProductForm = () => {
                   required
                   value={formData.price}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Discount Price (₹)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Discount Price (₹)</label>
                 <input 
                   type="number" 
                   step="0.01"
                   name="discount_price"
                   value={formData.discount_price}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="Leave blank if no discount"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Specific Shipping Charge (₹)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Specific Shipping Charge (₹)</label>
                 <input 
                   type="number" 
                   step="0.01"
                   name="shipping_charge"
                   value={formData.shipping_charge}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="Leave blank for Global Shipping"
                 />
-                <p className="text-xs text-slate-500 mt-1">Set to 0 for Free Delivery. Overrides global settings.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Set to 0 for Free Delivery. Overrides global settings.</p>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Inventory</h2>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Inventory</h2>
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">SKU</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">SKU</label>
                 <input 
                   type="text" 
                   name="sku"
                   value={formData.sku}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="e.g. BIS-001"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Available Stock *</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Available Stock *</label>
                 <input 
                   type="number" 
                   name="stock"
@@ -411,50 +411,50 @@ const ProductForm = () => {
                   min="0"
                   value={formData.stock}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                 />
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Social Proof</h2>
-              <p className="text-xs text-slate-500">Manually set rating if the product lacks real reviews.</p>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Social Proof</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manually set rating if the product lacks real reviews.</p>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Manual Rating (1-5)</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Manual Rating (1-5)</label>
                 <input 
                   type="number" 
                   step="0.1"
                   name="manual_rating"
                   value={formData.manual_rating}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="e.g. 4.5"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Manual Review Count</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Manual Review Count</label>
                 <input 
                   type="number" 
                   name="manual_reviews_count"
                   value={formData.manual_reviews_count}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="e.g. 12"
                 />
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Organization</h2>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Organization</h2>
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
                 <select 
                   name="categoryId"
                   value={formData.categoryId}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                 >
                   <option value="">Select a category</option>
                   {categories.map(cat => (
@@ -464,14 +464,14 @@ const ProductForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Store Policy</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Store Policy</label>
                 <div className="flex items-center space-x-6 mb-3">
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input 
                       type="checkbox" 
                       checked={!!formData.return_policy} 
                       onChange={(e) => setFormData({...formData, return_policy: e.target.checked ? '7 Days Return' : ''})} 
-                      className="text-amber-600 focus:ring-amber-500 rounded border-slate-300" 
+                      className="text-amber-600 focus:ring-amber-500 rounded border-slate-300 dark:border-slate-600" 
                     />
                     <span className="text-sm">Return Policy</span>
                   </label>
@@ -480,7 +480,7 @@ const ProductForm = () => {
                       type="checkbox" 
                       checked={!!formData.replacement_policy} 
                       onChange={(e) => setFormData({...formData, replacement_policy: e.target.checked ? '7 Days Replacement' : ''})} 
-                      className="text-amber-600 focus:ring-amber-500 rounded border-slate-300" 
+                      className="text-amber-600 focus:ring-amber-500 rounded border-slate-300 dark:border-slate-600" 
                     />
                     <span className="text-sm">Replacement Policy</span>
                   </label>
@@ -492,7 +492,7 @@ const ProductForm = () => {
                     name="return_policy"
                     value={formData.return_policy}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 mt-2"
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 mt-2 bg-white dark:bg-slate-800 dark:text-white"
                     placeholder="e.g. 7 Days Return"
                   />
                 )}
@@ -502,43 +502,43 @@ const ProductForm = () => {
                     name="replacement_policy"
                     value={formData.replacement_policy}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 mt-2"
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 mt-2 bg-white dark:bg-slate-800 dark:text-white"
                     placeholder="e.g. 7 Days Replacement"
                   />
                 )}
                 
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Policy Details & Comments</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Policy Details & Comments</label>
                   <textarea 
                     name="policy_details"
                     value={formData.policy_details}
                     onChange={handleChange}
                     rows="3"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                     placeholder="Write any additional rules, comments, or terms for returns and replacements here..."
                   />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Extra Charges</h2>
-              <p className="text-xs text-slate-500 mb-3">Select extra charges that apply automatically to this product (e.g. Mandatory Gift Wrap).</p>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Extra Charges</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Select extra charges that apply automatically to this product (e.g. Mandatory Gift Wrap).</p>
               {extraChargesList.length === 0 ? (
-                <p className="text-sm text-slate-500">No active extra charges found. Add them in the Extra Charges page.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">No active extra charges found. Add them in the Extra Charges page.</p>
               ) : (
                 <div className="space-y-2">
                   {extraChargesList.map(charge => (
-                    <label key={charge.id} className="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg border border-transparent hover:border-slate-100 transition-colors">
+                    <label key={charge.id} className="flex items-start space-x-3 cursor-pointer p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg border border-transparent hover:border-slate-100 transition-colors">
                       <input 
                         type="checkbox" 
                         checked={(formData.extra_charges || []).includes(charge.id)}
                         onChange={() => handleExtraChargeChange(charge.id)}
-                        className="mt-1 w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500"
+                        className="mt-1 w-4 h-4 text-amber-600 rounded border-slate-300 dark:border-slate-600 focus:ring-amber-500"
                       />
                       <div>
-                        <span className="text-sm font-bold text-slate-700">{charge.name} (+₹{charge.price})</span>
-                        {charge.description && <p className="text-xs text-slate-500">{charge.description}</p>}
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{charge.name} (+₹{charge.price})</span>
+                        {charge.description && <p className="text-xs text-slate-500 dark:text-slate-400">{charge.description}</p>}
                       </div>
                     </label>
                   ))}
@@ -546,8 +546,8 @@ const ProductForm = () => {
               )}
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-              <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Visibility & Status</h2>
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">Visibility & Status</h2>
               <div className="pt-2">
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input 
@@ -555,11 +555,11 @@ const ProductForm = () => {
                     name="is_published"
                     checked={formData.is_published}
                     onChange={handleChange}
-                    className="w-5 h-5 text-amber-600 rounded border-slate-300 focus:ring-amber-500"
+                    className="w-5 h-5 text-amber-600 rounded border-slate-300 dark:border-slate-600 focus:ring-amber-500"
                   />
-                  <span className="text-sm font-medium text-slate-700">Publish Product</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Publish Product</span>
                 </label>
-                <p className="text-xs text-slate-500 mt-1 ml-8 mb-4">If unchecked, product will be hidden from store.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-8 mb-4">If unchecked, product will be hidden from store.</p>
                 
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input 
@@ -567,11 +567,11 @@ const ProductForm = () => {
                     name="is_paused"
                     checked={formData.is_paused}
                     onChange={handleChange}
-                    className="w-5 h-5 text-orange-600 rounded border-slate-300 focus:ring-orange-500"
+                    className="w-5 h-5 text-orange-600 rounded border-slate-300 dark:border-slate-600 focus:ring-orange-500"
                   />
-                  <span className="text-sm font-medium text-slate-700">Pause Product</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Pause Product</span>
                 </label>
-                <p className="text-xs text-slate-500 mt-1 ml-8 mb-4">If checked, product shows as "Temporarily Unavailable" but remains visible.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-8 mb-4">If checked, product shows as "Temporarily Unavailable" but remains visible.</p>
 
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input 
@@ -579,11 +579,11 @@ const ProductForm = () => {
                     name="cod_available"
                     checked={formData.cod_available}
                     onChange={handleChange}
-                    className="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                    className="w-5 h-5 text-blue-600 rounded border-slate-300 dark:border-slate-600 focus:ring-blue-500"
                   />
-                  <span className="text-sm font-medium text-slate-700">Cash on Delivery Available</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Cash on Delivery Available</span>
                 </label>
-                <p className="text-xs text-slate-500 mt-1 ml-8 mb-4">Allow customers to pay via COD.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-8 mb-4">Allow customers to pay via COD.</p>
 
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input 
@@ -591,20 +591,20 @@ const ProductForm = () => {
                     name="is_bestseller"
                     checked={formData.is_bestseller}
                     onChange={handleChange}
-                    className="w-5 h-5 text-purple-600 rounded border-slate-300 focus:ring-purple-500"
+                    className="w-5 h-5 text-purple-600 rounded border-slate-300 dark:border-slate-600 focus:ring-purple-500"
                   />
-                  <span className="text-sm font-medium text-slate-700">Mark as Best Seller</span>
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Mark as Best Seller</span>
                 </label>
-                <p className="text-xs text-slate-500 mt-1 ml-8">If checked, product will appear in the Best Sellers section on the home page.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-8">If checked, product will appear in the Best Sellers section on the home page.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end space-x-4 pt-6 border-t border-slate-200">
+        <div className="flex justify-end space-x-4 pt-6 border-t border-slate-200 dark:border-slate-700">
           <Link 
             to="/admin/products"
-            className="px-6 py-3 border border-slate-300 text-slate-700 font-medium rounded-xl hover:bg-slate-50 transition-colors"
+            className="px-6 py-3 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
           >
             Cancel
           </Link>

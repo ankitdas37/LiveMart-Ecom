@@ -136,7 +136,7 @@ const AdminSupport = () => {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center text-slate-500">Loading Support Tickets...</div>;
+  if (isLoading) return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading Support Tickets...</div>;
 
   return (
     <div className="space-y-6">
@@ -153,7 +153,7 @@ const AdminSupport = () => {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         
         {/* Tabs */}
         <div className="flex border-b border-slate-200 dark:border-slate-700">
@@ -196,14 +196,14 @@ const AdminSupport = () => {
                 </div>
               )}
             <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-              <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-medium">
+              <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-medium">
                 <tr>
                   <th className="px-6 py-4 w-12">
                     <input
                       type="checkbox"
                       checked={selectedTickets.length === tickets.length && tickets.length > 0}
                       onChange={handleSelectAll}
-                      className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                      className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
                     />
                   </th>
                   <th className="px-6 py-4">Customer</th>
@@ -216,7 +216,7 @@ const AdminSupport = () => {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                 {tickets.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
+                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                       <MessageSquare className="w-12 h-12 mx-auto text-slate-300 mb-3" />
                       No support tickets found.
                     </td>
@@ -237,12 +237,12 @@ const AdminSupport = () => {
                               setSelectedTickets(selectedTickets.filter(id => id !== ticket.id));
                             }
                           }}
-                          className="w-4 h-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+                          className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-amber-600 focus:ring-amber-500"
                         />
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium text-slate-900 dark:text-white">{ticket.name}</div>
-                        <div className="text-xs text-slate-500">{ticket.email}</div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400">{ticket.email}</div>
                       </td>
                       <td className="px-6 py-4 font-medium text-slate-800 dark:text-slate-200">{ticket.subject}</td>
                       <td className="px-6 py-4">
@@ -285,7 +285,7 @@ const AdminSupport = () => {
             </>
           ) : (
             <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-              <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-medium">
+              <thead className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-medium">
                 <tr>
                   <th className="px-6 py-4">To / CC</th>
                   <th className="px-6 py-4">Subject</th>
@@ -297,22 +297,22 @@ const AdminSupport = () => {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                 {history.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="px-6 py-12 text-center text-slate-500">
+                    <td colSpan="5" className="px-6 py-12 text-center text-slate-500 dark:text-slate-400">
                       <Mail className="w-12 h-12 mx-auto text-slate-300 mb-3" />
                       No sent emails found.
                     </td>
                   </tr>
                 ) : (
                   history.map((email) => (
-                    <tr key={email.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                    <tr key={email.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 dark:hover:bg-slate-700/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="font-medium text-slate-900 dark:text-white">{email.toEmail}</div>
-                        {email.ccEmail && <div className="text-xs text-slate-500 mt-0.5">CC: {email.ccEmail}</div>}
+                        {email.ccEmail && <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">CC: {email.ccEmail}</div>}
                       </td>
                       <td className="px-6 py-4 text-slate-800 dark:text-slate-200">{email.subject}</td>
                       <td className="px-6 py-4">
                         {email.hasAttachment ? (
-                          <span className="inline-flex items-center px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-md text-xs font-medium">
+                          <span className="inline-flex items-center px-2 py-1 bg-slate-100 dark:bg-slate-800 dark:bg-slate-700 text-slate-600 dark:text-slate-400 dark:text-slate-300 rounded-md text-xs font-medium">
                             Yes
                           </span>
                         ) : '-'}
@@ -340,8 +340,8 @@ const AdminSupport = () => {
       {/* Reply Modal */}
       {activeTicket && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden my-8">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+          <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden my-8">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-amber-500" />
                 Ticket #{activeTicket.id}
@@ -356,7 +356,7 @@ const AdminSupport = () => {
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">From: <span className="font-normal text-slate-600 dark:text-slate-400">{activeTicket.name} ({activeTicket.email})</span></p>
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Subject: <span className="font-normal text-slate-600 dark:text-slate-400">{activeTicket.subject}</span></p>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                 <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{activeTicket.message}</p>
               </div>
 
@@ -377,7 +377,7 @@ const AdminSupport = () => {
                     value={replyMessage}
                     onChange={(e) => setReplyMessage(e.target.value)}
                     rows="5"
-                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm dark:text-white"
+                    className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm dark:text-white bg-white dark:bg-slate-800 dark:text-white"
                     placeholder="Type your response here..."
                   ></textarea>
 
@@ -386,7 +386,7 @@ const AdminSupport = () => {
                     <input 
                       type="file" 
                       onChange={(e) => setReplyAttachment(e.target.files[0])}
-                      className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+                      className="text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
                     />
                   </div>
 
@@ -409,8 +409,8 @@ const AdminSupport = () => {
       {/* History View Modal */}
       {activeHistory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden my-8">
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+          <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden my-8">
+            <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mail className="w-5 h-5 text-amber-500" />
                 Sent Message
@@ -429,7 +429,7 @@ const AdminSupport = () => {
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Subject: <span className="font-normal text-slate-600 dark:text-slate-400">{activeHistory.subject}</span></p>
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Date: <span className="font-normal text-slate-600 dark:text-slate-400">{new Date(activeHistory.createdAt).toLocaleString()}</span></p>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div className="bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                 <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{activeHistory.message}</p>
               </div>
               {activeHistory.hasAttachment && (
@@ -438,7 +438,7 @@ const AdminSupport = () => {
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex justify-end">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 flex justify-end">
               <button onClick={() => setActiveHistory(null)} className="px-6 py-2 text-white bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl font-medium transition-colors">
                 Close
               </button>
@@ -450,7 +450,7 @@ const AdminSupport = () => {
       {/* Direct Email Modal */}
       {showDirectEmail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 dark:bg-slate-800 rounded-2xl w-full max-w-lg shadow-xl overflow-hidden">
             <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
               <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Mail className="w-5 h-5 text-amber-500" /> Send Direct Email
@@ -459,23 +459,23 @@ const AdminSupport = () => {
             </div>
             <form onSubmit={handleDirectEmailSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">To Email <span className="text-xs text-slate-500 font-normal">(Separate multiple with commas)</span></label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">To Email <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">(Separate multiple with commas)</span></label>
                 <input
                   type="text"
                   required
                   value={directEmailForm.toEmail}
                   onChange={(e) => setDirectEmailForm({...directEmailForm, toEmail: e.target.value})}
-                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500"
+                  className="w-full border border-slate-300 dark:border-slate-600 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="customer@example.com, another@example.com"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">CC Email <span className="text-xs text-slate-500 font-normal">(Optional, separate multiple with commas)</span></label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">CC Email <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">(Optional, separate multiple with commas)</span></label>
                 <input
                   type="text"
                   value={directEmailForm.ccEmail}
                   onChange={(e) => setDirectEmailForm({...directEmailForm, ccEmail: e.target.value})}
-                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500"
+                  className="w-full border border-slate-300 dark:border-slate-600 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="boss@example.com"
                 />
               </div>
@@ -486,7 +486,7 @@ const AdminSupport = () => {
                   required
                   value={directEmailForm.subject}
                   onChange={(e) => setDirectEmailForm({...directEmailForm, subject: e.target.value})}
-                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500"
+                  className="w-full border border-slate-300 dark:border-slate-600 dark:border-slate-700 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="Important update about your account"
                 />
               </div>
@@ -497,14 +497,14 @@ const AdminSupport = () => {
                   value={directEmailForm.message}
                   onChange={(e) => setDirectEmailForm({...directEmailForm, message: e.target.value})}
                   rows="5"
-                  className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500"
+                  className="w-full border border-slate-300 dark:border-slate-600 dark:border-slate-700 rounded-xl px-4 py-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                   placeholder="Type your message here..."
                 ></textarea>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Attach File (Optional)</label>
                 <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-300 dark:border-slate-700 border-dashed rounded-xl cursor-pointer bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-300 dark:border-slate-600 dark:border-slate-700 border-dashed rounded-xl cursor-pointer bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       <Mail className="w-6 h-6 mb-2 text-slate-500 dark:text-slate-400" />
                       <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">

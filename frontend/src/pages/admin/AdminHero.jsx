@@ -111,17 +111,17 @@ const AdminHero = () => {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center text-slate-500">Loading settings...</div>;
+    return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading settings...</div>;
   }
 
   return (
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <ImageIcon className="w-8 h-8 text-slate-700" />
+          <ImageIcon className="w-8 h-8 text-slate-700 dark:text-slate-300" />
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Hero Banner</h1>
-            <p className="text-slate-500">Manage home page slider images and text</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Hero Banner</h1>
+            <p className="text-slate-500 dark:text-slate-400">Manage home page slider images and text</p>
           </div>
         </div>
         <button 
@@ -136,7 +136,7 @@ const AdminHero = () => {
 
       <div className="space-y-6">
         {slides.map((slide, index) => (
-          <div key={slide.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 relative">
+          <div key={slide.id} className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 relative">
             <div className="absolute top-4 right-4 flex items-center space-x-2">
               <button 
                 onClick={() => moveSlide(index, 'up')}
@@ -163,20 +163,20 @@ const AdminHero = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
               {/* Image Column */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Background Image</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Background Image</label>
                 {slide.image_url ? (
-                  <div className="relative rounded-xl overflow-hidden aspect-video border border-slate-200">
+                  <div className="relative rounded-xl overflow-hidden aspect-video border border-slate-200 dark:border-slate-700">
                     <img src={slide.image_url} alt="Slide preview" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <label className="cursor-pointer bg-white text-slate-900 px-4 py-2 rounded-lg font-medium text-sm hover:bg-slate-100">
+                      <label className="cursor-pointer bg-white dark:bg-slate-900 text-slate-900 dark:text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-slate-100">
                         Change Image
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, slide.id)} />
                       </label>
                     </div>
                   </div>
                 ) : (
-                  <div className="aspect-video bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center">
-                    <label className="cursor-pointer flex flex-col items-center text-slate-500 hover:text-amber-600">
+                  <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 flex items-center justify-center">
+                    <label className="cursor-pointer flex flex-col items-center text-slate-500 dark:text-slate-400 hover:text-amber-600">
                       <ImageIcon className="w-8 h-8 mb-2" />
                       <span className="text-sm font-medium">Upload Image</span>
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, slide.id)} />
@@ -188,45 +188,45 @@ const AdminHero = () => {
               {/* Text Content Column */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Subtitle (Small top text)</label>
-                  <input type="text" value={slide.subtitle} onChange={(e) => updateSlide(slide.id, 'subtitle', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Subtitle (Small top text)</label>
+                  <input type="text" value={slide.subtitle} onChange={(e) => updateSlide(slide.id, 'subtitle', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Headline</label>
-                    <input type="text" value={slide.title} onChange={(e) => updateSlide(slide.id, 'title', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Craving" />
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Headline</label>
+                    <input type="text" value={slide.title} onChange={(e) => updateSlide(slide.id, 'title', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Craving" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Highlighted Text</label>
-                    <input type="text" value={slide.titleHighlight} onChange={(e) => updateSlide(slide.id, 'titleHighlight', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Snacks & Cakes?" />
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Highlighted Text</label>
+                    <input type="text" value={slide.titleHighlight} onChange={(e) => updateSlide(slide.id, 'titleHighlight', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Snacks & Cakes?" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                  <textarea rows="2" value={slide.description} onChange={(e) => updateSlide(slide.id, 'description', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none resize-none"></textarea>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+                  <textarea rows="2" value={slide.description} onChange={(e) => updateSlide(slide.id, 'description', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none resize-none"></textarea>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Primary Button Text</label>
-                    <input type="text" value={slide.button1Text} onChange={(e) => updateSlide(slide.id, 'button1Text', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Primary Button Text</label>
+                    <input type="text" value={slide.button1Text} onChange={(e) => updateSlide(slide.id, 'button1Text', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Link (e.g. /shop)</label>
-                    <input type="text" value={slide.button1Link} onChange={(e) => updateSlide(slide.id, 'button1Link', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Link (e.g. /shop)</label>
+                    <input type="text" value={slide.button1Link} onChange={(e) => updateSlide(slide.id, 'button1Link', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Secondary Btn Text</label>
-                    <input type="text" value={slide.button2Text} onChange={(e) => updateSlide(slide.id, 'button2Text', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Leave empty to hide" />
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Secondary Btn Text</label>
+                    <input type="text" value={slide.button2Text} onChange={(e) => updateSlide(slide.id, 'button2Text', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" placeholder="Leave empty to hide" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Link</label>
-                    <input type="text" value={slide.button2Link} onChange={(e) => updateSlide(slide.id, 'button2Link', e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Link</label>
+                    <input type="text" value={slide.button2Link} onChange={(e) => updateSlide(slide.id, 'button2Link', e.target.value)} className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
                   </div>
                 </div>
               </div>
@@ -236,7 +236,7 @@ const AdminHero = () => {
 
         <button 
           onClick={addSlide}
-          className="w-full py-4 border-2 border-dashed border-slate-300 text-slate-600 font-medium rounded-2xl hover:border-amber-500 hover:text-amber-600 transition-colors flex items-center justify-center bg-white"
+          className="w-full py-4 border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 font-medium rounded-2xl hover:border-amber-500 hover:text-amber-600 transition-colors flex items-center justify-center bg-white dark:bg-slate-900"
         >
           <Plus className="w-5 h-5 mr-2" /> Add New Slide
         </button>
