@@ -163,12 +163,12 @@ const AdminDeleteModal = ({ isOpen, onClose, onConfirm, itemName = 'item', isBul
                 placeholder="Enter code above"
                 maxLength={4}
                 autoFocus
-                className={`w-full px-4 py-3 rounded-xl border-2 text-center text-xl font-bold tracking-widest focus:outline-none transition-all ${
+                className={`w-full px-4 py-3 rounded-xl border-2 text-center text-xl font-bold tracking-widest focus:outline-none transition-all bg-white placeholder:text-slate-400 ${
                   captchaInput && captchaInput === deleteCaptcha
                     ? 'border-green-400 bg-green-50 text-green-700'
                     : captchaInput
-                    ? 'border-red-300 focus:border-red-400'
-                    : 'border-slate-200 focus:border-amber-400'
+                    ? 'border-red-300 focus:border-red-400 text-red-700'
+                    : 'border-slate-200 focus:border-amber-400 text-slate-900'
                 }`}
               />
             </div>
@@ -188,7 +188,7 @@ const AdminDeleteModal = ({ isOpen, onClose, onConfirm, itemName = 'item', isBul
                   onKeyDown={(e) => { if (e.key === 'Enter' && adminPassword) handleConfirm(); }}
                   placeholder="Enter your login password"
                   autoFocus
-                  className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-slate-200 focus:border-amber-400 focus:outline-none transition-all"
+                  className="w-full px-4 py-3 pr-12 rounded-xl border-2 border-slate-200 focus:border-amber-400 focus:outline-none transition-all bg-white text-slate-900 placeholder:text-slate-400"
                 />
                 <button
                   type="button"
@@ -233,7 +233,7 @@ const AdminDeleteModal = ({ isOpen, onClose, onConfirm, itemName = 'item', isBul
                     placeholder="------"
                     maxLength={6}
                     autoFocus
-                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-amber-400 focus:outline-none text-center text-2xl font-black tracking-widest transition-all"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-amber-400 focus:outline-none text-center text-2xl font-black tracking-widest transition-all bg-white text-slate-900 placeholder:text-slate-300"
                   />
                   <button
                     type="button"

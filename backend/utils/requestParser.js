@@ -16,8 +16,13 @@ exports.parseRequestData = async (req) => {
   const parser = new UAParser(req.headers['user-agent']);
   const result = parser.getResult();
 
-  let device_type = result.device.type || 'Desktop';
-  device_type = device_type.charAt(0).toUpperCase() + device_type.slice(1);
+  let device_type = 'Desktop';
+  if (result.device.vendor && result.device.model) {
+    device_type = `${result.device.vendor} ${result.device.model}`;
+  } else if (result.device.type) {
+    device_type = result.device.type;
+    device_type = device_type.charAt(0).toUpperCase() + device_type.slice(1);
+  }
   const os = result.os.name ? `${result.os.name} ${result.os.version || ''}`.trim() : 'Unknown OS';
   const browser = result.browser.name ? `${result.browser.name} ${result.browser.version || ''}`.trim() : 'Unknown Browser';
 

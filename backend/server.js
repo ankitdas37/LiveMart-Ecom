@@ -186,6 +186,15 @@ app.get('/', (req, res) => {
   res.json({ message: 'W!FO MART API is running', version: '1.0.0' });
 });
 
+// Health check endpoint for UptimeRobot
+app.get("/health", (req, res) => { 
+  res.status(200).json({ 
+    success: true, 
+    message: "Server is healthy", 
+    timestamp: new Date().toISOString(), 
+  }); 
+});
+
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/categories', categoryRoutes);

@@ -15,11 +15,26 @@ const initSocket = (socketIo) => {
   io.on('connection', (socket) => {
     console.log(`🔌 Socket connected: ${socket.id}`);
 
-    // Client sends their userId after connecting to join their private room
-    socket.on('join', (userId) => {
+    // Client sends their userId and optionally sessionId after connecting
+    socket.on('join', (data) => {
+      if (!data) return;
+      
+      let userId, sessionId;
+      if (typeof data === 'object') {
+        userId = data.userId;
+        sessionId = data.sessionId;
+      } else {
+        userId = data;
+      }
+
       if (!userId) return;
+
       const room = `user_${userId}`;
       socket.join(room);
+      
+      if (sessionId) {
+        socket.join(`session_${sessionId}`);
+      }
 
       // Track the mapping
       if (!userSockets.has(userId)) {
@@ -27,7 +42,7 @@ const initSocket = (socketIo) => {
       }
       userSockets.get(userId).add(socket.id);
 
-      console.log(`👤 User ${userId} joined room ${room} (socket: ${socket.id})`);
+      console.log(`👤 User ${userId} joined room ${room} ${sessionId ? `and session_${sessionId}` : ''} (socket: ${socket.id})`);
     });
 
     socket.on('disconnect', () => {

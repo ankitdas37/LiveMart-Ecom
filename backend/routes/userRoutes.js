@@ -14,7 +14,8 @@ const {
   getAdminUserDetails,
   sendAdminActionOTP,
   verifyAdminAction,
-  deleteOwnAccount
+  deleteOwnAccount,
+  forceLogoutUser
 } = require('../controllers/userController');
 
 const {
@@ -80,6 +81,7 @@ router.post('/logout', protect, logoutAll);
 router.delete('/bulk', protect, admin, bulkDeleteUsers);
 
 router.get('/:id/details', protect, admin, getAdminUserDetails);
+router.post('/:id/force-logout', protect, admin, forceLogoutUser);
 
 router.route('/:id')
   .put(protect, admin, updateUser)

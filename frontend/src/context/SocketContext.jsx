@@ -23,7 +23,7 @@ function urlBase64ToUint8Array(base64String) {
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export const SocketProvider = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const socketRef = useRef(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [liveNotifications, setLiveNotifications] = useState([]); // latest notifications from socket
@@ -97,8 +97,25 @@ export const SocketProvider = ({ children }) => {
 
     socket.on('connect', () => {
       console.log('🔌 Socket connected:', socket.id);
-      // Join the user's private room
-      socket.emit('join', user.id);
+      
+      // Extract sessionId from JWT token
+      let sessionId = null;
+      if (user.token) {
+        try {
+          const base64Url = user.token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          const payload = JSON.parse(jsonPayload);
+          sessionId = payload.sessionId;
+        } catch (e) {
+          console.warn('Failed to parse sessionId from token', e);
+        }
+      }
+
+      // Join the user's private room and session room
+      socket.emit('join', { userId: user.id, sessionId });
     });
 
     socket.on('notification', (notif) => {
@@ -115,6 +132,11 @@ export const SocketProvider = ({ children }) => {
       } catch (err) {
         console.error('Error playing sound', err);
       }
+    });
+
+    socket.on('force_logout', () => {
+      console.log('🔌 Received force_logout from server. Logging out immediately.');
+      logout();
     });
 
     socket.on('disconnect', () => {

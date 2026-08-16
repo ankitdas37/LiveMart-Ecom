@@ -33,6 +33,14 @@ exports.revokeSession = async (req, res) => {
     }
 
     await session.destroy();
+
+    // Emit real-time force_logout event just to this specific session's socket room
+    const { getIO } = require('../socket/socketManager');
+    const io = getIO();
+    if (io) {
+      io.to(`session_${session.id}`).emit('force_logout');
+    }
+
     res.json({ message: 'Session deleted successfully' });
   } catch (error) {
     console.error('Revoke session error:', error);

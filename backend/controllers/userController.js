@@ -535,6 +535,33 @@ const deleteOwnAccount = async (req, res) => {
   }
 };
 
+// @desc    Force logout a user from all devices (Admin action)
+// @route   POST /api/users/:id/force-logout
+// @access  Private/Admin
+const forceLogoutUser = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Destroy all sessions for this user
+    await Session.destroy({ where: { userEmail: user.email } });
+
+    // Emit socket event to force logout on all connected clients
+    const { getIO } = require('../socket/socketManager');
+    const io = getIO();
+    if (io) {
+      io.to(`user_${user.id}`).emit('force_logout');
+    }
+
+    res.json({ message: 'User forcefully logged out from all devices' });
+  } catch (error) {
+    console.error('Force logout error:', error.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserProfile,
@@ -549,5 +576,6 @@ module.exports = {
   getAdminUserDetails,
   sendAdminActionOTP,
   verifyAdminAction,
-  deleteOwnAccount
+  deleteOwnAccount,
+  forceLogoutUser
 };

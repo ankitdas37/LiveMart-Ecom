@@ -79,6 +79,30 @@ const AdminUsers = () => {
     }
   };
 
+  const handleForceLogout = async (userId) => {
+    if (!window.confirm("Are you sure you want to force logout this user from all devices?")) return;
+    try {
+      const config = { headers: { Authorization: `Bearer ${currentUser.token}` } };
+      await axios.post(`/api/users/${userId}/force-logout`, {}, config);
+      alert('User forcefully logged out from all devices successfully.');
+      if (viewingUser) handleViewClick(viewingUser); // Refresh sessions
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to force logout user');
+    }
+  };
+
+  const handleRevokeSession = async (sessionId) => {
+    if (!window.confirm("Are you sure you want to log out this specific device?")) return;
+    try {
+      const config = { headers: { Authorization: `Bearer ${currentUser.token}` } };
+      await axios.delete(`/api/users/sessions/${sessionId}`, config);
+      alert('Device logged out successfully.');
+      if (viewingUser) handleViewClick(viewingUser); // Refresh sessions
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to logout device');
+    }
+  };
+
   const handleDeleteClick = (u) => {
     setUserToDelete(u);
     setShowDeleteModal(true);
@@ -411,8 +435,8 @@ const AdminUsers = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${u.role === 'admin'
-                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-100'
-                        : 'bg-slate-100 text-slate-700 dark:text-slate-300 border border-slate-200'
+                        ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                         }`}>
                         {u.role === 'admin' ? <Shield className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                         {(u.role || 'user').charAt(0).toUpperCase() + (u.role || 'user').slice(1)}
@@ -420,7 +444,7 @@ const AdminUsers = () => {
                     </td>
                     <td className="px-6 py-4">
                       {u.googleId ? (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50">
                           🔵 Google
                         </span>
                       ) : (
@@ -620,7 +644,17 @@ const AdminUsers = () => {
                     {viewTab === 'devices' && (
                       <div className="space-y-4">
                         <div>
-                          <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Active Sessions</h4>
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">Active Sessions</h4>
+                            {userDetails.sessions?.length > 0 && (
+                              <button 
+                                onClick={() => handleForceLogout(userDetails.id)}
+                                className="px-3 py-1.5 text-xs font-bold bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors border border-red-200 dark:border-red-800/30"
+                              >
+                                Force Logout All Devices
+                              </button>
+                            )}
+                          </div>
                           {userDetails.sessions.length === 0 ? (
                             <p className="text-sm text-slate-500 dark:text-slate-400 italic">No active sessions.</p>
                           ) : (
@@ -639,6 +673,12 @@ const AdminUsers = () => {
                                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Session: {s.id?.split('-')[0]}...</p>
                                       </div>
                                     </div>
+                                    <button 
+                                      onClick={() => handleRevokeSession(s.id)}
+                                      className="px-3 py-1.5 text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors border border-red-200 dark:border-red-800/30"
+                                    >
+                                      Logout Device
+                                    </button>
                                   </div>
                                   <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8">
                                     {[
