@@ -466,27 +466,29 @@ const Payment = () => {
                     {couponError && <p className="text-red-500 text-xs mt-2 font-medium">{couponError}</p>}
 
                     {availableCoupons.length > 0 && (
-                      <div className="mt-4 space-y-2">
-                        <p className="text-xs font-medium text-slate-500">Available Coupons:</p>
-                        <div className="flex flex-col gap-2 max-h-40 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-indigo-200">
+                      <div className="mt-5 space-y-3">
+                        <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Available Coupons</p>
+                        <div className="flex flex-col gap-3 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-200 dark:scrollbar-thumb-slate-700">
                           {availableCoupons.map(coupon => (
-                            <div key={coupon.id} className="flex flex-col border border-indigo-100 bg-indigo-50/50 rounded-lg p-3 border-dashed">
-                              <div className="flex justify-between items-center">
-                                <span className="font-bold text-indigo-800 uppercase tracking-wider">{coupon.code}</span>
+                            <div key={coupon.id} className="relative flex flex-col border-2 border-dashed border-indigo-200 dark:border-indigo-700/50 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl p-3.5 hover:bg-indigo-100/50 dark:hover:bg-indigo-900/40 transition-colors">
+                              <div className="flex justify-between items-start mb-2">
+                                <span className="font-black text-indigo-800 dark:text-indigo-300 uppercase tracking-widest text-sm">{coupon.code}</span>
                                 <button
                                   type="button"
                                   onClick={() => handleApplyCoupon(coupon.code)}
-                                  className="text-[10px] bg-indigo-600 text-white font-bold px-2 py-1 rounded hover:bg-indigo-700 transition-colors shadow-sm"
+                                  className="text-xs bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200 dark:shadow-none active:scale-95"
                                 >
                                   Apply
                                 </button>
                               </div>
-                              <div className="mt-1">
-                                <span className="text-[10px] font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded mr-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-[10px] font-black text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-800/60 px-2 py-1 rounded-md whitespace-nowrap">
                                   {coupon.discountType === 'PERCENTAGE' ? `${coupon.discountValue}% OFF` : `₹${coupon.discountValue} OFF`}
                                 </span>
                                 {coupon.description && (
-                                  <span className="text-[10px] text-indigo-600">{coupon.description}</span>
+                                  <span className="text-[11px] font-medium text-indigo-600/90 dark:text-indigo-300/80 leading-tight flex-1 min-w-[120px]">
+                                    {coupon.description}
+                                  </span>
                                 )}
                               </div>
                             </div>

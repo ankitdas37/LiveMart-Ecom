@@ -100,7 +100,8 @@ const Checkout = () => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-  const [shippingCharge, setShippingCharge] = useState(40); // default fallback
+  const [shippingCharge, setShippingCharge] = useState(30); // default fallback
+  const [freeShippingMinOrderValue, setFreeShippingMinOrderValue] = useState(200);
   const [activeExtraCharges, setActiveExtraCharges] = useState([]);
 
   // Payment State
@@ -238,12 +239,39 @@ const Checkout = () => {
         if (settingsRes.data && settingsRes.data.SHIPPING_CHARGE !== undefined) {
           setShippingCharge(parseFloat(settingsRes.data.SHIPPING_CHARGE));
         }
+        if (settingsRes.data && settingsRes.data.FREE_SHIPPING_MIN_ORDER_VALUE !== undefined) {
+          setFreeShippingMinOrderValue(parseFloat(settingsRes.data.FREE_SHIPPING_MIN_ORDER_VALUE));
+        }
       } catch (error) {
         console.error('Failed to fetch checkout data', error);
       }
     };
     fetchCouponsAndSettings();
   }, []);
+
+  // Real-time recalculation of applied coupon when cart total changes
+  useEffect(() => {
+    if (appliedCoupon) {
+      if (parseFloat(appliedCoupon.minCartValue) > cartTotal) {
+        toast.error(`Coupon ${appliedCoupon.code} removed. Minimum cart value must be ₹${appliedCoupon.minCartValue}`);
+        setAppliedCoupon(null);
+        setCouponCode('');
+      } else {
+        let newDiscount = 0;
+        if (appliedCoupon.discountType === 'PERCENTAGE') {
+          newDiscount = (cartTotal * parseFloat(appliedCoupon.discountValue)) / 100;
+        } else {
+          newDiscount = parseFloat(appliedCoupon.discountValue);
+        }
+        newDiscount = Math.min(newDiscount, cartTotal);
+        
+        if (Math.abs(newDiscount - appliedCoupon.calculatedDiscount) > 0.01) {
+          setAppliedCoupon(prev => prev ? { ...prev, calculatedDiscount: newDiscount } : null);
+        }
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cartTotal]);
 
   useEffect(() => {
     const checkPincode = async () => {
@@ -467,16 +495,25 @@ const Checkout = () => {
 
     let totalSpecificShipping = 0;
     let hasGlobalShippingItems = false;
+    let subtotal = 0;
 
     cartItems.forEach(item => {
-      if (item.shipping_charge !== null && item.shipping_charge !== undefined) {
+      subtotal += (Number(item.price) || 0) * item.quantity;
+      if (item.shipping_charge !== null && item.shipping_charge !== undefined && String(item.shipping_charge).trim() !== "") {
         totalSpecificShipping += Number(item.shipping_charge) * item.quantity;
       } else {
         hasGlobalShippingItems = true;
       }
     });
 
-    return hasGlobalShippingItems ? totalSpecificShipping + shippingCharge : totalSpecificShipping;
+    if (hasGlobalShippingItems) {
+      if (subtotal < freeShippingMinOrderValue) {
+        return totalSpecificShipping + shippingCharge;
+      } else {
+        return totalSpecificShipping;
+      }
+    }
+    return totalSpecificShipping;
   };
 
   const calculateExtraChargesTotal = () => {

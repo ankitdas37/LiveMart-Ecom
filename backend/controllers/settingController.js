@@ -50,13 +50,21 @@ const seedSettings = async () => {
     const count = await Setting.count();
     if (count === 0) {
       await Setting.bulkCreate([
-        { key: 'SHIPPING_CHARGE', value: '40', type: 'NUMBER' },
+        { key: 'SHIPPING_CHARGE', value: '30', type: 'NUMBER' },
+        { key: 'FREE_SHIPPING_MIN_ORDER_VALUE', value: '200', type: 'NUMBER' },
         { key: 'PAYMENT_UPI_ID', value: 'merchant@upi', type: 'STRING' },
         { key: 'PAYMENT_QR_CODE', value: '', type: 'STRING' },
         { key: 'PAYMENT_COD_ENABLED', value: 'true', type: 'BOOLEAN' },
         { key: 'PAYMENT_ONLINE_ENABLED', value: 'true', type: 'BOOLEAN' }
       ]);
       console.log('Default settings seeded');
+    } else {
+      // Ensure FREE_SHIPPING_MIN_ORDER_VALUE exists if already seeded
+      const hasMinOrder = await Setting.findOne({ where: { key: 'FREE_SHIPPING_MIN_ORDER_VALUE' } });
+      if (!hasMinOrder) {
+        await Setting.create({ key: 'FREE_SHIPPING_MIN_ORDER_VALUE', value: '200', type: 'NUMBER' });
+        console.log('Added FREE_SHIPPING_MIN_ORDER_VALUE to settings');
+      }
     }
   } catch (error) {
     console.error('Failed to seed settings', error);

@@ -53,7 +53,7 @@ const getCart = async (req, res) => {
         productLink: ci.productLink || `/product/${p.id || ci.productId}`,
         stock: p.stock !== undefined ? p.stock : 0,
         cod_available: p.cod_available !== undefined ? p.cod_available : false,
-        shipping_charge: p.shipping_charge || 0,
+        shipping_charge: p.shipping_charge !== null && p.shipping_charge !== undefined ? p.shipping_charge : null,
         extra_charges: p.extra_charges || [],
         quantity: ci.quantity,
       };

@@ -57,7 +57,10 @@ const createOrder = async (req, res) => {
     // Fetch active ExtraCharges & Settings
     const activeExtraCharges = await ExtraCharge.findAll({ where: { isActive: true } });
     const settingRec = await Setting.findOne({ where: { key: 'SHIPPING_CHARGE' } });
-    const globalShippingCharge = settingRec ? parseFloat(settingRec.value) : 40;
+    const globalShippingCharge = settingRec ? parseFloat(settingRec.value) : 30;
+
+    const minOrderRec = await Setting.findOne({ where: { key: 'FREE_SHIPPING_MIN_ORDER_VALUE' } });
+    const freeShippingMinOrderValue = minOrderRec ? parseFloat(minOrderRec.value) : 200;
 
     let serverSubtotal = 0;
     let totalSpecificShipping = 0;
@@ -78,7 +81,7 @@ const createOrder = async (req, res) => {
       
       serverSubtotal += parseFloat(product.price) * qty;
 
-      if (product.shipping_charge !== null && product.shipping_charge !== undefined) {
+      if (product.shipping_charge !== null && product.shipping_charge !== undefined && String(product.shipping_charge).trim() !== "") {
         totalSpecificShipping += Number(product.shipping_charge) * qty;
       } else {
         hasGlobalShippingItems = true;
@@ -98,7 +101,12 @@ const createOrder = async (req, res) => {
       }
     }
 
-    const serverShipping = hasGlobalShippingItems ? totalSpecificShipping + globalShippingCharge : totalSpecificShipping;
+    let serverShipping = totalSpecificShipping;
+    if (hasGlobalShippingItems) {
+      if (serverSubtotal < freeShippingMinOrderValue) {
+        serverShipping += globalShippingCharge;
+      }
+    }
 
     // ── SERVER-SIDE COUPON VALIDATION ────────────────────────────────────────
     let serverDiscount = 0;

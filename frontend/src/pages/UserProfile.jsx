@@ -200,6 +200,17 @@ const UserProfile = () => {
   const handleAddressSubmit = async (e) => {
     e.preventDefault();
     if (addressForm.pincode.length !== 6) { toast.error('Pincode must be 6 digits'); return; }
+    
+    const phoneRegex = /^[6-9]\d{9}$/;
+    if (!phoneRegex.test(addressForm.phone)) {
+      toast.error('Please enter a valid 10-digit Indian mobile number');
+      return;
+    }
+    if (addressForm.altPhone && !phoneRegex.test(addressForm.altPhone)) {
+      toast.error('Alternate phone must be a valid 10-digit Indian mobile number');
+      return;
+    }
+
     try {
       if (isEditingAddress) { await axios.put(`/api/users/addresses/${editAddressId}`, addressForm, cfg()); toast.success('Address updated!'); }
       else { await axios.post('/api/users/addresses', addressForm, cfg()); toast.success('Address added!'); }

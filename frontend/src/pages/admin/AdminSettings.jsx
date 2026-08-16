@@ -5,6 +5,7 @@ import { Save, Settings as SettingsIcon } from 'lucide-react';
 const AdminSettings = () => {
   const [settings, setSettings] = useState({
     SHIPPING_CHARGE: 0,
+    FREE_SHIPPING_MIN_ORDER_VALUE: 200,
     BEST_SELLER_TITLE: '',
     BEST_SELLER_SUBTITLE: '',
     PAYMENT_UPI_ID: 'merchant@upi',
@@ -167,7 +168,31 @@ const AdminSettings = () => {
                 />
               </div>
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                This amount will be added to every order as a shipping fee. Set to 0 for free shipping.
+                This amount will be added to every order as a shipping fee if order value is below minimum. Set to 0 for free shipping on all orders.
+              </p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Min. Order Value for Free Delivery (₹)
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 dark:text-slate-400 font-medium">
+                  ₹
+                </span>
+                <input 
+                  type="number" 
+                  name="FREE_SHIPPING_MIN_ORDER_VALUE" 
+                  value={settings.FREE_SHIPPING_MIN_ORDER_VALUE !== undefined ? settings.FREE_SHIPPING_MIN_ORDER_VALUE : 200} 
+                  onChange={handleChange} 
+                  required 
+                  min="0"
+                  step="0.01"
+                  className="w-full pl-8 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                Orders above this amount will get free shipping (for global shipping items).
               </p>
             </div>
             
