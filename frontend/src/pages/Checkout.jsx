@@ -885,7 +885,11 @@ const Checkout = () => {
                         className="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
                         onClick={() => navigate(`/product/${item.id}`)}
                       >
-                        <img src={item.image_url || item.images?.[0] || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                        {item.image_url || item.images?.[0] ? (
+                          <img src={item.image_url || item.images[0]} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                        ) : (
+                          <div className="w-full h-full bg-slate-100 dark:bg-slate-700"></div>
+                        )}
                       </div>
                       <div className="flex-grow min-w-0">
                         <h4 

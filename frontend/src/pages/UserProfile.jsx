@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
+import { useSocket } from '../context/SocketContext';
 import axios from 'axios';
 import { Camera, User, Mail, Shield, Package, LogOut, CheckCircle2, MapPin, Bell, Globe, Heart, Activity, Clock, HelpCircle, MessageSquare, Trash2, X, Eye, EyeOff, Phone, Star, Plus, Edit2, Map, Navigation, Home, Briefcase, CheckCircle, ShoppingCart, ExternalLink, Settings, Smartphone, Laptop, Monitor, ShieldAlert, XCircle, Globe2, ChevronLeft, ChevronRight, TicketPercent } from 'lucide-react';
 import { compressImage } from '../utils/imageCompressor';
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
 const UserProfile = () => {
   const { user, updateUserSession, logout } = useContext(AuthContext);
   const { addToCart } = useContext(CartContext);
+  const { liveNotifications, clearLiveNotifications, resetUnreadCount } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -111,6 +113,10 @@ const UserProfile = () => {
   const [activities, setActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
 
+  // Notifications
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+
   useEffect(() => { if (!user) navigate('/login'); }, [user, navigate]);
 
   useEffect(() => {
@@ -121,6 +127,12 @@ const UserProfile = () => {
     if (activeTab === 'wishlist' && wishlist.length === 0) fetchWishlist();
     if (activeTab === 'devices') fetchSessions();
     if (activeTab === 'help' && tickets.length === 0) fetchTickets();
+    if (activeTab === 'notifications') {
+      fetchNotifications();
+      // Reset bell badge & clear live queue when user opens notifications page
+      resetUnreadCount();
+      clearLiveNotifications();
+    }
   }, [activeTab]);
 
   const cfg = () => ({ headers: { Authorization: `Bearer ${user.token}` } });
@@ -132,6 +144,38 @@ const UserProfile = () => {
   const fetchSessions = async () => { try { setIsLoadingSessions(true); const { data } = await axios.get('/api/users/sessions', cfg()); setSessions(data); } catch (e) { toast.error('Failed to load sessions'); } finally { setIsLoadingSessions(false); } };
   const fetchTickets = async () => { try { setTicketsLoading(true); const { data } = await axios.get('/api/support/my-tickets', cfg()); setTickets(data); } catch (e) {} finally { setTicketsLoading(false); } };
   const fetchActivities = async () => { try { setActivitiesLoading(true); const { data } = await axios.get('/api/users/login-activity', cfg()); setActivities(data); } catch (e) {} finally { setActivitiesLoading(false); } };
+  const fetchNotifications = async () => { try { setNotificationsLoading(true); const { data } = await axios.get('/api/notifications', cfg()); setNotifications(data); } catch (e) { toast.error('Failed to load notifications'); } finally { setNotificationsLoading(false); } };
+
+  const markAsRead = async (id) => {
+    try {
+      await axios.put(`/api/notifications/${id}/read`, {}, cfg());
+      setNotifications(prev => prev.map(n => {
+        if (id === 'all' || n.id === id) return { ...n, isRead: true };
+        return n;
+      }));
+    } catch(e) { console.error('Failed to mark read', e); }
+  };
+
+  const deleteNotification = async (id) => {
+    try {
+      await axios.delete(`/api/notifications/${id}`, cfg());
+      if (id === 'all') setNotifications([]);
+      else setNotifications(prev => prev.filter(n => n.id !== id));
+    } catch(e) { console.error('Failed to delete', e); }
+  };
+
+  // When live socket notification arrives and we're already on notifications tab, prepend it
+  useEffect(() => {
+    if (activeTab === 'notifications' && liveNotifications.length > 0) {
+      setNotifications(prev => {
+        const existingIds = new Set(prev.map(n => n.id));
+        const fresh = liveNotifications.filter(n => !existingIds.has(n.id));
+        return [...fresh, ...prev];
+      });
+      clearLiveNotifications();
+      resetUnreadCount();
+    }
+  }, [liveNotifications]);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return;
@@ -527,7 +571,11 @@ const UserProfile = () => {
                   <Trash2 className="w-4 h-4" />
                 </button>
                 <Link to={`/product/${p.id}`} className="block relative aspect-[4/5] sm:aspect-square bg-slate-50 dark:bg-slate-900 transition-colors overflow-hidden">
-                  <img src={p.images&&p.images.length>0?p.images[0]:'https://placehold.co/400x400?text=No+Image'} alt={p.title || 'Product'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  {p.images && p.images.length > 0 && p.images[0] ? (
+                    <img src={p.images[0]} alt={p.title || 'Product'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full bg-slate-100 dark:bg-slate-800"></div>
+                  )}
                 </Link>
                 <div className="p-3 sm:p-4 flex flex-col flex-grow">
                   <Link to={`/product/${p.id}`} className="hover:text-indigo-600 transition-colors mb-1 sm:mb-2 flex-grow">
@@ -658,20 +706,147 @@ const UserProfile = () => {
     </div>
   );
 
-  const renderNotifications = () => (
-    <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-      <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100 dark:border-slate-700"><div className="bg-rose-100 p-3 rounded-xl text-rose-600"><Bell className="w-6 h-6" /></div><div><h3 className="text-xl font-bold text-slate-900 dark:text-white">Notifications</h3><p className="text-sm text-slate-500 dark:text-slate-400">Choose what we get in touch with you about.</p></div></div>
-      <div className="space-y-6">
-        {[['Order Updates (Email)','Get updates on your order status.',emailNotifs,setEmailNotifs],['Order Updates (SMS)','Text messages when order is out for delivery.',smsNotifs,setSmsNotifs],['Promotions & Marketing','Offers, coupons and recommendations.',marketingNotifs,setMarketingNotifs]].map(([title,desc,val,setter])=>(
-          <div key={title} className="flex items-center justify-between">
-            <div><h4 className="font-bold text-slate-800 dark:text-slate-100">{title}</h4><p className="text-sm text-slate-500 dark:text-slate-400">{desc}</p></div>
-            <button onClick={()=>setter(!val)} className={`w-14 h-7 rounded-full transition-colors relative ${val?'bg-amber-500':'bg-slate-200 dark:bg-slate-600 transition-colors'}`}><div className={`w-5 h-5 bg-white dark:bg-slate-800 transition-colors rounded-full absolute top-1 transition-all ${val?'left-8':'left-1'}`} /></button>
+  const renderNotifications = () => {
+    const unreadNotifs = notifications.filter(n => !n.isRead);
+    const getTypeStyle = (type) => {
+      switch(type) {
+        case 'order': return { bg: 'bg-indigo-100 dark:bg-indigo-900/40', text: 'text-indigo-600 dark:text-indigo-400', icon: '📦', border: 'border-indigo-200 dark:border-indigo-800' };
+        case 'promo': return { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-600 dark:text-amber-400', icon: '🎁', border: 'border-amber-200 dark:border-amber-800' };
+        case 'admin': return { bg: 'bg-purple-100 dark:bg-purple-900/40', text: 'text-purple-600 dark:text-purple-400', icon: '🔔', border: 'border-purple-200 dark:border-purple-800' };
+        default: return { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-600 dark:text-slate-400', icon: '💬', border: 'border-slate-200 dark:border-slate-700' };
+      }
+    };
+
+    return (
+      <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100 dark:border-slate-700">
+          <div className="flex items-center gap-3">
+            <div className="relative bg-rose-100 dark:bg-rose-900/40 p-3 rounded-xl text-rose-600 dark:text-rose-400">
+              <Bell className="w-6 h-6" />
+              {unreadNotifs.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center animate-pulse">
+                  {unreadNotifs.length > 9 ? '9+' : unreadNotifs.length}
+                </span>
+              )}
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                Notifications
+                <span className="flex items-center gap-1 text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-800">
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                  Live
+                </span>
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {unreadNotifs.length > 0 ? `${unreadNotifs.length} unread notification${unreadNotifs.length > 1 ? 's' : ''}` : 'All caught up! ✅'}
+              </p>
+            </div>
           </div>
-        ))}
+          {notifications.length > 0 && (
+            <div className="flex items-center gap-2">
+              {unreadNotifs.length > 0 && (
+                <button onClick={() => markAsRead('all')} className="px-3 py-1.5 text-xs font-bold bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors">
+                  ✓ Mark all read
+                </button>
+              )}
+              <button onClick={() => deleteNotification('all')} className="px-3 py-1.5 text-xs font-bold bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
+                🗑 Clear all
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Loading */}
+        {notificationsLoading && (
+          <div className="space-y-3">
+            {[1,2,3].map(i => (
+              <div key={i} className="p-4 rounded-xl border border-slate-100 dark:border-slate-700 animate-pulse flex gap-4">
+                <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 shrink-0"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!notificationsLoading && notifications.length === 0 && (
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">🔕</div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No Notifications Yet</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">You're all caught up! Notifications about your orders and promotions will appear here.</p>
+          </div>
+        )}
+
+        {/* Notification List */}
+        {!notificationsLoading && notifications.length > 0 && (
+          <div className="space-y-3">
+            {notifications.map(notif => {
+              const style = getTypeStyle(notif.type);
+              return (
+                <div
+                  key={notif.id}
+                  className={`p-4 rounded-xl border transition-all flex items-start gap-4 group ${
+                    notif.isRead
+                      ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-700'
+                      : `bg-white dark:bg-slate-900 border-l-4 ${style.border} shadow-sm`
+                  }`}
+                >
+                  {/* Icon */}
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-lg ${style.bg}`}>
+                    {style.icon}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1 mb-1">
+                      <h4 className={`text-sm font-bold leading-snug ${notif.isRead ? 'text-slate-600 dark:text-slate-400' : 'text-slate-900 dark:text-white'}`}>
+                        {notif.title}
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-medium whitespace-nowrap">
+                        {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}
+                      </span>
+                    </div>
+                    <p className={`text-sm leading-relaxed mb-3 ${notif.isRead ? 'text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'}`}>
+                      {notif.message}
+                    </p>
+                    <div className="flex items-center gap-3">
+                      {!notif.isRead && (
+                        <button
+                          onClick={() => markAsRead(notif.id)}
+                          className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+                        >
+                          ✓ Mark as read
+                        </button>
+                      )}
+                      <button
+                        onClick={() => deleteNotification(notif.id)}
+                        className="text-xs font-bold text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        🗑 Delete
+                      </button>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${style.bg} ${style.text}`}>
+                        {notif.type}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Unread dot */}
+                  {!notif.isRead && (
+                    <div className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0 mt-2 animate-pulse"></div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
-      <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-700 flex justify-end"><button onClick={()=>toast.success('Settings saved!')} className="px-6 py-2.5 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600 transition-colors">Save Preferences</button></div>
-    </div>
-  );
+    );
+  };
+
 
   const renderLanguage = () => (
     <div className="bg-white dark:bg-slate-800 transition-colors rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">

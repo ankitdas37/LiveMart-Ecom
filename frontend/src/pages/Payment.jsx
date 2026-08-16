@@ -425,7 +425,11 @@ const Payment = () => {
                 {checkoutData?.orderItems?.map((item, idx) => (
                   <div key={idx} className="flex items-center space-x-3 py-3 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
                     <div className="w-14 h-14 bg-slate-100 dark:bg-slate-700 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200 dark:border-slate-600">
-                      <img src={item.image_url || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100'} alt="Product" className="w-full h-full object-cover" />
+                      {item.image_url ? (
+                        <img src={item.image_url} alt="Product" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-slate-100 dark:bg-slate-700"></div>
+                      )}
                     </div>
                     <div className="flex-grow min-w-0">
                       <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">{item.title || 'Product'}</h4>

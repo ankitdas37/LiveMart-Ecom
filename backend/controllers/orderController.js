@@ -1,9 +1,11 @@
-const { Order, OrderItem, Product, User, Pincode } = require('../models');
+const { Order, OrderItem, Product, User, Pincode, Notification } = require('../models');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
 const { orderConfirmationEmail, orderStatusEmail, adminNewOrderEmail } = require('../utils/orderEmailTemplates');
 const { generateInvoicePDF } = require('../utils/pdfGenerator');
 const cloudinary = require('../config/cloudinary');
+const { emitToUser } = require('../socket/socketManager');
+const { sendWebPush } = require('../utils/webPush');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -299,6 +301,25 @@ const createOrder = async (req, res) => {
       }
     })();
 
+    // Create automated notification for logged-in user
+    if (userId) {
+      Notification.create({
+        userId,
+        title: '🎉 Order Placed Successfully!',
+        message: `Awesome news! Your order #LIVEMART${String(order.id).padStart(6, '0')} has been placed successfully and is currently ${order.status}. 🛒✨`,
+        type: 'order'
+      }).then(notif => {
+        emitToUser(userId, {
+          id: notif.id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          isRead: false,
+          createdAt: notif.createdAt
+        });
+      }).catch(err => console.error('Failed to create order notification:', err));
+    }
+
     res.status(201).json(order);
   } catch (error) {
     console.error(error);
@@ -442,6 +463,41 @@ const updateOrderStatus = async (req, res) => {
           console.error('Status update email failed:', emailErr.message);
         }
       })();
+
+      // Create automated notification for logged-in user
+      if (order.userId) {
+        const statusDetails = {
+          'Confirmed': { emoji: '✅', msg: 'Awesome! Your order is confirmed and we are getting it ready for you.' },
+          'Processing': { emoji: '📦', msg: 'Your order is now being processed. We are packing it up carefully!' },
+          'Shipped': { emoji: '🚚', msg: 'Good news! Your order is on the way. Keep an eye out for the delivery.' },
+          'Delivered': { emoji: '🎉', msg: 'Yay! Your order has been delivered. We hope you love it!' },
+          'Cancelled': { emoji: '❌', msg: 'Your order has been cancelled. If you have any questions, please contact support.' }
+        };
+        const s = statusDetails[status] || { emoji: '🔔', msg: `Your order is now ${status}.` };
+
+        Notification.create({
+          userId: order.userId,
+          title: `${s.emoji} Order ${status}`,
+          message: `${s.msg} (Order #LIVEMART${String(order.id).padStart(6, '0')})`,
+          type: 'order'
+        }).then(notif => {
+          emitToUser(order.userId, {
+            id: notif.id,
+            title: notif.title,
+            message: notif.message,
+            type: notif.type,
+            isRead: false,
+            createdAt: notif.createdAt
+          });
+
+          // Send Web Push notification
+          sendWebPush(order.userId, {
+            title: notif.title,
+            message: notif.message,
+            url: `/order/${order.id}`
+          });
+        }).catch(err => console.error('Failed to create status notification:', err));
+      }
     }
 
     res.json(order);

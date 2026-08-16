@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { Link, Outlet, useLocation, useNavigate, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Package, Tags, Settings, LogOut, Menu, X, MapPin, Star, Image as ImageIcon, Award, ShoppingBag, Ticket, Zap, CreditCard, FileText, Users, Headset, Moon, Sun } from 'lucide-react';
+import { LayoutDashboard, Package, Tags, Settings, LogOut, Menu, X, MapPin, Star, Image as ImageIcon, Award, ShoppingBag, Ticket, Zap, CreditCard, FileText, Users, Headset, Moon, Sun, Bell } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import AdminMobileNav from '../../components/admin/AdminMobileNav';
@@ -27,6 +27,7 @@ const AdminLayout = () => {
     { name: 'Orders', path: '/admin/orders', icon: ShoppingBag },
     { name: 'Online Payments', path: '/admin/online-payments', icon: CreditCard },
     { name: 'Users', path: '/admin/users', icon: Users },
+    { name: 'Notifications', path: '/admin/notifications', icon: Bell },
     { name: 'Products', path: '/admin/products', icon: Package },
     { name: 'Categories', path: '/admin/categories', icon: Tags },
     { name: 'Coupons', path: '/admin/coupons', icon: Ticket },

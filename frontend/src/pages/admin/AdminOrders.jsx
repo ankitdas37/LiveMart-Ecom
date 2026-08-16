@@ -1148,39 +1148,39 @@ ${orderNotesHTML}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Customer Name</label>
-                    <input type="text" name="customer_name" value={editFormData.customer_name || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="customer_name" value={editFormData.customer_name || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
-                    <input type="email" name="customer_email" value={editFormData.customer_email || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="email" name="customer_email" value={editFormData.customer_email || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone</label>
-                    <input type="text" name="customer_phone" value={editFormData.customer_phone || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="customer_phone" value={editFormData.customer_phone || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Alt Phone</label>
-                    <input type="text" name="alt_phone" value={editFormData.alt_phone || ''} onChange={handleEditChange} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="alt_phone" value={editFormData.alt_phone || ''} onChange={handleEditChange} className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Address</label>
-                    <input type="text" name="customer_address" value={editFormData.customer_address || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="customer_address" value={editFormData.customer_address || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">City</label>
-                    <input type="text" name="city" value={editFormData.city || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="city" value={editFormData.city || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">District</label>
-                    <input type="text" name="district" value={editFormData.district || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="district" value={editFormData.district || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Pincode</label>
-                    <input type="text" name="pincode" value={editFormData.pincode || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none" />
+                    <input type="text" name="pincode" value={editFormData.pincode || ''} onChange={handleEditChange} required className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status</label>
-                    <select name="status" value={editFormData.status || ''} onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })} className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
+                    <select name="status" value={editFormData.status || ''} onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })} className="w-full px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                       <option value="Pending Confirmation">Pending Confirmation</option>
                       <option value="Confirmed">Confirmed</option>
                       <option value="Processing">Processing</option>
@@ -1196,27 +1196,27 @@ ${orderNotesHTML}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Confirmed At</label>
-                        <input type="datetime-local" name="confirmedAt" value={toLocalISOString(editFormData.confirmedAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
+                        <input type="datetime-local" name="confirmedAt" value={toLocalISOString(editFormData.confirmedAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Processing At</label>
-                        <input type="datetime-local" name="processingAt" value={toLocalISOString(editFormData.processingAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
+                        <input type="datetime-local" name="processingAt" value={toLocalISOString(editFormData.processingAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Shipped At</label>
-                        <input type="datetime-local" name="shippedAt" value={toLocalISOString(editFormData.shippedAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
+                        <input type="datetime-local" name="shippedAt" value={toLocalISOString(editFormData.shippedAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Delivered At</label>
-                        <input type="datetime-local" name="deliveredAt" value={toLocalISOString(editFormData.deliveredAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
+                        <input type="datetime-local" name="deliveredAt" value={toLocalISOString(editFormData.deliveredAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Cancelled At</label>
-                        <input type="datetime-local" name="cancelledAt" value={toLocalISOString(editFormData.cancelledAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm" />
+                        <input type="datetime-local" name="cancelledAt" value={toLocalISOString(editFormData.cancelledAt)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-slate-200 dark:border-slate-700 rounded focus:ring-2 focus:ring-amber-500 outline-none text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                       </div>
                       <div className="md:col-span-1 lg:col-span-1 bg-amber-50 p-2 rounded-lg border border-amber-200">
                         <label className="block text-xs font-bold text-amber-900 mb-1">Override Delivery Date</label>
-                        <input type="datetime-local" name="updatedDeliveryDate" value={toLocalISOString(editFormData.updatedDeliveryDate)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-amber-300 rounded focus:ring-2 focus:ring-amber-600 outline-none text-sm bg-white dark:bg-slate-900" />
+                        <input type="datetime-local" name="updatedDeliveryDate" value={toLocalISOString(editFormData.updatedDeliveryDate)} onChange={handleEditChange} className="w-full px-3 py-1.5 border border-amber-300 rounded focus:ring-2 focus:ring-amber-600 outline-none text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white" />
                         <p className="text-[10px] text-amber-700 mt-1">Crosses out original expected date</p>
                       </div>
                     </div>

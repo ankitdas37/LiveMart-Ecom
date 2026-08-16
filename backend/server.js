@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const { connectDB } = require('./config/db');
 const { sequelize } = require('./models');
+const { initSocket } = require('./socket/socketManager');
 
 dotenv.config();
 
@@ -49,10 +52,12 @@ const supportRoutes = require('./routes/supportRoutes');
 const { seedSettings } = require('./controllers/settingController');
 
 const app = express();
+const httpServer = http.createServer(app);
 // Trust Render's proxy to get the real client IP for rate limiting
 app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 5000;
+
 
 // ─── 2. SECURITY HEADERS (Helmet) ─────────────────────────────────────────────
 app.use(
@@ -83,6 +88,16 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000',
   'https://wifo-mart-ecom.vercel.app'
 ];
+
+// ─── Socket.IO ─────────────────────────────────────────────────────────────────
+const io = new Server(httpServer, {
+  cors: {
+    origin: ALLOWED_ORIGINS,
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+  transports: ['websocket', 'polling'],
+});
 
 app.use(
   cors({
@@ -188,6 +203,7 @@ app.use('/api/extracharges', extraChargeRoutes);
 app.use('/api/admin-notes', adminNoteRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/geocode', require('./routes/geocodeRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
 // ─── 8. GLOBAL ERROR HANDLER — Never expose stack traces ─────────────────────
 // eslint-disable-next-line no-unused-vars
@@ -231,7 +247,10 @@ const startServer = async () => {
 
     await seedSettings();
 
-    app.listen(PORT, () => {
+    // Initialize Socket.IO before starting server
+    initSocket(io);
+
+    httpServer.listen(PORT, () => {
       console.log(`Server running on port ${PORT} [${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}]`);
     });
   } catch (error) {

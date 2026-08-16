@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Save, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { compressImage } from '../../utils/imageCompression';
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -104,23 +105,48 @@ const ProductForm = () => {
     setFormData({ ...formData, images: newImages });
   };
 
-  const handleImageUpload = async (index, file) => {
-    if (!file) return;
+  const handleImageUpload = async (index, files) => {
+    if (!files || files.length === 0) return;
 
-    const uploadData = new FormData();
-    uploadData.append('image', file);
+    setUploadingIndex(index);
+    let currentImages = [...formData.images];
+    let uploadSuccessCount = 0;
 
-    try {
-      setUploadingIndex(index);
-      const res = await axios.post('/api/upload', uploadData);
-      handleImageChange(index, res.data.url);
-      toast.success('Image uploaded successfully!');
-    } catch (error) {
-      console.error('Upload error:', error);
-      toast.error(error.response?.data?.message || 'Failed to upload image');
-    } finally {
-      setUploadingIndex(null);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      try {
+        // Compress the image before uploading
+        const compressedFile = await compressImage(file, 1920, 1920, 0.7); // High resolution but compressed
+        
+        const uploadData = new FormData();
+        uploadData.append('image', compressedFile);
+
+        const res = await axios.post('/api/upload', uploadData);
+        const uploadedUrl = res.data.url;
+
+        if (i === 0) {
+          // Replace the current index with the first uploaded image
+          currentImages[index] = uploadedUrl;
+        } else {
+          // Append subsequent images to the array
+          currentImages.push(uploadedUrl);
+        }
+        uploadSuccessCount++;
+      } catch (error) {
+        console.error('Upload error:', error);
+        toast.error(error.response?.data?.message || `Failed to upload ${file.name}`);
+      }
     }
+
+    // Filter out any empty strings that might be left if we appended
+    currentImages = currentImages.filter(img => img.trim() !== '');
+    if (currentImages.length === 0) currentImages.push(''); // Always keep at least one field
+
+    setFormData(prev => ({ ...prev, images: currentImages }));
+    if (uploadSuccessCount > 0) {
+      toast.success(`${uploadSuccessCount} image(s) uploaded successfully!`);
+    }
+    setUploadingIndex(null);
   };
 
   const addImageField = () => {
@@ -313,7 +339,8 @@ const ProductForm = () => {
                          <input 
                            type="file"
                            accept="image/*"
-                           onChange={(e) => handleImageUpload(index, e.target.files[0])}
+                           multiple
+                           onChange={(e) => handleImageUpload(index, e.target.files)}
                            disabled={uploadingIndex === index}
                            className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
                          />

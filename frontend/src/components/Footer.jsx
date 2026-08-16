@@ -104,8 +104,8 @@ const Footer = () => {
                     Track Order
                   </a>
                 </li>
-                <li><a href="#" className="hover:text-white transition-colors text-sm">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors text-sm">Terms of Service</a></li>
+                <li><Link to="/privacy-policy" className="hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
+                <li><Link to="/terms-of-service" className="hover:text-white transition-colors text-sm">Terms of Service</Link></li>
               </ul>
             </details>
             <ul className="hidden md:block space-y-3">
@@ -116,8 +116,8 @@ const Footer = () => {
                   Track Order
                 </a>
               </li>
-              <li><a href="#" className="hover:text-white transition-colors text-sm">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors text-sm">Terms of Service</a></li>
+              <li><Link to="/privacy-policy" className="hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="hover:text-white transition-colors text-sm">Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -157,7 +157,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                <a href="mailto:livemart.support@gmail.com" className="text-sm hover:text-white transition-colors">livemart.support@gmail.com</a>
+                <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors">livemart.support@gmail.com</a>
               </li>
             </ul>
           </div>

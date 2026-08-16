@@ -45,12 +45,16 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-white p-3">
         <Link to={`/product/${product.id}`}>
-          <img
-            src={(product.images && product.images.filter(i => i && i.trim()).length > 0 ? product.images.filter(i => i && i.trim())[0] : null) || 'https://placehold.co/400x400?text=No+Image'}
-            alt={product.title}
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-            onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x400?text=No+Image'; }}
-          />
+          {product.images && product.images.filter(i => i && i.trim()).length > 0 ? (
+            <img
+              src={product.images.filter(i => i && i.trim())[0]}
+              alt={product.title}
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+              onError={e => { e.target.style.display = 'none'; }}
+            />
+          ) : (
+            <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-xs"></div>
+          )}
         </Link>
 
         {/* Badges — top left */}

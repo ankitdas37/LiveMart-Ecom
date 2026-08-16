@@ -306,12 +306,16 @@ const ProductDetails = () => {
                 onTouchMove={onTouchMove}
                 onTouchEnd={onTouchEnd}
               >
-                <img
-                  src={mainImage || 'https://placehold.co/600x600?text=No+Image'}
-                  alt={product.title}
-                  className="w-full h-full object-contain p-4 mix-blend-multiply dark:mix-blend-normal"
-                  onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x600?text=No+Image'; }}
-                />
+                {mainImage ? (
+                  <img
+                    src={mainImage}
+                    alt={product.title}
+                    className="w-full h-full object-contain p-4 mix-blend-multiply dark:mix-blend-normal"
+                    onError={e => { e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-400"></div>
+                )}
                 <div className="absolute top-4 right-4 flex flex-col gap-2">
                   <button
                     onClick={toggleWishlist}
@@ -338,7 +342,7 @@ const ProductDetails = () => {
                         src={img}
                         alt={`Thumbnail ${idx}`}
                         className="w-full h-full object-contain p-1 mix-blend-multiply dark:mix-blend-normal"
-                        onError={e => { e.target.onerror = null; e.target.src = 'https://placehold.co/100x100?text=Img'; }}
+                        onError={e => { e.target.style.display = 'none'; }}
                       />
                     </button>
                   ))}
@@ -347,20 +351,12 @@ const ProductDetails = () => {
             </div>
 
             <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-10 flex flex-col">
-              <div className="mb-6">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-3 leading-tight">{product.title}</h1>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full">
-                    <Star className="w-4 h-4 text-amber-500 fill-amber-500 mr-1" />
-                    <span className="font-bold text-amber-700 dark:text-amber-400 text-sm">{product.rating || '0.0'}</span>
-                  </div>
-                  <a href="#reviews" className="text-sm font-medium text-slate-500 dark:text-slate-400 underline hover:text-amber-600 dark:hover:text-amber-500 transition-colors">
-                    {product.reviews_count || 0} Reviews
-                  </a>
-                </div>
+              <div className="mb-4">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-2 leading-tight">{product.title}</h1>
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-base sm:text-lg lg:text-xl font-medium">{product.description}</p>
               </div>
 
-              <div className="mb-6 sm:mb-8 flex flex-col space-y-1">
+              <div className="mb-6 flex flex-col space-y-1">
                 <div className="flex flex-wrap items-end gap-3 sm:gap-4">
                   <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">₹{product.price}</span>
                   {product.discount_price && (
@@ -379,7 +375,15 @@ const ProductDetails = () => {
                 )}
               </div>
 
-              <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 sm:mb-8 text-sm sm:text-base">{product.description}</p>
+              <div className="mb-6 sm:mb-8 flex items-center space-x-4">
+                <div className="flex items-center bg-amber-50 dark:bg-amber-900/30 px-3 py-1 rounded-full">
+                  <Star className="w-4 h-4 text-amber-500 fill-amber-500 mr-1" />
+                  <span className="font-bold text-amber-700 dark:text-amber-400 text-sm">{product.rating || '0.0'}</span>
+                </div>
+                <a href="#reviews" className="text-sm font-medium text-slate-500 dark:text-slate-400 underline hover:text-amber-600 dark:hover:text-amber-500 transition-colors">
+                  {product.reviews_count || 0} Reviews
+                </a>
+              </div>
 
               <hr className="border-slate-100 dark:border-slate-700 mb-6 sm:mb-8" />
 

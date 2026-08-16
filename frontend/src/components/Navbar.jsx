@@ -4,6 +4,7 @@ import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRigh
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import { ThemeContext } from '../context/ThemeContext';
+import { useSocket } from '../context/SocketContext';
 import axios from 'axios';
 
 const Navbar = () => {
@@ -23,6 +24,7 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { itemCount } = useContext(CartContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { unreadCount } = useSocket();
   const navigate = useNavigate();
 
   // Delivery Modal State
@@ -37,6 +39,9 @@ const Navbar = () => {
     window.addEventListener('openDeliveryModal', handleOpenDeliveryModal);
     return () => window.removeEventListener('openDeliveryModal', handleOpenDeliveryModal);
   }, []);
+
+  // (unreadCount is now managed by SocketContext — real-time, no polling needed)
+
 
   const checkDelivery = async (e) => {
     e.preventDefault();
@@ -386,6 +391,17 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+            
+            {user && (
+              <Link to="/profile?tab=notifications" className="relative text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-500 transition-colors ml-4">
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </Link>
+            )}
 
             <div className="flex items-center space-x-4 ml-4 border-l border-slate-200 dark:border-slate-700 pl-4">
               {user ? (
@@ -532,6 +548,17 @@ const Navbar = () => {
                     <User className="w-4 h-4 text-slate-500" />
                   )}
                 </div>
+              </Link>
+            )}
+
+            {user && (
+              <Link to="/profile?tab=notifications" className="relative text-slate-600 dark:text-slate-300 p-1 hover:text-amber-600 dark:hover:text-amber-500 transition-colors">
+                <Bell className="w-6 h-6" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </Link>
             )}
 

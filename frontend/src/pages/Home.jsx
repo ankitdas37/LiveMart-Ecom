@@ -302,7 +302,11 @@ const Home = () => {
                         onClick={() => setSearchQuery('')}
                       >
                         <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800">
-                          <img src={product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/100x100?text=No+Image'} alt={product.title} className="w-full h-full object-cover" />
+                          {product.images && product.images.length > 0 && product.images[0] ? (
+                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-slate-100 dark:bg-slate-800"></div>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-medium text-slate-900 dark:text-white truncate">{product.title}</h4>
@@ -467,11 +471,15 @@ const Home = () => {
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8 px-2 md:px-0">
               {categories.slice(0, 4).map((cat) => (
                 <Link key={cat.id} to={`/shop?category=${cat.id}`} className="group relative h-[160px] md:h-[400px] rounded-xl md:rounded-2xl overflow-hidden">
-                  <img
-                    src={cat.image_url || "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"}
-                    alt={cat.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                  {cat.image_url ? (
+                    <img
+                      src={cat.image_url}
+                      alt={cat.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-slate-200 dark:bg-slate-800 group-hover:scale-105 transition-transform duration-700"></div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent flex flex-col justify-end p-3 md:p-8">
                     <h3 className="text-sm md:text-2xl font-bold text-white mb-0.5 md:mb-2">{cat.name}</h3>
                     <div className="hidden md:flex items-center text-amber-400 font-medium group-hover:text-amber-300 transition-colors">

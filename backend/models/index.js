@@ -21,6 +21,8 @@ const SupportTicket = require('./SupportTicket');
 const EmailHistory = require('./EmailHistory');
 const Session = require('./Session');
 const LoginActivity = require('./LoginActivity');
+const Notification = require('./Notification');
+const PushSubscription = require('./PushSubscription');
 
 // Associations
 Category.hasMany(Product, { foreignKey: 'categoryId' });
@@ -69,6 +71,9 @@ Session.belongsTo(User, { foreignKey: 'userEmail', targetKey: 'email' });
 User.hasMany(LoginActivity, { foreignKey: 'userId' });
 LoginActivity.belongsTo(User, { foreignKey: 'userId' });
 
+User.hasMany(Notification, { foreignKey: 'userId' });
+Notification.belongsTo(User, { foreignKey: 'userId' });
+
 module.exports = {
   sequelize,
   Product,
@@ -93,4 +98,6 @@ module.exports = {
   EmailHistory,
   Session,
   LoginActivity,
+  Notification,
+  PushSubscription,
 };

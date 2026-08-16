@@ -596,11 +596,15 @@ ${orderNotesHTML}
               <div className="space-y-3 mb-6 relative z-10 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-700">
                 {order.OrderItems.map((item, idx) => (
                   <div key={idx} className="flex items-center space-x-3 bg-slate-800/50 p-2 rounded-lg">
-                    <img
-                      src={(item.Product?.images && item.Product.images[0]) ? item.Product.images[0] : (item.image_url || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=100')}
-                      alt={item.Product?.title || item.title || 'Product'}
-                      className="w-10 h-10 rounded bg-white dark:bg-slate-800 transition-colors object-cover flex-shrink-0"
-                    />
+                    {(item.Product?.images && item.Product.images[0]) || item.image_url ? (
+                      <img
+                        src={(item.Product?.images && item.Product.images[0]) ? item.Product.images[0] : item.image_url}
+                        alt={item.Product?.title || item.title || 'Product'}
+                        className="w-10 h-10 rounded bg-white dark:bg-slate-800 transition-colors object-cover flex-shrink-0"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded bg-slate-100 dark:bg-slate-800 flex-shrink-0"></div>
+                    )}
                     <div className="flex-grow min-w-0">
                       <p className="text-xs font-semibold truncate text-slate-200">{item.Product?.title || item.title}</p>
                       <p className="text-[10px] text-slate-400">Qty: {item.quantity}</p>
