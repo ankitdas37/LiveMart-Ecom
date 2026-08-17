@@ -875,8 +875,8 @@ const UserProfile = () => {
             }
             
             toast.success(`Language changed to ${lang}`); 
-          }} className={`p-4 rounded-xl border flex items-center justify-between transition-all ${language===lang?'border-emerald-500 bg-emerald-50':'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 transition-colors'}`}>
-            <span className="font-bold text-slate-800 dark:text-slate-100">{lang}</span>{language===lang&&<CheckCircle2 className="w-5 h-5 text-emerald-600"/>}
+          }} className={`p-4 rounded-xl border flex items-center justify-between transition-all ${language===lang?'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/20':'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800'}`}>
+            <span className={`font-bold ${language===lang?'text-emerald-700 dark:text-emerald-400':'text-slate-800 dark:text-slate-100'}`}>{lang}</span>{language===lang&&<CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400"/>}
           </button>
         ))}
       </div>
