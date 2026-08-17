@@ -220,7 +220,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2">
+          <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2 notranslate">
             <img src="/logo.png" alt="W!FO MART" className="h-9 w-9 rounded-xl object-contain shadow-sm" />
             <div className="flex flex-col">
               <div className="flex leading-none">

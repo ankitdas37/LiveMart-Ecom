@@ -35,7 +35,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-12 mb-8 md:mb-12">
           {/* Brand Info */}
           <div className="mb-6 md:mb-0 border-b border-slate-800 pb-8 md:border-0 md:pb-0">
-            <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2 mb-4 md:mb-6">
+            <Link to="/" className="text-2xl font-extrabold tracking-tight flex items-center gap-2 mb-4 md:mb-6 notranslate">
               <img src="/logo.png" alt="W!FO MART" className="h-8 w-8 md:h-9 md:w-9 rounded-xl object-contain shadow-sm" />
               <div className="flex flex-col">
                 <div className="flex leading-none">
@@ -128,30 +128,30 @@ const Footer = () => {
               <ul className="space-y-4 pt-4 text-slate-400">
                 <li className="flex items-start">
                   <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
-                  <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors">P6F7+VPQ, Krishna Ram Pur,<br />West Bengal 712702</a>
+                  <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors notranslate">P6F7+VPQ, Krishna Ram Pur,<br />West Bengal 712702</a>
                 </li>
                 <li className="flex items-center">
                   <Phone className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                  <a href="tel:+918515081309" className="text-sm hover:text-white transition-colors">+91 8515081309</a>
+                  <a href="tel:+918515081309" className="text-sm hover:text-white transition-colors notranslate">+91 8515081309</a>
                 </li>
                 <li className="flex items-center">
                   <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                  <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors">wifomart.support@gmail.com</a>
+                  <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors notranslate">wifomart.support@gmail.com</a>
                 </li>
               </ul>
             </details>
             <ul className="hidden md:block space-y-4">
               <li className="flex items-start">
                 <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
-                <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors">P6F7+VPQ, Krishna Ram Pur,<br />West Bengal 712702</a>
+                <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors notranslate">P6F7+VPQ, Krishna Ram Pur,<br />West Bengal 712702</a>
               </li>
               <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                <a href="tel:+918515081309" className="text-sm hover:text-white transition-colors">+91 8515081309</a>
+                <a href="tel:+918515081309" className="text-sm hover:text-white transition-colors notranslate">+91 8515081309</a>
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors">wifomart.support@gmail.com</a>
+                <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors notranslate">wifomart.support@gmail.com</a>
               </li>
             </ul>
           </div>
