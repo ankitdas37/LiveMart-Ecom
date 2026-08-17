@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
 import PageLoader from './components/PageLoader';
+import ScrollToTop from './components/ScrollToTop';
 
 // Lazy load standard pages
 const Home = lazy(() => import('./pages/Home'));
@@ -73,6 +74,7 @@ function App() {
         <SocketProvider>
           <CartProvider>
             <Router>
+              <ScrollToTop />
               <Toaster
                 position="bottom-center"
                 toastOptions={{
