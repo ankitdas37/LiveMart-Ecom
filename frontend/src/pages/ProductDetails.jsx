@@ -5,6 +5,7 @@ import { Star, Minus, Plus, ShoppingCart, ShieldCheck, Truck, RotateCcw, Heart, 
 import toast from 'react-hot-toast';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
+import SEO from '../components/SEO';
 
 const ProductDetails = () => {
   const { addToCart, cartItems } = useContext(CartContext);
@@ -289,6 +290,39 @@ const ProductDetails = () => {
 
   return (
     <div className="bg-slate-50 dark:bg-slate-900 min-h-screen py-4 sm:py-8 transition-colors duration-300">
+      <SEO 
+        title={product.title} 
+        description={product.description} 
+        image={mainImage} 
+        type="product"
+        jsonLd={{
+          "@context": "https://schema.org/",
+          "@type": "Product",
+          "name": product.title,
+          "image": mainImage ? [mainImage] : [],
+          "description": product.description,
+          "sku": product.id,
+          "brand": {
+            "@type": "Brand",
+            "name": product.category_name || "Wifo Mart"
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": window.location.href,
+            "priceCurrency": "INR",
+            "price": product.price,
+            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition"
+          },
+          ...(product.rating > 0 && product.reviews_count > 0 && {
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating,
+              "reviewCount": product.reviews_count
+            }
+          })
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <nav className="flex items-center flex-wrap gap-y-2 text-sm text-slate-500 dark:text-slate-400 mb-6 sm:mb-8 space-x-2">

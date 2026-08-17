@@ -8,6 +8,14 @@
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="apple-touch-icon" href="/logo.png" />
   <link rel="canonical" href="https://wifo-mart-ecom.vercel.app/" />
+
+  <!-- Preconnect to critical third-party origins for faster LCP -->
+  <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+  <link rel="preconnect" href="https://api.dicebear.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://translate.google.com" />
+  <link rel="dns-prefetch" href="https://accounts.google.com" />
   
   <meta name="google-site-verification" content="18QiLQzapiwllc3HF-6Jdjc8QyvWIvKSxGkAle921SE" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -80,12 +88,13 @@
 <body>
   <div id="google_translate_element" style="display: none;"></div>
   <div id="root"></div>
+  <!-- Google Translate: async + defer to prevent render-blocking -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({ pageLanguage: 'en', autoDisplay: false }, 'google_translate_element');
     }
   </script>
-  <script type="text/javascript"
+  <script async defer type="text/javascript"
     src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <script type="module" src="/src/main.jsx"></script>
 </body>

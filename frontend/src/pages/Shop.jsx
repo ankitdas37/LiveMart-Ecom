@@ -4,6 +4,7 @@ import { Search, SlidersHorizontal, RefreshCw, ArrowLeft, ShoppingCart, ChevronD
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { CartContext } from '../context/CartContext';
+import SEO from '../components/SEO';
 
 const Shop = () => {
   const navigate = useNavigate();
@@ -114,6 +115,7 @@ const Shop = () => {
 
   return (
     <div className="w-full">
+      <SEO title="Shop" description="Explore our catalog of products and find what you need." />
       {/* Mobile Custom Header (Visible only on md:hidden) */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-[60] bg-[#dce7fc] dark:bg-slate-900 pb-0 shadow-sm pt-4 transition-transform duration-300">
         {/* Top Row: Back, Search, Cart */}

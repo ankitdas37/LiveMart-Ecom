@@ -1,18 +1,49 @@
 const { Product, Category } = require('../models');
 const { cache, clearProductCache } = require('../utils/cache');
 
-// @desc    Fetch all products
+// @desc    Fetch all products (supports ?search= and ?limit= for lightweight queries)
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
   try {
+    const { search, limit } = req.query;
+    const { Op } = require('sequelize');
+    const { Review } = require('../models');
+
+    // ── Search query: skip cache, return targeted results ─────────────────
+    if (search && search.trim()) {
+      const q = search.trim();
+      const where = {
+        [Op.or]: [
+          { title: { [Op.like]: `%${q}%` } },
+          { description: { [Op.like]: `%${q}%` } },
+          { sku: { [Op.like]: `%${q}%` } },
+        ],
+      };
+      const results = await Product.findAll({
+        where,
+        limit: Math.min(parseInt(limit) || 10, 50), // max 50
+        include: [
+          { model: Category, attributes: ['id', 'name'], required: false }
+        ],
+        attributes: ['id', 'title', 'price', 'discount_price', 'images', 'is_published', 'is_paused', 'sku'],
+      });
+      const mapped = results.map(p => {
+        const d = p.toJSON();
+        d.category_name = d.Category ? d.Category.name : null;
+        delete d.Category;
+        return d;
+      });
+      return res.json(mapped);
+    }
+
+    // ── Full list: use cache ───────────────────────────────────────────────
     const cacheKey = 'products_all';
     const cachedData = cache.get(cacheKey);
     if (cachedData) {
       return res.json(cachedData);
     }
 
-    const { Review } = require('../models');
     const products = await Product.findAll({
       include: [
         { model: Review, where: { is_approved: true }, required: false, attributes: ['rating'] },
@@ -45,6 +76,7 @@ const getProducts = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
 
 // @desc    Fetch single product
 // @route   GET /api/products/:id

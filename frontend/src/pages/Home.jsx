@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, Circle, CircleDot, Search, MapPin, Truck, Camera, Mic, Home as HomeIcon, ChevronDown, Sparkles } from 'lucide-react';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
+import SEO from '../components/SEO';
+import { cloudinaryUrl, cloudinaryThumb } from '../utils/cloudinaryImage';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -143,23 +145,19 @@ const Home = () => {
       setIsSearching(true);
       const fetchSearchResults = async () => {
         try {
-          const res = await axios.get('/api/products');
-          const published = res.data.filter(p => p.is_published && !p.is_paused);
-          const q = searchQuery.toLowerCase().trim();
-          const matchedProducts = published.filter(p =>
-            p.title?.toLowerCase().includes(q) ||
-            p.description?.toLowerCase().includes(q) ||
-            p.sku?.toLowerCase().includes(q) ||
-            p.category?.toLowerCase().includes(q)
-          ).slice(0, 5);
-          setSearchResults(matchedProducts);
+          // Use server-side search with query param — avoids fetching ALL products
+          const res = await axios.get(`/api/products?search=${encodeURIComponent(searchQuery.trim())}&limit=5`);
+          const published = (res.data?.products || res.data || []).filter(
+            p => p.is_published && !p.is_paused
+          );
+          setSearchResults(published.slice(0, 5));
         } catch (error) {
           console.error("Failed to search products", error);
         } finally {
           setIsSearching(false);
         }
       };
-      const debounceTimer = setTimeout(fetchSearchResults, 300);
+      const debounceTimer = setTimeout(fetchSearchResults, 350);
       return () => clearTimeout(debounceTimer);
     } else {
       setSearchResults([]);
@@ -216,6 +214,7 @@ const Home = () => {
 
   return (
     <div className="w-full">
+      <SEO />
       {/* Mobile Sub-Header (Premium E-com Style) */}
       <div className="md:hidden bg-gradient-to-b from-orange-50 to-white dark:from-slate-900 dark:to-slate-900 pt-3 pb-3 px-3 space-y-4">
 
@@ -303,7 +302,7 @@ const Home = () => {
                       >
                         <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800">
                           {product.images && product.images.length > 0 && product.images[0] ? (
-                            <img src={product.images[0]} alt={product.title} className="w-full h-full object-cover" />
+                            <img src={cloudinaryThumb(product.images[0], 80)} alt={product.title} loading="lazy" width={80} height={80} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full bg-slate-100 dark:bg-slate-800"></div>
                           )}
@@ -341,7 +340,7 @@ const Home = () => {
             <Link key={cat.id} to={`/shop?category=${cat.id}`} className="flex flex-col items-center min-w-max space-y-1.5 pt-0.5 group">
               <div className="w-14 h-14 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden shadow-sm transform group-active:scale-95 transition-transform p-2.5">
                 {cat.image_url ? (
-                  <img src={cat.image_url} alt={cat.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" />
+                  <img src={cloudinaryThumb(cat.image_url, 80)} alt={cat.name} loading="lazy" width={80} height={80} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" />
                 ) : (
                   <Circle className="w-6 h-6 text-slate-300 dark:text-slate-600" />
                 )}
@@ -368,8 +367,14 @@ const Home = () => {
             <div className="absolute inset-0 bg-slate-900">
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10 hidden md:block"></div>
               <img
-                src={slide.image_url || defaultSlide.image_url}
+                src={cloudinaryUrl(slide.image_url || defaultSlide.image_url, 1400)}
                 alt={slide.title}
+                width={1400}
+                height={600}
+                {/* LCP element: load with high priority, never lazy */}
+                fetchpriority={index === 0 ? 'high' : 'auto'}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding={index === 0 ? 'sync' : 'async'}
                 className="w-full h-full object-cover opacity-90"
               />
             </div>
@@ -382,8 +387,13 @@ const Home = () => {
             <div className="absolute inset-0 bg-slate-900">
               <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent z-10 hidden md:block"></div>
               <img
-                src={defaultSlide.image_url}
+                src={cloudinaryUrl(defaultSlide.image_url, 1400)}
                 alt="Default"
+                width={1400}
+                height={600}
+                fetchpriority="high"
+                loading="eager"
+                decoding="sync"
                 className="w-full h-full object-cover opacity-90"
               />
             </div>

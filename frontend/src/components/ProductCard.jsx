@@ -5,6 +5,7 @@ import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { cloudinaryThumb } from '../utils/cloudinaryImage';
 
 const ProductCard = ({ product }) => {
   const { addToCart, cartItems } = useContext(CartContext);
@@ -47,8 +48,12 @@ const ProductCard = ({ product }) => {
         <Link to={`/product/${product.id}`}>
           {product.images && product.images.filter(i => i && i.trim()).length > 0 ? (
             <img
-              src={product.images.filter(i => i && i.trim())[0]}
+              src={cloudinaryThumb(product.images.filter(i => i && i.trim())[0], 300)}
               alt={product.title}
+              width={300}
+              height={300}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
               onError={e => { e.target.style.display = 'none'; }}
             />

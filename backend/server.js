@@ -49,6 +49,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const extraChargeRoutes = require('./routes/extraChargeRoutes');
 const adminNoteRoutes = require('./routes/adminNoteRoutes');
 const supportRoutes = require('./routes/supportRoutes');
+const seoRoutes = require('./routes/seoRoutes');
 const { seedSettings } = require('./controllers/settingController');
 
 const app = express();
@@ -213,6 +214,7 @@ app.use('/api/admin-notes', adminNoteRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/geocode', require('./routes/geocodeRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/', seoRoutes);
 
 // ─── 8. GLOBAL ERROR HANDLER — Never expose stack traces ─────────────────────
 // eslint-disable-next-line no-unused-vars
