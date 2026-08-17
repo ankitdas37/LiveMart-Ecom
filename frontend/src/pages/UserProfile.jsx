@@ -857,7 +857,25 @@ const UserProfile = () => {
       <div className="flex items-center gap-3 mb-6 pb-6 border-b border-slate-100 dark:border-slate-700"><div className="bg-emerald-100 p-3 rounded-xl text-emerald-600"><Globe className="w-6 h-6" /></div><div><h3 className="text-xl font-bold text-slate-900 dark:text-white">Language Settings</h3><p className="text-sm text-slate-500 dark:text-slate-400">Select your preferred language.</p></div></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {['English','Hindi','Spanish','French','Bengali','Korean','Chinese','Japanese'].map(lang=>(
-          <button key={lang} onClick={()=>{ setLanguage(lang); localStorage.setItem('appLanguage',lang); const map={English:'en',Hindi:'hi',Spanish:'es',French:'fr',Bengali:'bn',Korean:'ko',Chinese:'zh-CN',Japanese:'ja'}; const code=map[lang]||'en'; document.cookie=`googtrans=/en/${code}; path=/; domain=${window.location.hostname}`; document.cookie=`googtrans=/en/${code}; path=/`; toast.success(`Translating to ${lang}...`); setTimeout(()=>window.location.reload(),600); }} className={`p-4 rounded-xl border flex items-center justify-between transition-all ${language===lang?'border-emerald-500 bg-emerald-50':'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 transition-colors'}`}>
+          <button key={lang} onClick={()=>{ 
+            setLanguage(lang); 
+            localStorage.setItem('appLanguage',lang); 
+            const map={English:'en',Hindi:'hi',Spanish:'es',French:'fr',Bengali:'bn',Korean:'ko',Chinese:'zh-CN',Japanese:'ja'}; 
+            const code=map[lang]||'en'; 
+            
+            // Set cookies as backup
+            document.cookie=`googtrans=/en/${code}; path=/; domain=${window.location.hostname}`; 
+            document.cookie=`googtrans=/en/${code}; path=/`; 
+            
+            // Trigger translation smoothly without reloading
+            const select = document.querySelector('.goog-te-combo');
+            if (select) {
+              select.value = code;
+              select.dispatchEvent(new Event('change'));
+            }
+            
+            toast.success(`Language changed to ${lang}`); 
+          }} className={`p-4 rounded-xl border flex items-center justify-between transition-all ${language===lang?'border-emerald-500 bg-emerald-50':'border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-800 transition-colors'}`}>
             <span className="font-bold text-slate-800 dark:text-slate-100">{lang}</span>{language===lang&&<CheckCircle2 className="w-5 h-5 text-emerald-600"/>}
           </button>
         ))}

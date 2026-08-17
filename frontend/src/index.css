@@ -9,21 +9,22 @@
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
-/* Hide Google Translate Banner and Widget */
-body {
-  top: 0px !important; 
+/* Hide Google Translate Banner, Widget, and prevent layout shifting */
+html, body {
+  top: 0px !important;
+  position: static !important;
 }
-.goog-te-banner-frame.skiptranslate {
+.skiptranslate iframe,
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget,
+#google_translate_element,
+.goog-tooltip,
+.goog-tooltip:hover,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
   display: none !important;
-}
-#google_translate_element {
-  display: none !important;
-}
-.goog-tooltip {
-  display: none !important;
-}
-.goog-tooltip:hover {
-  display: none !important;
+  visibility: hidden !important;
 }
 .goog-text-highlight {
   background-color: transparent !important;
