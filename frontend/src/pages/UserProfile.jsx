@@ -51,6 +51,10 @@ const UserProfile = () => {
 
   const [activeTab, setActiveTab] = useState(getTabFromUrl());
 
+  const handleTabChange = (tabId) => {
+    navigate(`?tab=${tabId}`);
+  };
+
   useEffect(() => {
     const tab = getTabFromUrl();
     if (tab && tab !== activeTab) {
@@ -994,7 +998,7 @@ const UserProfile = () => {
   const renderMobileMenu = () => (
     <div className="flex flex-col gap-4 lg:hidden pb-10">
       {/* Header Card */}
-      <div onClick={() => setActiveTab('profile')} className="cursor-pointer bg-gradient-to-r from-slate-900 to-indigo-900 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden flex items-center justify-between transition-all active:scale-[0.98]">
+      <div onClick={() => handleTabChange('profile')} className="cursor-pointer bg-gradient-to-r from-slate-900 to-indigo-900 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden flex items-center justify-between transition-all active:scale-[0.98]">
          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
          <div className="flex items-center gap-4 relative z-10">
            <div className="w-14 h-14 bg-slate-800 rounded-full flex items-center justify-center text-xl font-bold border-2 border-white/30 overflow-hidden">
@@ -1014,19 +1018,19 @@ const UserProfile = () => {
 
       {/* 2x2 Grid */}
       <div className="grid grid-cols-2 gap-3">
-        <button onClick={() => setActiveTab('orders')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all text-left sm:text-center">
+        <button onClick={() => handleTabChange('orders')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all text-left sm:text-center">
           <Package className="w-6 h-6 text-indigo-600" />
           <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Orders</span>
         </button>
-        <button onClick={() => setActiveTab('wishlist')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-rose-200 transition-all text-left sm:text-center">
+        <button onClick={() => handleTabChange('wishlist')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-rose-200 transition-all text-left sm:text-center">
           <Heart className="w-6 h-6 text-rose-500" />
           <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Wishlist</span>
         </button>
-        <button onClick={() => setActiveTab('recent')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-amber-200 transition-all text-left sm:text-center">
+        <button onClick={() => handleTabChange('recent')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-amber-200 transition-all text-left sm:text-center">
           <TicketPercent className="w-6 h-6 text-amber-500" />
           <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Coupons</span>
         </button>
-        <button onClick={() => setActiveTab('help')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-blue-200 transition-all text-left sm:text-center">
+        <button onClick={() => handleTabChange('help')} className="bg-white dark:bg-slate-800 transition-colors p-4 rounded-2xl border border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 shadow-sm hover:shadow-md hover:border-blue-200 transition-all text-left sm:text-center">
           <HelpCircle className="w-6 h-6 text-blue-500" />
           <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base">Help Center</span>
         </button>
@@ -1044,7 +1048,7 @@ const UserProfile = () => {
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => handleTabChange(item.id)}
                   className={`flex items-center justify-between px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 dark:bg-slate-900 transition-colors transition-colors ${ii !== section.items.length - 1 ? 'border-b border-slate-100 dark:border-slate-700' : ''}`}
                 >
                   <div className="flex items-center gap-3 text-slate-700 dark:text-slate-200">
@@ -1096,7 +1100,7 @@ const UserProfile = () => {
         {/* Mobile Header (Back Button) */}
         {activeTab !== 'menu' && (
           <div className="lg:hidden flex items-center gap-3 mb-6">
-             <button onClick={() => setActiveTab('menu')} className="p-2 bg-white dark:bg-slate-800 transition-colors rounded-full shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 dark:bg-slate-900 transition-colors transition-colors">
+             <button onClick={() => handleTabChange('menu')} className="p-2 bg-white dark:bg-slate-800 transition-colors rounded-full shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 dark:bg-slate-900 transition-colors transition-colors">
                <ChevronLeft className="w-5 h-5" />
              </button>
              <h2 className="font-bold text-slate-900 dark:text-white text-lg capitalize">{activeTab.replace('-', ' ')}</h2>
@@ -1133,7 +1137,7 @@ const UserProfile = () => {
                       return (
                         <button
                           key={item.id}
-                          onClick={() => setActiveTab(item.id)}
+                          onClick={() => handleTabChange(item.id)}
                           className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${isActive ? 'bg-amber-50 text-amber-700 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 dark:bg-slate-900 transition-colors hover:text-slate-900 dark:text-white'}`}
                         >
                           <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-amber-600' : 'text-slate-400'}`} />
