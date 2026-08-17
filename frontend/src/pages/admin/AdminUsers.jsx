@@ -376,6 +376,7 @@ const AdminUsers = () => {
                 <th className="px-6 py-4 font-semibold">User</th>
                 <th className="px-6 py-4 font-semibold">Role</th>
                 <th className="px-6 py-4 font-semibold">Auth</th>
+                <th className="px-6 py-4 font-semibold">Last Active</th>
                 <th className="px-6 py-4 font-semibold">Joined</th>
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
@@ -453,7 +454,21 @@ const AdminUsers = () => {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">
+                    <td className="px-6 py-4">
+                      {u.last_active ? (
+                        <div className="flex flex-col">
+                          <span className="text-slate-900 dark:text-white font-medium text-sm">
+                            {new Date(u.last_active).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </span>
+                          <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            {new Date(u.last_active).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-slate-400 dark:text-slate-500 text-sm italic">Never</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-slate-600 dark:text-slate-400 font-medium text-sm">
                       {u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -596,7 +611,7 @@ const AdminUsers = () => {
                               {userDetails.orders.slice(0, 5).map(order => (
                                 <div key={order.id} className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-700 rounded-xl px-4 py-3">
                                   <div>
-                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200 dark:text-white">Order #LIVEMART{String(order.id).padStart(7, '0')}</p>
+                                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200 dark:text-white">Order #W!FOMART{String(order.id).padStart(7, '0')}</p>
                                     <p className="text-xs text-slate-500 dark:text-slate-400">{new Date(order.createdAt).toLocaleDateString()}</p>
                                   </div>
                                   <div className="text-right">
@@ -1107,3 +1122,4 @@ const AdminUsers = () => {
 };
 
 export default AdminUsers;
+

@@ -80,6 +80,9 @@ const ProductDetails = () => {
       try {
         const res = await axios.get(`/api/products/${id}`);
         setProduct(res.data);
+        if (res.data.min_order_quantity && res.data.min_order_quantity > 1) {
+          setQuantity(res.data.min_order_quantity);
+        }
       } catch (error) {
         console.error('Failed to fetch product', error);
         setProduct(null);
@@ -123,7 +126,8 @@ const ProductDetails = () => {
   }, [product]);
 
   const handleQuantityChange = (type) => {
-    if (type === 'dec' && quantity > 1) {
+    const minQty = product?.min_order_quantity || 1;
+    if (type === 'dec' && quantity > minQty) {
       setQuantity(q => q - 1);
     } else if (type === 'inc' && quantity < product.stock) {
       setQuantity(q => q + 1);
@@ -132,7 +136,8 @@ const ProductDetails = () => {
 
   const handleQuantityInput = (e) => {
     const val = parseInt(e.target.value);
-    if (!isNaN(val) && val > 0 && val <= product.stock) {
+    const minQty = product?.min_order_quantity || 1;
+    if (!isNaN(val) && val >= minQty && val <= product.stock) {
       setQuantity(val);
     } else if (e.target.value === '') {
       setQuantity('');
@@ -140,7 +145,8 @@ const ProductDetails = () => {
   };
 
   const handleQuantityBlur = () => {
-    if (quantity === '' || quantity < 1) setQuantity(1);
+    const minQty = product?.min_order_quantity || 1;
+    if (quantity === '' || quantity < minQty) setQuantity(minQty);
   };
 
   const handleOrderNow = () => {
@@ -389,11 +395,18 @@ const ProductDetails = () => {
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-2 uppercase">Quantity</h4>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-2 uppercase flex items-center">
+                    Quantity
+                    {product?.min_order_quantity > 1 && (
+                      <span className="ml-2 text-xs font-medium text-amber-600 dark:text-amber-400 normal-case bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
+                        Min {product.min_order_quantity} required
+                      </span>
+                    )}
+                  </h4>
                   <div className="flex items-center border border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 p-1 w-32 sm:w-36">
                     <button
                       onClick={() => handleQuantityChange('dec')}
-                      disabled={quantity <= 1}
+                      disabled={quantity <= (product?.min_order_quantity || 1)}
                       className="w-10 h-10 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 rounded-lg disabled:opacity-50 transition-colors"
                     >
                       <Minus className="w-4 h-4" />

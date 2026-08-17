@@ -36,8 +36,8 @@ const OrderSuccess = () => {
   if (!order) return null;
 
   const downloadInvoice = async () => {
-    const order_id = 'LIVEMART' + (order.id || '0').toString().padStart(6, '0');
-    const invoice_no = `AKKU-${new Date().getFullYear()}-${order_id}`;
+    const order_id = 'W!FOMART' + (order.id || '0').toString().padStart(6, '0');
+    const invoice_no = `BASRIC-${new Date().getFullYear()}-${order_id}`;
     const subtotal = (order.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0);
     const discount = Number(order.discountAmount) || 0;
     const total = Number(order.total_amount) || 0;
@@ -53,11 +53,11 @@ const OrderSuccess = () => {
     const statusText = isCOD ? 'Confirmed' : orderStatus;
 
     // Fetch admin contact settings
-    let contactPhone = '', contactEmail = 'support@livemart.in', contactAddress = '';
+    let contactPhone = '', contactEmail = 'support@W!FOMART.in', contactAddress = '';
     try {
       const { data } = await axios.get('/api/settings');
       contactPhone = data.CONTACT_PHONE || '';
-      contactEmail = data.CONTACT_EMAIL || 'support@livemart.in';
+      contactEmail = data.CONTACT_EMAIL || 'support@W!FOMART.in';
       contactAddress = data.CONTACT_ADDRESS || '';
     } catch (e) { /* use defaults */ }
 
@@ -245,7 +245,7 @@ const OrderSuccess = () => {
   <!-- Header -->
   <div class="header">
     <div class="logo-area">
-      ${logoBase64 ? `<img src="${logoBase64}" class="logo-img" alt="LiveMart Logo" />` : ''}
+      ${logoBase64 ? `<img src="${logoBase64}" class="logo-img" alt="W!FOMART Logo" />` : ''}
       <div>
         <div class="brand-name"><span class="live">Live</span><span class="mart">Mart</span></div>
         <div class="brand-tagline">Live Better, Shop Smarter</div>
@@ -368,7 +368,7 @@ ${orderNotesHTML}
     <div style="border-top: 1.5px dashed #cbd5e1; margin: 24px 0;"></div>
     
     <div style="text-align: center; margin-bottom: 12px;">
-      <span style="font-size: 20px; font-weight: 900; color: #1e293b;">LiveMart</span>
+      <span style="font-size: 20px; font-weight: 900; color: #1e293b;">W!FOMART</span>
       <span style="font-size: 16px; color: #64748b; margin: 0 8px;">—</span>
       <span style="font-size: 20px; font-weight: 900; color: #f97316;">Live Better, Shop Smarter 🛍️</span>
     </div>
@@ -484,7 +484,7 @@ ${orderNotesHTML}
             </p>
             <div className="mt-4 sm:mt-6 inline-flex flex-col items-center justify-center p-3 sm:p-4 bg-emerald-50 border border-emerald-100 rounded-2xl max-w-full">
               <span className="text-[10px] sm:text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Your Order ID</span>
-              <span className="text-xl sm:text-3xl font-black text-emerald-800 tracking-wider truncate px-2">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</span>
+              <span className="text-xl sm:text-3xl font-black text-emerald-800 tracking-wider truncate px-2">#{'W!FOMART' + order.id.toString().padStart(6, '0')}</span>
             </div>
           </div>
 
@@ -703,3 +703,4 @@ ${orderNotesHTML}
 };
 
 export default OrderSuccess;
+

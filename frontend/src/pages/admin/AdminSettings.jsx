@@ -285,7 +285,7 @@ const AdminSettings = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Contact Email</label>
-              <input type="email" name="CONTACT_EMAIL" value={settings.CONTACT_EMAIL || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. support@livemart.in" />
+              <input type="email" name="CONTACT_EMAIL" value={settings.CONTACT_EMAIL || ''} onChange={handleChange} className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="e.g. support@W!FOMART.in" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Business Address</label>
@@ -408,3 +408,4 @@ const AdminSettings = () => {
 };
 
 export default AdminSettings;
+

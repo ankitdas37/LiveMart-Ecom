@@ -21,7 +21,7 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Login Alert – LiveMart</title>
+  <title>New Login Alert – W!FOMART</title>
 </head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
@@ -39,7 +39,7 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
             <td style="padding:40px;">
               <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">We noticed a new login</h2>
               <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                Hi ${user.name}, your LiveMart account was just accessed from a new device.
+                Hi ${user.name}, your W!FOMART account was just accessed from a new device.
               </p>
               <!-- Details Box -->
               <div style="background:#0f172a;border-radius:12px;padding:20px;margin-bottom:28px;">
@@ -579,7 +579,7 @@ exports.revokeDevice = async (req, res) => {
         <h1 style="color:#ef4444;font-size:36px;margin-bottom:10px;">Device Logged Out</h1>
         <p style="font-size:18px;color:#cbd5e1;margin-bottom:30px;">The unrecognized device has been successfully logged out of your account.</p>
         <p style="color:#94a3b8;margin-bottom:40px;">If you believe your account was compromised, we strongly recommend you change your password immediately.</p>
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background:#3b82f6;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;font-size:16px;font-weight:bold;">Go to LiveMart Login</a>
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background:#3b82f6;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;font-size:16px;font-weight:bold;">Go to W!FOMART Login</a>
       </body>
       </html>
     `);
@@ -588,3 +588,4 @@ exports.revokeDevice = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+

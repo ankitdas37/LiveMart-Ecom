@@ -4,6 +4,7 @@ const sendEmail = require('../utils/sendEmail');
 const { orderConfirmationEmail, orderStatusEmail, adminNewOrderEmail } = require('../utils/orderEmailTemplates');
 const { generateInvoicePDF } = require('../utils/pdfGenerator');
 const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 const { emitToUser } = require('../socket/socketManager');
 const { sendWebPush } = require('../utils/webPush');
 
@@ -55,7 +56,7 @@ const createOrder = async (req, res) => {
     const productMap = Object.fromEntries(products.map((p) => [p.id, p]));
 
     const { ExtraCharge, Setting, Coupon } = require('../models');
-    
+
     // Fetch active ExtraCharges & Settings
     const activeExtraCharges = await ExtraCharge.findAll({ where: { isActive: true } });
     const settingRec = await Setting.findOne({ where: { key: 'SHIPPING_CHARGE' } });
@@ -80,7 +81,7 @@ const createOrder = async (req, res) => {
 
       const product = productMap[item.product_id];
       const qty = Number(item.quantity);
-      
+
       serverSubtotal += parseFloat(product.price) * qty;
 
       if (product.shipping_charge !== null && product.shipping_charge !== undefined && String(product.shipping_charge).trim() !== "") {
@@ -226,7 +227,7 @@ const createOrder = async (req, res) => {
           include: [{ model: OrderItem, include: [Product] }],
         });
         const emailData = orderConfirmationEmail(fullOrder, fullOrder.OrderItems || []);
-        
+
         // Try to generate PDF, but don't fail the email if it doesn't work
         let emailOptions = {
           email: order.customer_email,
@@ -242,7 +243,7 @@ const createOrder = async (req, res) => {
           try {
             const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
             emailOptions.attachments = [{
-              filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+              filename: `Invoice_W!FOMART${String(order.id).padStart(6, '0')}.pdf`,
               content: pdfBuffer,
               contentType: 'application/pdf'
             }];
@@ -252,7 +253,7 @@ const createOrder = async (req, res) => {
         }
 
         await sendEmail(emailOptions);
-        console.log(`📧 Order confirmation email sent for LIVEMART${String(order.id).padStart(6,'0')}`);
+        console.log(`📧 Order confirmation email sent for W!FOMART${String(order.id).padStart(6, '0')}`);
 
         // --- ADMIN EMAIL NOTIFICATION ---
         try {
@@ -272,7 +273,7 @@ const createOrder = async (req, res) => {
         if (process.env.GOOGLE_SHEET_WEBHOOK_URL) {
           try {
             const sheetData = {
-              orderId: `LIVEMART${String(order.id).padStart(6,'0')}`,
+              orderId: `W!FOMART${String(order.id).padStart(6, '0')}`,
               date: new Date(order.createdAt).toLocaleString(),
               customerName: order.customer_name,
               customerEmail: order.customer_email,
@@ -284,7 +285,7 @@ const createOrder = async (req, res) => {
               status: order.status || 'Pending Confirmation',
               notes: order.order_notes || ''
             };
-            
+
             await fetch(process.env.GOOGLE_SHEET_WEBHOOK_URL, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -306,7 +307,7 @@ const createOrder = async (req, res) => {
       Notification.create({
         userId,
         title: '🎉 Order Placed Successfully!',
-        message: `Awesome news! Your order #LIVEMART${String(order.id).padStart(6, '0')} has been placed successfully and is currently ${order.status}. 🛒✨`,
+        message: `Awesome news! Your order #W!FOMART${String(order.id).padStart(6, '0')} has been placed successfully and is currently ${order.status}. 🛒✨`,
         type: 'order'
       }).then(notif => {
         emitToUser(userId, {
@@ -336,7 +337,10 @@ const getOrders = async (req, res) => {
       include: [
         {
           model: OrderItem,
-          include: [Product]
+          include: [{
+            model: Product,
+            attributes: ['id', 'images', 'title']
+          }]
         }
       ],
       order: [['createdAt', 'DESC']]
@@ -431,7 +435,7 @@ const updateOrderStatus = async (req, res) => {
           const fullOrder = await Order.findByPk(order.id, {
             include: [{ model: OrderItem, include: [Product] }],
           });
-          
+
           const emailData = orderStatusEmail(fullOrder);
 
           let emailOptions = {
@@ -448,7 +452,7 @@ const updateOrderStatus = async (req, res) => {
             try {
               const pdfBuffer = await generateInvoicePDF(fullOrder, fullOrder.OrderItems || []);
               emailOptions.attachments = [{
-                filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+                filename: `Invoice_W!FOMART${String(order.id).padStart(6, '0')}.pdf`,
                 content: pdfBuffer,
                 contentType: 'application/pdf'
               }];
@@ -458,7 +462,7 @@ const updateOrderStatus = async (req, res) => {
           }
 
           await sendEmail(emailOptions);
-          console.log(`📧 Status email [${status}] sent for LIVEMART${String(order.id).padStart(6,'0')}`);
+          console.log(`📧 Status email [${status}] sent for W!FOMART${String(order.id).padStart(6, '0')}`);
         } catch (emailErr) {
           console.error('Status update email failed:', emailErr.message);
         }
@@ -478,7 +482,7 @@ const updateOrderStatus = async (req, res) => {
         Notification.create({
           userId: order.userId,
           title: `${s.emoji} Order ${status}`,
-          message: `${s.msg} (Order #LIVEMART${String(order.id).padStart(6, '0')})`,
+          message: `${s.msg} (Order #W!FOMART${String(order.id).padStart(6, '0')})`,
           type: 'order'
         }).then(notif => {
           emitToUser(order.userId, {
@@ -514,21 +518,21 @@ const trackOrder = async (req, res) => {
   try {
     let raw = req.params.id.trim();
 
-    // Must start with LIVEMART or #LIVEMART (case-insensitive)
-    if (!/^#?LIVEMART/i.test(raw)) {
-      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. LIVEMART000022)' });
+    // Must start with W!FOMART or #W!FOMART (case-insensitive)
+    if (!/^#?W!FOMART/i.test(raw)) {
+      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. W!FOMART000022)' });
     }
 
     // Strip leading # if present
     raw = raw.replace(/^#/, '');
-    // Strip LIVEMART prefix (case-insensitive)
-    raw = raw.replace(/^LIVEMART/i, '');
-    
+    // Strip W!FOMART prefix (case-insensitive)
+    raw = raw.replace(/^W!FOMART/i, '');
+
     // Parse the remaining digits as the order ID
     const orderId = parseInt(raw, 10);
 
     if (!orderId || isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. LIVEMART000022)' });
+      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. W!FOMART000022)' });
     }
 
     const order = await Order.findByPk(orderId, {
@@ -541,7 +545,7 @@ const trackOrder = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: `Order not found. Please check your Order ID (e.g. LIVEMART${String(orderId).padStart(6,'0')})` });
+      return res.status(404).json({ message: `Order not found. Please check your Order ID (e.g. W!FOMART${String(orderId).padStart(6, '0')})` });
     }
 
     // ── RETURN ONLY SAFE TRACKING FIELDS ────────────────────────────────────────
@@ -549,7 +553,7 @@ const trackOrder = async (req, res) => {
     // Enumeration attack: attacker increments ID to harvest all customer PII.
     const safeResponse = {
       id: order.id,
-      orderId: `LIVEMART${String(order.id).padStart(6, '0')}`,
+      orderId: `W!FOMART${String(order.id).padStart(6, '0')}`,
       status: order.status,
       payment_method: order.payment_method,
       createdAt: order.createdAt,
@@ -631,7 +635,7 @@ const bulkDeleteOrders = async (req, res) => {
     }
 
     const orders = await Order.findAll({ where: { id: idsToDelete } });
-    
+
     // Process cloudinary image deletion in parallel
     const cloudinaryDeletions = orders
       .filter(o => o.payment_receipt)
@@ -718,6 +722,28 @@ const requestItemReturn = async (req, res) => {
 
     item.return_status = 'Requested';
     item.return_reason = reason;
+
+    // Handle image upload if a file was provided
+    if (req.file) {
+      const uploadPromise = new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: 'ecommerce/returns', resource_type: 'image' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+      });
+
+      try {
+        const imageUrl = await uploadPromise;
+        item.return_image = imageUrl;
+      } catch (err) {
+        return res.status(500).json({ message: 'Failed to upload return image' });
+      }
+    }
+
     await item.save();
 
     // Optionally generate a support ticket automatically for the admin
@@ -726,13 +752,15 @@ const requestItemReturn = async (req, res) => {
       await SupportTicket.create({
         name: order.customer_name,
         email: order.customer_email,
-        subject: `Return Request for ${item.Product.name || 'Item'} (Order #LIVEMART${String(orderId).padStart(6,'0')})`,
-        message: `Reason: ${reason}`,
-        status: 'Open'
+        subject: `Return Request for ${item.Product.title || 'Item'} (Order #W!FOMART${String(orderId).padStart(6, '0')})`,
+        message: `Reason: ${reason}${item.return_image ? `\n\nReturn Image: ${item.return_image}` : ''}`,
+        status: 'Open',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
     }
 
-    res.json({ message: 'Return requested successfully', item });
+    res.json({ message: 'Return request submitted successfully', item });
   } catch (error) {
     console.error('Error requesting return:', error);
     res.status(500).json({ message: 'Server Error' });
@@ -794,6 +822,81 @@ const getOrderById = async (req, res) => {
   }
 };
 
+const cancelOrderUser = async (req, res) => {
+  try {
+    const order = await Order.findByPk(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    // Check ownership
+    if (order.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    if (order.status === 'Delivered' || order.status === 'Cancelled' || order.status === 'Shipped') {
+      return res.status(400).json({ message: 'Order cannot be cancelled at this stage' });
+    }
+
+    order.status = 'Cancelled';
+    order.cancelledAt = new Date();
+    await order.save();
+
+    // Fetch admins for notification and email
+    const adminUsers = await User.findAll({ where: { role: 'admin' } });
+    
+    // Create Notification for admins and emit real-time event
+    for (const admin of adminUsers) {
+      try {
+        const notif = await Notification.create({
+          userId: admin.id,
+          title: 'Order Cancelled by User',
+          message: `User ${req.user.name || req.user.email} cancelled order ${order.orderId || ('#W!FOMART' + order.id.toString().padStart(6, '0'))}`,
+          type: 'order',
+          link: '/admin/orders',
+          isRead: false
+        });
+        emitToUser(admin.id, {
+          id: notif.id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          isRead: false,
+          createdAt: notif.createdAt
+        });
+      } catch (err) {
+        console.error('Failed to create notification for admin:', err);
+      }
+    }
+
+    // Send email to admins
+    try {
+      const adminEmails = adminUsers.map(u => u.email).filter(Boolean);
+      const emailContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #e11d48;">Order Cancelled</h2>
+          <p>Order <strong>${order.orderId || ('#W!FOMART' + order.id.toString().padStart(6, '0'))}</strong> has been cancelled by the user.</p>
+          <p><strong>Customer:</strong> ${order.customer_name} (${order.customer_email})</p>
+          <p><strong>Total Amount:</strong> ₹${order.total_amount}</p>
+        </div>
+      `;
+      if (adminEmails.length > 0) {
+        await sendEmail({
+          email: adminEmails.join(','),
+          subject: 'Order Cancelled - Wifo Mart',
+          html: emailContent,
+        });
+      }
+    } catch (e) {
+      console.error('Failed to send admin cancellation email', e);
+    }
+
+    res.json({ message: 'Order cancelled successfully', order });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
 module.exports = {
   createOrder,
   getOrders,
@@ -804,5 +907,7 @@ module.exports = {
   bulkDeleteOrders,
   requestItemReturn,
   updateItemReturnStatus,
-  getOrderById
+  getOrderById,
+  cancelOrderUser
 };
+

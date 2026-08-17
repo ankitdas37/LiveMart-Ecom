@@ -85,7 +85,7 @@ const buildItemsTable = (orderItems) => {
  * ORDER CONFIRMATION EMAIL ✨
  */
 const orderConfirmationEmail = (order, orderItems) => {
-  const orderId = `LIVEMART${String(order.id).padStart(6, '0')}`;
+  const orderId = `W!FOMART${String(order.id).padStart(6, '0')}`;
   const payMethod = order.payment_method === 'COD' ? '💵 Cash on Delivery' : '💳 Online Payment';
   const itemsHtml = buildItemsTable(orderItems);
 
@@ -175,7 +175,7 @@ const orderConfirmationEmail = (order, orderItems) => {
  * STATUS UPDATE EMAIL ✨
  */
 const orderStatusEmail = (order) => {
-  const orderId = `LIVEMART${String(order.id).padStart(6, '0')}`;
+  const orderId = `W!FOMART${String(order.id).padStart(6, '0')}`;
   const status = order.status;
 
   const statusConfig = {
@@ -305,7 +305,7 @@ const orderStatusEmail = (order) => {
  * Clean, professional template for the admin
  */
 const adminNewOrderEmail = (order, orderItems) => {
-  const orderId = `LIVEMART${String(order.id).padStart(6, '0')}`;
+  const orderId = `W!FOMART${String(order.id).padStart(6, '0')}`;
   
   const itemsHtml = orderItems.map(item => {
     const name = item.Product ? item.Product.title : `Product #${item.product_id}`;
@@ -421,3 +421,4 @@ const adminNewOrderEmail = (order, orderItems) => {
 };
 
 module.exports = { orderConfirmationEmail, orderStatusEmail, adminNewOrderEmail };
+

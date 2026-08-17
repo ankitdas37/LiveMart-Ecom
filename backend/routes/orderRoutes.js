@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  createOrder, 
-  getOrders, 
-  updateOrderStatus, 
-  trackOrder, 
-  updateOrderDetails, 
+const {
+  createOrder,
+  getOrders,
+  updateOrderStatus,
+  trackOrder,
+  updateOrderDetails,
   deleteOrder,
   requestItemReturn,
   updateItemReturnStatus,
   bulkDeleteOrders,
-  getOrderById
+  getOrderById,
+  cancelOrderUser
 } = require('../controllers/orderController');
 
 const { protect, admin } = require('../middleware/authMiddleware');
@@ -21,6 +22,9 @@ router.get('/track/:id', trackOrder);
 
 // User: Get single order details (must own the order)
 router.get('/:id', protect, getOrderById);
+
+// User: Cancel an order
+router.put('/:id/cancel', protect, cancelOrderUser);
 
 // Admin only: List ALL orders, bulk delete
 router.get('/', protect, admin, getOrders);

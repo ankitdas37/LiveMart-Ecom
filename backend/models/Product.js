@@ -44,6 +44,10 @@ const Product = sequelize.define('Product', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  min_order_quantity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1,
+  },
   sku: {
     type: DataTypes.STRING,
     allowNull: true,

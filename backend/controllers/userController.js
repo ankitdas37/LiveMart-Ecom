@@ -9,9 +9,24 @@ const getUsers = async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: { exclude: ['password', 'resetPasswordOTP'] },
+      include: [{ model: Session, attributes: ['last_active'] }],
       order: [['createdAt', 'DESC']],
     });
-    res.json(users);
+
+    const processedUsers = users.map(user => {
+      const u = user.toJSON();
+      let lastActive = null;
+      if (u.Sessions && u.Sessions.length > 0) {
+        lastActive = u.Sessions.reduce((latest, session) => {
+          return new Date(session.last_active) > new Date(latest) ? session.last_active : latest;
+        }, u.Sessions[0].last_active);
+      }
+      u.last_active = lastActive;
+      delete u.Sessions;
+      return u;
+    });
+
+    res.json(processedUsers);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
@@ -262,7 +277,14 @@ const getUserOrders = async (req, res) => {
     const { OrderItem, Product } = require('../models');
     const orders = await Order.findAll({
       where: { userId: req.user.id },
-      include: [{ model: OrderItem, include: [Product] }],
+      include: [{ 
+        model: OrderItem, 
+        attributes: ['id', 'order_id', 'product_id'],
+        include: [{
+          model: Product,
+          attributes: ['id', 'images']
+        }] 
+      }],
       order: [['createdAt', 'DESC']]
     });
     res.json(orders);
@@ -280,7 +302,14 @@ const getOrdersByUserId = async (req, res) => {
     const { OrderItem, Product } = require('../models');
     const orders = await Order.findAll({
       where: { userId: req.params.id },
-      include: [{ model: OrderItem, include: [Product] }],
+      include: [{ 
+        model: OrderItem, 
+        attributes: ['id', 'order_id', 'product_id'],
+        include: [{
+          model: Product,
+          attributes: ['id', 'images']
+        }] 
+      }],
       order: [['createdAt', 'DESC']]
     });
     res.json(orders);
@@ -515,7 +544,7 @@ const deleteOwnAccount = async (req, res) => {
     await Order.update(
       {
         customer_name: '[Deleted User]',
-        customer_email: 'deleted@livemart.com',
+        customer_email: 'deleted@W!FOMART.com',
         customer_phone: '0000000000',
         customer_address: '[REDACTED]',
       },
@@ -579,3 +608,4 @@ module.exports = {
   deleteOwnAccount,
   forceLogoutUser
 };
+

@@ -7,8 +7,8 @@ const puppeteer = require('puppeteer');
  * @returns {Promise<Buffer>} - PDF Buffer
  */
 const generateInvoicePDF = async (order, orderItems) => {
-  const orderId = `LIVEMART${String(order.id).padStart(6, '0')}`;
-  const invoiceNo = `INV-${new Date().getFullYear()}-${orderId}`;
+  const orderId = `W!FOMART${String(order.id).padStart(6, '0')}`;
+  const invoiceNo = `BASRIC-${new Date().getFullYear()}-${orderId}`;
   
   const subtotal = orderItems.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.price)), 0);
   const discount = Number(order.discountAmount) || 0;
@@ -73,10 +73,10 @@ const generateInvoicePDF = async (order, orderItems) => {
     .brand-name .live { color: #1e293b; }
     .brand-name .mart { color: #FF8C00; }
     .brand-tagline { font-size: 9px; color: #94a3b8; letter-spacing: 2.5px; margin-top: 3px; text-transform: uppercase; }
-    .inv-meta { text-align: right; }
-    .inv-title { font-size: 26px; font-weight: 900; color: #FF8C00; letter-spacing: 1px; }
-    .inv-sub { font-size: 12px; color: #64748b; margin-top: 3px; }
-    .inv-no { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .BASRIC-meta { text-align: right; }
+    .BASRIC-title { font-size: 26px; font-weight: 900; color: #FF8C00; letter-spacing: 1px; }
+    .BASRIC-sub { font-size: 12px; color: #64748b; margin-top: 3px; }
+    .BASRIC-no { font-size: 11px; color: #94a3b8; margin-top: 2px; }
     /* Status Banner */
     .status-banner { display: flex; align-items: center; justify-content: space-between; background: ${statusBg}; border: 1.5px solid ${statusColor}40; border-radius: 10px; padding: 12px 20px; margin-bottom: 22px; }
     .status-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
@@ -118,10 +118,10 @@ const generateInvoicePDF = async (order, orderItems) => {
         <div class="brand-tagline">Live Better, Shop Smarter</div>
       </div>
     </div>
-    <div class="inv-meta">
-      <div class="inv-title">INVOICE</div>
-      <div class="inv-sub">Order Date: ${order.createdAt ? new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
-      <div class="inv-no">Invoice No: ${invoiceNo}</div>
+    <div class="BASRIC-meta">
+      <div class="BASRIC-title">INVOICE</div>
+      <div class="BASRIC-sub">Order Date: ${order.createdAt ? new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
+      <div class="BASRIC-no">Invoice No: ${invoiceNo}</div>
     </div>
   </div>
 
@@ -185,8 +185,8 @@ const generateInvoicePDF = async (order, orderItems) => {
   <div class="totals-wrap">
     <div class="totals-box">
       <div class="t-row"><span>Subtotal</span><span>&#8377;${subtotal.toFixed(2)}</span></div>
-      ${charges > 0 ? '<div class="t-row"><span>Delivery &amp; Extra Charges</span><span>+&#8377;' + charges.toFixed(2) + '</span></div>' : ''}
-      ${discount > 0 ? '<div class="t-row" style="color:#16a34a;"><span>Discount' + (order.couponCode ? ' (' + order.couponCode + ')' : '') + '</span><span>-&#8377;' + discount.toFixed(2) + '</span></div>' : ''}
+      <div class="t-row"><span>Delivery &amp; Extra Charges</span><span>+&#8377;${charges.toFixed(2)}</span></div>
+      <div class="t-row" style="color:#16a34a;"><span>Discount${order.couponCode ? ' (' + order.couponCode + ')' : ''}</span><span>-&#8377;${discount.toFixed(2)}</span></div>
       <div class="t-final"><span>Grand Total</span><span>&#8377;${total.toFixed(2)}</span></div>
     </div>
   </div>
@@ -211,7 +211,7 @@ const generateInvoicePDF = async (order, orderItems) => {
       <div style="color: #94a3b8; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px;">
         <span style="color: #94a3b8; margin-right: 4px;">✉</span> EMAIL
       </div>
-      <div style="color: #facc15; font-size: 14px; font-weight: 700;">support@livemart.in</div>
+      <div style="color: #facc15; font-size: 14px; font-weight: 700;">support@W!FOMART.in</div>
     </div>
     <div style="text-align: right;">
       <div style="color: #94a3b8; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px;">
@@ -224,7 +224,7 @@ const generateInvoicePDF = async (order, orderItems) => {
   <div style="border-top: 1.5px dashed #cbd5e1; margin: 24px 0;"></div>
   
   <div style="text-align: center; margin-bottom: 12px;">
-    <span style="font-size: 20px; font-weight: 900; color: #1e293b;">LiveMart</span>
+    <span style="font-size: 20px; font-weight: 900; color: #1e293b;">W!FOMART</span>
     <span style="font-size: 16px; color: #64748b; margin: 0 8px;">—</span>
     <span style="font-size: 20px; font-weight: 900; color: #f97316;">Live Better, Shop Smarter 🛍️</span>
   </div>
@@ -264,3 +264,5 @@ const generateInvoicePDF = async (order, orderItems) => {
 };
 
 module.exports = { generateInvoicePDF };
+
+

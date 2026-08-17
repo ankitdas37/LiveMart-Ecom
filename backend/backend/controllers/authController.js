@@ -21,7 +21,7 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Login Alert – LiveMart</title>
+  <title>New Login Alert – W!FOMART</title>
 </head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
@@ -39,7 +39,7 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
             <td style="padding:40px;">
               <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">We noticed a new login</h2>
               <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                Hi ${user.name}, your LiveMart account was just accessed from a new device.
+                Hi ${user.name}, your W!FOMART account was just accessed from a new device.
               </p>
               <!-- Details Box -->
               <div style="background:#0f172a;border-radius:12px;padding:20px;margin-bottom:28px;">
@@ -58,15 +58,15 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
               <!-- Footer with Anti-Spam Measures -->
               <div style="margin-top:20px;padding-top:20px;border-top:1px solid #334155;text-align:center;">
                 <p style="margin:0 0 5px;color:#64748b;font-size:12px;">This is an automated security notice. Please do not reply directly to this email.</p>
-                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">You received this because a new login was detected on your LiveMart account.</p>
-                <p style="margin:0;color:#64748b;font-size:12px;">LiveMart Inc. • 123 E-Commerce St, Tech City • <a href="#" style="color:#3b82f6;text-decoration:none;">Unsubscribe from alerts</a></p>
+                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">You received this because a new login was detected on your W!FOMART account.</p>
+                <p style="margin:0;color:#64748b;font-size:12px;">W!FOMART Inc. • 123 E-Commerce St, Tech City • <a href="#" style="color:#3b82f6;text-decoration:none;">Unsubscribe from alerts</a></p>
               </div>
             </td>
           </tr>
           <!-- Footer -->
           <tr>
             <td style="background:#0f172a;padding:20px 40px;text-align:center;">
-              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} LiveMart. All rights reserved.</p>
+              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FOMART. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -77,11 +77,11 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
 </html>`;
 
   try {
-    const plainText = `Hi ${user.name}, your LiveMart account was just accessed from a new device.\n\nDevice: ${reqData.device_type} - ${reqData.browser}\nOS: ${reqData.os}\nIP: ${reqData.ip_address}\nLocation: ${reqData.location}\n\nIf this wasn't you, log into your account immediately and revoke this device.`;
+    const plainText = `Hi ${user.name}, your W!FOMART account was just accessed from a new device.\n\nDevice: ${reqData.device_type} - ${reqData.browser}\nOS: ${reqData.os}\nIP: ${reqData.ip_address}\nLocation: ${reqData.location}\n\nIf this wasn't you, log into your account immediately and revoke this device.`;
 
     await sendEmail({
       email: user.email,
-      subject: `LiveMart: New sign-in on ${reqData.os}`,
+      subject: `W!FOMART: New sign-in on ${reqData.os}`,
       message: plainText,
       html: htmlBody,
     });
@@ -122,7 +122,7 @@ exports.sendSignupOTP = async (req, res) => {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify your email – LiveMart</title>
+  <title>Verify your email – W!FOMART</title>
 </head>
 <body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
@@ -141,7 +141,7 @@ exports.sendSignupOTP = async (req, res) => {
             <td style="padding:40px;">
               <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">Verify your email address</h2>
               <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
-                You're almost there! Enter the verification code below to complete your LiveMart account setup.
+                You're almost there! Enter the verification code below to complete your W!FOMART account setup.
               </p>
               <!-- OTP Box -->
               <div style="background:#0f172a;border:2px solid #f59e0b;border-radius:16px;padding:24px;text-align:center;margin-bottom:28px;">
@@ -151,7 +151,7 @@ exports.sendSignupOTP = async (req, res) => {
               </div>
               <!-- Warning -->
               <div style="background:#1a1a2e;border-left:4px solid #ef4444;padding:14px 18px;border-radius:8px;margin-bottom:28px;">
-                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. LiveMart will never ask for your OTP.</p>
+                <p style="margin:0;color:#fca5a5;font-size:13px;">⚠️ Never share this code with anyone. W!FOMART will never ask for your OTP.</p>
               </div>
               <p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;">
                 If you didn't request this, you can safely ignore this email. Someone may have accidentally entered your email address.
@@ -161,7 +161,7 @@ exports.sendSignupOTP = async (req, res) => {
           <!-- Footer -->
           <tr>
             <td style="background:#0f172a;padding:20px 40px;text-align:center;">
-              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} LiveMart. All rights reserved.</p>
+              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FOMART. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -175,7 +175,7 @@ exports.sendSignupOTP = async (req, res) => {
     try {
       await sendEmail({
         email,
-        subject: 'LiveMart – Verify your email address',
+        subject: 'W!FOMART – Verify your email address',
         message: `Your signup verification code is: ${otpCode}. It expires in 10 minutes.`,
         html: htmlBody,
       });
@@ -457,7 +457,7 @@ exports.forgotPassword = async (req, res) => {
     <div style="font-family: Arial, sans-serif; text-align: center; padding: 30px; background-color: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; max-width: 500px; margin: 0 auto;">
       <h1 style="color: #4f46e5; margin-bottom: 20px;">Reset Your Password</h1>
       <p style="color: #334155; font-size: 16px;">Hi ${user.name},</p>
-      <p style="color: #334155; font-size: 16px;">You recently requested to reset your password for your LiveMart account. Use the following secure OTP to proceed:</p>
+      <p style="color: #334155; font-size: 16px;">You recently requested to reset your password for your W!FOMART account. Use the following secure OTP to proceed:</p>
       <h2 style="letter-spacing: 6px; color: #1e293b; background: #e0e7ff; padding: 15px 20px; display: inline-block; border-radius: 8px; border: 1px dashed #818cf8; margin: 20px 0;">${resetOTP}</h2>
       <p style="color: #64748b; font-size: 14px;">This code expires in 10 minutes. If you didn't request this, please safely ignore this email.</p>
     </div>`;
@@ -465,7 +465,7 @@ exports.forgotPassword = async (req, res) => {
     try {
       await sendEmail({
         email: user.email,
-        subject: 'LiveMart - Password Reset OTP',
+        subject: 'W!FOMART - Password Reset OTP',
         message: `Your OTP is: ${resetOTP}`,
         html: htmlBody,
       });
@@ -549,7 +549,7 @@ exports.revokeDevice = async (req, res) => {
         <h1 style="color:#ef4444;font-size:36px;margin-bottom:10px;">Device Logged Out</h1>
         <p style="font-size:18px;color:#cbd5e1;margin-bottom:30px;">The unrecognized device has been successfully logged out of your account.</p>
         <p style="color:#94a3b8;margin-bottom:40px;">If you believe your account was compromised, we strongly recommend you change your password immediately.</p>
-        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background:#3b82f6;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;font-size:16px;font-weight:bold;">Go to LiveMart Login</a>
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/login" style="background:#3b82f6;color:white;padding:12px 24px;text-decoration:none;border-radius:8px;font-size:16px;font-weight:bold;">Go to W!FOMART Login</a>
       </body>
       </html>
     `);
@@ -558,3 +558,4 @@ exports.revokeDevice = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+

@@ -9,7 +9,7 @@ async function run() {
     console.log('Column order_id added');
     
     // Update existing rows
-    await sequelize.query(`UPDATE Orders SET order_id = CONCAT('LIVEMART', LPAD(id, 6, '0'))`);
+    await sequelize.query(`UPDATE Orders SET order_id = CONCAT('W!FOMART', LPAD(id, 6, '0'))`);
     console.log('Existing orders updated');
     process.exit(0);
   } catch(e) {
@@ -18,3 +18,4 @@ async function run() {
   }
 }
 run();
+

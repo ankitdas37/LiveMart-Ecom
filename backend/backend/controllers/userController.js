@@ -76,13 +76,13 @@ const updateUserProfile = async (req, res) => {
             <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
               <h1 style="color: #f59e0b;">Password Changed Successfully! 🎉</h1>
               <p>Hi ${user.name},</p>
-              <p>Your password for LiveMart was just updated. If you did this, you're all set!</p>
+              <p>Your password for W!FOMART was just updated. If you did this, you're all set!</p>
               <p>If you didn't make this change, please contact support immediately.</p>
-              <p>Stay safe, <br> The LiveMart Team ✨</p>
+              <p>Stay safe, <br> The W!FOMART Team ✨</p>
             </div>`;
             await sendEmail({
               email: user.email,
-              subject: 'LiveMart - Password Changed Successfully',
+              subject: 'W!FOMART - Password Changed Successfully',
               message: 'Your password was changed successfully.',
               html: htmlBody
             });
@@ -289,7 +289,7 @@ const sendPasswordChangeOTP = async (req, res) => {
 
     const title = isPhoneUpdate ? 'Profile Update Request' : 'Password Change Request';
     const actionText = isPhoneUpdate ? 'update your profile' : 'change your password';
-    const subjectLine = isPhoneUpdate ? 'LiveMart - Profile Update OTP' : 'LiveMart - Password Change OTP';
+    const subjectLine = isPhoneUpdate ? 'W!FOMART - Profile Update OTP' : 'W!FOMART - Password Change OTP';
 
     const htmlBody = `
     <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
@@ -374,7 +374,7 @@ const sendAdminActionOTP = async (req, res) => {
     const html = `
       <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2>Admin Action Verification</h2>
-        <p>You have requested to perform a highly sensitive administrative action on LiveMart.</p>
+        <p>You have requested to perform a highly sensitive administrative action on W!FOMART.</p>
         <p>Your verification code is: <b style="font-size: 24px; color: #d97706;">${otpCode}</b></p>
         <p>This code expires in 10 minutes. If you did not request this, please secure your account immediately.</p>
       </div>
@@ -382,7 +382,7 @@ const sendAdminActionOTP = async (req, res) => {
 
     await sendEmail({
       email: user.email,
-      subject: 'LiveMart - Admin Action Verification Code',
+      subject: 'W!FOMART - Admin Action Verification Code',
       html
     });
 
@@ -439,4 +439,5 @@ module.exports = {
   sendAdminActionOTP,
   verifyAdminAction
 };
+
 

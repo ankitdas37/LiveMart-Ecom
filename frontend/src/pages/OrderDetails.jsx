@@ -50,6 +50,7 @@ export default function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [genPdf, setGenPdf] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   const [tickets, setTickets] = useState([]);
 
   // Review modal state
@@ -114,6 +115,21 @@ export default function OrderDetails() {
       toast.error('Failed to generate invoice. Please try again.');
     } finally {
       setGenPdf(false);
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    if (!window.confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
+    setIsCancelling(true);
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.put(`/api/orders/${id}/cancel`, {}, config);
+      toast.success('Order cancelled successfully!');
+      fetchOrder();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to cancel order.');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -216,7 +232,7 @@ export default function OrderDetails() {
   }
 
   /* ─── COMPUTED VALUES ─── */
-  const orderId = `LIVEMART${String(order.id).padStart(6, '0')}`;
+  const orderId = `W!FOMART${String(order.id).padStart(6, '0')}`;
   const currentStep = getStatusStep(order.status);
   const progressPct = currentStep <= 0 ? 0 : Math.round((currentStep / (STATUS_STEPS.length - 1)) * 100);
   const items = order.OrderItems || [];
@@ -863,6 +879,17 @@ export default function OrderDetails() {
                 <MessageSquare className="w-4 h-4 text-slate-400" />
                 Need help with this order?
               </Link>
+              
+              {order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Shipped' && (
+                <button
+                  onClick={handleCancelOrder}
+                  disabled={isCancelling}
+                  className="w-full mt-3 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 border border-red-200 dark:border-red-800/50 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none disabled:opacity-70"
+                >
+                  {isCancelling ? <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" /> : <XCircle className="w-4 h-4" />}
+                  {isCancelling ? 'Cancelling...' : 'Cancel Order'}
+                </button>
+              )}
             </div>
 
           </div>
@@ -1027,3 +1054,4 @@ export default function OrderDetails() {
       </div>
   );
 }
+

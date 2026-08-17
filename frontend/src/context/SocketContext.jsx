@@ -23,24 +23,27 @@ function urlBase64ToUint8Array(base64String) {
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
 export const SocketProvider = ({ children }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, adminUser, logout } = useContext(AuthContext);
+  // Use adminUser if user is not present (for admin dashboard)
+  const activeUser = user || adminUser;
+  
   const socketRef = useRef(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [liveNotifications, setLiveNotifications] = useState([]); // latest notifications from socket
 
   // Fetch initial unread count from API
   const fetchUnreadCount = useCallback(async () => {
-    if (!user) { setUnreadCount(0); return; }
+    if (!activeUser) { setUnreadCount(0); return; }
     try {
       const { data } = await axios.get('/api/notifications/unread-count');
       setUnreadCount(data.count || 0);
     } catch (err) {
       // Silently fail — not critical
     }
-  }, [user]);
+  }, [activeUser]);
 
   const setupWebPush = useCallback(async () => {
-    if (!user || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    if (!activeUser || !('serviceWorker' in navigator) || !('PushManager' in window)) return;
     
     try {
       const permission = await Notification.requestPermission();
@@ -61,12 +64,12 @@ export const SocketProvider = ({ children }) => {
       }
 
       await axios.post('/api/notifications/subscribe', subscription, {
-        headers: { Authorization: `Bearer ${user.token}` }
+        headers: { Authorization: `Bearer ${activeUser.token}` }
       });
     } catch (error) {
       console.error('Failed to setup Web Push:', error);
     }
-  }, [user]);
+  }, [activeUser]);
 
   useEffect(() => {
     fetchUnreadCount();
@@ -74,7 +77,7 @@ export const SocketProvider = ({ children }) => {
   }, [fetchUnreadCount, setupWebPush]);
 
   useEffect(() => {
-    if (!user) {
+    if (!activeUser) {
       // Disconnect socket when logged out
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -100,9 +103,9 @@ export const SocketProvider = ({ children }) => {
       
       // Extract sessionId from JWT token
       let sessionId = null;
-      if (user.token) {
+      if (activeUser.token) {
         try {
-          const base64Url = user.token.split('.')[1];
+          const base64Url = activeUser.token.split('.')[1];
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
           const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
               return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -115,7 +118,7 @@ export const SocketProvider = ({ children }) => {
       }
 
       // Join the user's private room and session room
-      socket.emit('join', { userId: user.id, sessionId });
+      socket.emit('join', { userId: activeUser.id, sessionId });
     });
 
     socket.on('notification', (notif) => {
@@ -151,7 +154,7 @@ export const SocketProvider = ({ children }) => {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [user]);
+  }, [activeUser]);
 
   // Call this when user reads notifications (to reset count)
   const resetUnreadCount = useCallback(() => {

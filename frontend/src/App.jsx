@@ -19,6 +19,9 @@ import ContactUs from './pages/ContactUs';
 import OrderHelp from './pages/OrderHelp';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import ShippingPolicy from './pages/ShippingPolicy';
+import FAQ from './pages/FAQ';
+import TechSupport from './pages/TechSupport';
 import { AuthContext, AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -98,6 +101,9 @@ function App() {
                   <Route path="contact" element={<ContactUs />} />
                   <Route path="privacy-policy" element={<PrivacyPolicy />} />
                   <Route path="terms-of-service" element={<TermsOfService />} />
+                  <Route path="shipping-policy" element={<ShippingPolicy />} />
+                  <Route path="faq" element={<FAQ />} />
+                  <Route path="tech-support" element={<TechSupport />} />
                 </Route>
 
                 {/* Admin Routes */}

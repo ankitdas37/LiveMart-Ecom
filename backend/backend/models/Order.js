@@ -131,10 +131,11 @@ const Order = sequelize.define('Order', {
   timestamps: true,
   hooks: {
     afterCreate: async (order, options) => {
-      const generatedId = 'LIVEMART' + String(order.id).padStart(6, '0');
+      const generatedId = 'W!FOMART' + String(order.id).padStart(6, '0');
       await order.update({ order_id: generatedId }, { transaction: options.transaction });
     }
   }
 });
 
 module.exports = Order;
+

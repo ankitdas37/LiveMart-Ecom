@@ -24,7 +24,7 @@ const InvoiceTemplate = ({ order }) => {
       <div className="flex justify-between items-start border-b-2 border-slate-200 pb-6 mb-8">
         <div>
           <h1 className="text-3xl font-black text-amber-600 mb-1">INVOICE</h1>
-          <p className="text-sm font-semibold text-slate-500">Order #{'LIVEMART' + order.id.toString().padStart(6, '0')}</p>
+          <p className="text-sm font-semibold text-slate-500">Order #{'W!FOMART' + order.id.toString().padStart(6, '0')}</p>
           <p className="text-sm text-slate-500">Date: {new Date(order.createdAt).toLocaleDateString()}</p>
         </div>
         <div className="text-right text-sm text-slate-600 space-y-1">
@@ -33,7 +33,7 @@ const InvoiceTemplate = ({ order }) => {
             <span style={{ color: '#FF8C00' }}>Mart</span>
           </p>
           <p className="text-xs text-slate-500">LIVE BETTER, SHOP SMARTER</p>
-          <p>support@livemart.in</p>
+          <p>support@W!FOMART.in</p>
         </div>
       </div>
 
@@ -119,18 +119,14 @@ const InvoiceTemplate = ({ order }) => {
             <span>Subtotal</span>
             <span>₹{subtotal.toFixed(2)}</span>
           </div>
-          {charges > 0 && (
-            <div className="flex justify-between text-slate-600">
-              <span>Delivery & Extra Charges</span>
-              <span>+₹{charges.toFixed(2)}</span>
-            </div>
-          )}
-          {order.couponCode && (
-            <div className="flex justify-between text-slate-600">
-              <span>Discount ({order.couponCode})</span>
-              <span>-₹{discount.toFixed(2)}</span>
-            </div>
-          )}
+          <div className="flex justify-between text-slate-600">
+            <span>Delivery & Extra Charges</span>
+            <span>+₹{charges.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-slate-600">
+            <span>Discount {order.couponCode ? `(${order.couponCode})` : ''}</span>
+            <span>-₹{discount.toFixed(2)}</span>
+          </div>
           <div className="flex justify-between text-lg font-bold text-slate-900 border-t-2 border-slate-800 pt-3">
             <span>Total Amount</span>
             <span>₹{total.toFixed(2)}</span>
@@ -164,3 +160,4 @@ const InvoiceTemplate = ({ order }) => {
 };
 
 export default InvoiceTemplate;
+

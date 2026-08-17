@@ -197,7 +197,7 @@ const AdminDashboard = () => {
             <tbody className="divide-y divide-slate-100">
               {stats.recentOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 dark:bg-slate-900/50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">#{'W!FOMART' + order.id.toString().padStart(6, '0')}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400 dark:text-slate-300">{order.customer_name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">{new Date(order.createdAt).toLocaleDateString()}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-white">₹{parseFloat(order.total_amount).toFixed(2)}</td>
@@ -266,3 +266,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

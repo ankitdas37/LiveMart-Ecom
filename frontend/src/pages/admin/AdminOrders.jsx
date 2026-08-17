@@ -188,8 +188,8 @@ const AdminOrders = () => {
       if (found) freshOrder = found;
     } catch (e) { /* fall back to passed order */ }
 
-    const order_id = 'LIVEMART' + (freshOrder.id || '0').toString().padStart(6, '0');
-    const invoice_no = `AKKU-${new Date().getFullYear()}-${order_id}`;
+    const order_id = 'W!FOMART' + (freshOrder.id || '0').toString().padStart(6, '0');
+    const invoice_no = `BASRIC-${new Date().getFullYear()}-${order_id}`;
     const orderItems = freshOrder.OrderItems || [];
     const subtotal = orderItems.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.price)), 0);
     const discount = Number(freshOrder.discount_amount) || 0;
@@ -206,11 +206,11 @@ const AdminOrders = () => {
     const statusIcon = isCancelled ? '✗' : isConfirmed ? '✓' : '⏳';
 
     // Fetch admin contact settings
-    let contactPhone = '', contactEmail = 'support@livemart.in', contactAddress = '';
+    let contactPhone = '', contactEmail = 'support@W!FOMART.in', contactAddress = '';
     try {
       const { data } = await axios.get('/api/settings');
       contactPhone = data.CONTACT_PHONE || '';
-      contactEmail = data.CONTACT_EMAIL || 'support@livemart.in';
+      contactEmail = data.CONTACT_EMAIL || 'support@W!FOMART.in';
       contactAddress = data.CONTACT_ADDRESS || '';
     } catch (e) { /* use defaults */ }
 
@@ -385,7 +385,7 @@ th:not(:first-child) { text-align:right; } th:nth-child(2) { text-align:center; 
 
 <div class="header">
   <div class="logo-area">
-    ${logoBase64 ? `<img src="${logoBase64}" class="logo-img" alt="LiveMart" />` : ''}
+    ${logoBase64 ? `<img src="${logoBase64}" class="logo-img" alt="W!FOMART" />` : ''}
     <div>
       <div class="brand-name"><span class="live">Live</span><span class="mart">Mart</span></div>
       <div class="brand-tagline">Live Better, Shop Smarter</div>
@@ -495,7 +495,7 @@ ${receiptBase64 ? `
     <div style="border-top: 1.5px dashed #cbd5e1; margin: 24px 0;"></div>
     
     <div style="text-align: center; margin-bottom: 12px;">
-      <span style="font-size: 20px; font-weight: 900; color: #1e293b;">LiveMart</span>
+      <span style="font-size: 20px; font-weight: 900; color: #1e293b;">W!FOMART</span>
       <span style="font-size: 16px; color: #64748b; margin: 0 8px;">—</span>
       <span style="font-size: 20px; font-weight: 900; color: #f97316;">Live Better, Shop Smarter 🛍️</span>
     </div>
@@ -815,7 +815,7 @@ ${orderNotesHTML}
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Order ID</p>
-                    <p className="font-bold text-slate-900 dark:text-white">#{'LIVEMART' + order.id.toString().padStart(6, '0')}</p>
+                    <p className="font-bold text-slate-900 dark:text-white">#{'W!FOMART' + order.id.toString().padStart(6, '0')}</p>
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Date & Time</p>
@@ -1240,7 +1240,7 @@ ${orderNotesHTML}
         isOpen={showDeleteModal}
         onClose={() => { setShowDeleteModal(false); setOrderToDelete(null); }}
         onConfirm={handleConfirmDelete}
-        itemName={orderToDelete === 'bulk' ? `${selectedOrders.length} Order(s)` : `Order #LIVEMART${String(orderToDelete).padStart(6, '0')}`}
+        itemName={orderToDelete === 'bulk' ? `${selectedOrders.length} Order(s)` : `Order #W!FOMART${String(orderToDelete).padStart(6, '0')}`}
         isBulk={orderToDelete === 'bulk'}
       />
 
@@ -1334,3 +1334,5 @@ ${orderNotesHTML}
 };
 
 export default AdminOrders;
+
+

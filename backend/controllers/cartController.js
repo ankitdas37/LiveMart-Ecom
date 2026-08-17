@@ -28,7 +28,7 @@ const getCart = async (req, res) => {
           include: [
             {
               model: Product,
-              attributes: ['id', 'title', 'price', 'discount_price', 'images', 'stock', 'cod_available', 'shipping_charge', 'extra_charges'],
+              attributes: ['id', 'title', 'price', 'discount_price', 'images', 'stock', 'cod_available', 'shipping_charge', 'extra_charges', 'min_order_quantity'],
             },
           ],
         },
@@ -55,6 +55,7 @@ const getCart = async (req, res) => {
         cod_available: p.cod_available !== undefined ? p.cod_available : false,
         shipping_charge: p.shipping_charge !== null && p.shipping_charge !== undefined ? p.shipping_charge : null,
         extra_charges: p.extra_charges || [],
+        min_order_quantity: p.min_order_quantity || 1,
         quantity: ci.quantity,
       };
     });
@@ -82,12 +83,14 @@ const addToCart = async (req, res) => {
 
     // Fetch product details to store snapshot in CartItem
     const product = await Product.findByPk(productId, {
-      attributes: ['id', 'title', 'price', 'images'],
+      attributes: ['id', 'title', 'price', 'images', 'min_order_quantity'],
     });
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    const minQty = product.min_order_quantity || 1;
 
     const productName = product.title;
     const productPrice = product.price;
@@ -105,6 +108,9 @@ const addToCart = async (req, res) => {
       existing.email = req.user.email;
       await existing.save();
     } else {
+      if (parsedQty < minQty) {
+        return res.status(400).json({ message: `Minimum order quantity is ${minQty}` });
+      }
       await CartItem.create({
         cartId: cart.id,
         productId,
@@ -136,8 +142,13 @@ const updateCartItem = async (req, res) => {
     const item = await CartItem.findOne({ where: { cartId: cart.id, productId } });
     if (!item) return res.status(404).json({ message: 'Item not found in cart' });
 
+    const product = await Product.findByPk(productId, { attributes: ['min_order_quantity'] });
+    const minQty = product ? (product.min_order_quantity || 1) : 1;
+
     if (parsedQty <= 0) {
       await item.destroy();
+    } else if (parsedQty < minQty) {
+      return res.status(400).json({ message: `Minimum order quantity is ${minQty}` });
     } else {
       item.quantity = Math.min(parsedQty, MAX_CART_QUANTITY);
       await item.save();

@@ -67,7 +67,7 @@ export default function OrderDetails() {
   const fetchOrder = async () => {
     try {
       setLoading(true);
-      const orderId = `LIVEMART${String(id).padStart(6, '0')}`;
+      const orderId = `W!FOMART${String(id).padStart(6, '0')}`;
       const { data } = await axios.get(`/api/orders/track/${orderId}`);
       setOrder(data);
     } catch (err) {
@@ -105,7 +105,7 @@ export default function OrderDetails() {
     }, 800);
   };
 
-  const orderId = order ? `LIVEMART${String(order.id).padStart(6, '0')}` : '';
+  const orderId = order ? `W!FOMART${String(order.id).padStart(6, '0')}` : '';
   const currentStep = order ? getStatusStep(order.status) : 0;
   const progressPct = currentStep <= 0 ? 0 : Math.round((currentStep / (STATUS_STEPS.length - 1)) * 100);
 
@@ -616,3 +616,4 @@ export default function OrderDetails() {
     </div>
   );
 }
+

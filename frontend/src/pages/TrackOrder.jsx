@@ -85,18 +85,18 @@ const TrackOrder = () => {
             <p className="text-slate-600 dark:text-slate-400 mb-8 max-w-xl mx-auto">
               Enter your Order ID to get real-time updates on your shipment status.
             </p>
-            
+
             <form onSubmit={handleTrack} className="max-w-md mx-auto">
               <div className="relative">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={orderId}
                   onChange={(e) => setOrderId(e.target.value.toUpperCase().trim())}
-                  placeholder="e.g. LIVEMART000022"
+                  placeholder="e.g. W!FOMART000000"
                   className="w-full pl-12 pr-32 py-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-4 focus:ring-amber-500/20 text-lg font-mono tracking-wider outline-none transition-colors"
                 />
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-6 h-6" />
-                <button 
+                <button
                   type="submit"
                   disabled={isLoading}
                   className="absolute right-2 top-2 bottom-2 bg-slate-900 dark:bg-amber-500 dark:hover:bg-amber-600 text-white px-6 rounded-xl font-semibold hover:bg-slate-800 transition-colors disabled:opacity-70"
@@ -104,18 +104,15 @@ const TrackOrder = () => {
                   {isLoading ? 'Searching...' : 'Track'}
                 </button>
               </div>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 text-center">
-                Format: <span className="font-mono font-bold text-amber-600">LIVEMART000022</span> or <span className="font-mono font-bold text-amber-600">#LIVEMART000022</span>
-              </p>
             </form>
-            
+
             {error && (
               <div className="mt-6 inline-flex items-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg font-medium shadow-sm">
                 <XCircle className="w-5 h-5 mr-2" />
                 {error}
               </div>
             )}
-            
+
             {isAutoLoaded && error && (
               <div className="mt-4">
                 <Link to="/profile" className="text-amber-500 hover:text-amber-600 font-bold text-sm inline-flex items-center gap-1">
@@ -147,7 +144,7 @@ const TrackOrder = () => {
               <h1 className="text-3xl font-black text-slate-900 dark:text-white">Order Details</h1>
             </div>
             {orderData.customer_name && (
-              <button 
+              <button
                 onClick={handleDownloadInvoice}
                 disabled={isLoading}
                 className="flex items-center gap-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-5 py-2.5 rounded-xl font-bold hover:border-indigo-500 hover:text-indigo-600 dark:hover:border-indigo-400 dark:hover:text-indigo-400 transition-all shadow-sm"
@@ -190,7 +187,7 @@ const TrackOrder = () => {
                     Order ID
                   </p>
                   <h2 className="text-base md:text-xl font-black text-white leading-tight group-hover:text-rose-300 transition-colors duration-300 break-all">
-                    {orderData.orderId ? (orderData.orderId.startsWith('#') ? orderData.orderId : `#${orderData.orderId}`) : `#{'LIVEMART' + orderData.id?.toString().padStart(6, '0')}`}
+                    {orderData.orderId ? (orderData.orderId.startsWith('#') ? orderData.orderId : `#${orderData.orderId}`) : `#{'W!FOMART' + orderData.id?.toString().padStart(6, '0')}`}
                   </h2>
                 </div>
 
@@ -273,10 +270,10 @@ const TrackOrder = () => {
               ) : (() => {
                 const steps = [
                   { title: 'Order Placed', icon: Package, step: 0, date: orderData.createdAt },
-                  { title: 'Confirmed',    icon: CheckCircle, step: 1, date: orderData.confirmedAt },
-                  { title: 'Processing',  icon: Package, step: 2, date: orderData.processingAt },
-                  { title: 'Shipped',     icon: Truck, step: 3, date: orderData.shippedAt },
-                  { title: 'Delivered',   icon: MapPin, step: 4, date: orderData.deliveredAt },
+                  { title: 'Confirmed', icon: CheckCircle, step: 1, date: orderData.confirmedAt },
+                  { title: 'Processing', icon: Package, step: 2, date: orderData.processingAt },
+                  { title: 'Shipped', icon: Truck, step: 3, date: orderData.shippedAt },
+                  { title: 'Delivered', icon: MapPin, step: 4, date: orderData.deliveredAt },
                 ];
                 const currentStep = getStatusStep(orderData.status);
                 const pct = Math.max(0, Math.min(100, (currentStep / (steps.length - 1)) * 100));
@@ -303,8 +300,8 @@ const TrackOrder = () => {
                     <div className="relative z-10 flex flex-col md:flex-row justify-between gap-8 md:gap-0">
                       {steps.map((item) => {
                         const isCompleted = currentStep >= item.step;
-                        const isCurrent   = currentStep === item.step;
-                        const isFuture    = currentStep < item.step;
+                        const isCurrent = currentStep === item.step;
+                        const isFuture = currentStep < item.step;
 
                         return (
                           <div key={item.step} className="flex md:flex-col items-center md:items-center group relative w-full md:w-auto" style={{ animation: `fadeSlideUp 0.5s ease both`, animationDelay: `${item.step * 0.08}s` }}>
@@ -349,7 +346,7 @@ const TrackOrder = () => {
                               >
                                 <item.icon
                                   className="w-6 h-6"
-                                  style={ isCurrent ? { animation: 'iconWiggle 1.2s ease-in-out infinite' } : {} }
+                                  style={isCurrent ? { animation: 'iconWiggle 1.2s ease-in-out infinite' } : {}}
                                 />
                               </div>
                             </div>
@@ -357,11 +354,10 @@ const TrackOrder = () => {
                             {/* Label (sits below on desktop, to the right on mobile) */}
                             <div className="ml-4 md:ml-0 md:mt-5 text-left md:text-center md:w-28 md:-mx-7">
                               <h4
-                                className={`text-sm font-black tracking-tight transition-colors ${
-                                  isCurrent   ? 'text-amber-600' :
+                                className={`text-sm font-black tracking-tight transition-colors ${isCurrent ? 'text-amber-600' :
                                   isCompleted ? 'text-slate-800 dark:text-slate-200' :
-                                               'text-slate-350 text-slate-400'
-                                }`}
+                                    'text-slate-350 text-slate-400'
+                                  }`}
                               >
                                 {item.title}
                               </h4>
@@ -404,12 +400,12 @@ const TrackOrder = () => {
               <div className="bg-emerald-50/50 dark:bg-emerald-900/10 border-t border-emerald-100 dark:border-emerald-900/30 p-8 text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-200/20 rounded-full translate-x-1/2 -translate-y-1/2 blur-2xl"></div>
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-200/20 rounded-full -translate-x-1/2 translate-y-1/2 blur-2xl"></div>
-                
+
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 relative z-10">How was your delivery experience?</h3>
                 <p className="text-slate-600 dark:text-slate-400 mb-6 text-sm font-medium relative z-10">Your feedback helps us improve our service.</p>
                 <div className="flex justify-center gap-4 relative z-10">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <button 
+                    <button
                       key={star}
                       onClick={() => toast.success('Thanks for your feedback!')}
                       className="group p-4 bg-white dark:bg-slate-700 rounded-full border-2 border-emerald-100 dark:border-emerald-900/30 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all shadow-md hover:shadow-xl hover:shadow-amber-500/20 hover:-translate-y-1"
@@ -432,7 +428,7 @@ const TrackOrder = () => {
                   <p><span className="font-medium text-slate-900 dark:text-slate-200">Address:</span> {orderData.customer_address ? `${orderData.customer_address}${orderData.landmark ? `, Landmark: ${orderData.landmark}` : ''}` : 'Not provided'}</p>
                   <p><span className="font-medium text-slate-900 dark:text-slate-200">City/Pincode:</span> {orderData.city}, {orderData.district ? `${orderData.district}, ` : ''}{orderData.pincode}</p>
                 </div>
-                
+
                 <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
                   <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center text-indigo-500 dark:text-indigo-400">
                     <CreditCard className="w-6 h-6" />
@@ -459,16 +455,16 @@ const TrackOrder = () => {
                             <ExternalLink className="w-5 h-5 text-white" />
                           </div>
                         </Link>
-                        
+
                         <div className="flex-1 min-w-0">
                           <Link to={item.product_id ? `/product/${item.product_id}` : '#'} className="text-sm font-bold text-slate-900 dark:text-white truncate block hover:text-amber-600 dark:hover:text-amber-500 transition-colors">
                             {item.productTitle || item.Product?.title || 'Product'}
                           </Link>
                           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Qty: {item.quantity} × ₹{item.price}</p>
-                          
+
                           {/* Write Review Button (Only if Delivered) */}
                           {orderData.status === 'Delivered' && (
-                            <button 
+                            <button
                               onClick={() => {
                                 setReviewProduct(item.Product || { title: item.productTitle, images: [item.productImage] });
                                 setIsReviewModalOpen(true);
@@ -480,14 +476,14 @@ const TrackOrder = () => {
                             </button>
                           )}
                         </div>
-                        
+
                         <div className="text-sm font-black text-slate-900 dark:text-white shrink-0">
                           ₹{(item.price * item.quantity).toFixed(2)}
                         </div>
                       </div>
                     </div>
                   ))}
-                  
+
                   <div className="pt-4 mt-2 space-y-2 bg-slate-100/50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                     <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 font-medium">
                       <span>Subtotal</span>
@@ -513,7 +509,7 @@ const TrackOrder = () => {
                 </div>
               </div>
             </div>
-            
+
           </div>
         )}
       </div>
@@ -522,7 +518,7 @@ const TrackOrder = () => {
       {isReviewModalOpen && reviewProduct && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-700 relative animate-in zoom-in-95 duration-200">
-            <button 
+            <button
               onClick={() => {
                 setIsReviewModalOpen(false);
                 setReviewProduct(null);
@@ -534,13 +530,13 @@ const TrackOrder = () => {
             >
               <XCircle className="w-6 h-6" />
             </button>
-            
+
             <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Write a Review</h3>
             <div className="flex items-center gap-3 mb-6 bg-slate-50 dark:bg-slate-700 p-3 rounded-xl border border-slate-100 dark:border-slate-600">
               <img src={reviewProduct.images?.[0] || 'https://via.placeholder.com/50'} alt="product" className="w-12 h-12 rounded-lg object-cover border border-slate-200" />
               <p className="font-semibold text-slate-700 dark:text-slate-200 text-sm line-clamp-2">{reviewProduct.title}</p>
             </div>
-            
+
             <div className="mb-6 text-center">
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Overall Rating</p>
               <div className="flex justify-center gap-2">
@@ -553,29 +549,28 @@ const TrackOrder = () => {
                     onMouseLeave={() => setHoverRating(0)}
                     className="focus:outline-none"
                   >
-                    <Star 
-                      className={`w-10 h-10 transition-all duration-300 ${
-                        star <= (hoverRating || rating) 
-                          ? 'text-amber-400 fill-amber-400 scale-110 drop-shadow-md' 
-                          : 'text-slate-200 hover:scale-110'
-                      }`} 
+                    <Star
+                      className={`w-10 h-10 transition-all duration-300 ${star <= (hoverRating || rating)
+                        ? 'text-amber-400 fill-amber-400 scale-110 drop-shadow-md'
+                        : 'text-slate-200 hover:scale-110'
+                        }`}
                     />
                   </button>
                 ))}
               </div>
             </div>
-            
+
             <div className="mb-6">
               <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Your Review</label>
-              <textarea 
-                rows="4" 
+              <textarea
+                rows="4"
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="What did you like or dislike? How did you use the product?"
                 className="w-full p-4 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-600 focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 outline-none resize-none transition-all"
               />
             </div>
-            
+
             <button
               onClick={() => {
                 if (rating === 0) {
@@ -654,3 +649,4 @@ class TrackOrderErrorBoundary extends React.Component {
 }
 
 export default TrackOrderErrorBoundary;
+

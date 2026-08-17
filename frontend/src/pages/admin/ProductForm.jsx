@@ -23,6 +23,7 @@ const ProductForm = () => {
     discount_price: '',
     shipping_charge: '',
     stock: 0,
+    min_order_quantity: 1,
     sku: '',
     categoryId: '',
     is_published: true,
@@ -68,6 +69,7 @@ const ProductForm = () => {
             discount_price: product.discount_price || '',
             shipping_charge: product.shipping_charge !== null ? product.shipping_charge : '',
             stock: product.stock || 0,
+            min_order_quantity: product.min_order_quantity || 1,
             sku: product.sku || '',
             categoryId: product.categoryId || '',
             is_published: product.is_published !== undefined ? product.is_published : true,
@@ -437,6 +439,19 @@ const ProductForm = () => {
                   required
                   min="0"
                   value={formData.stock}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Minimum Order Quantity *</label>
+                <input 
+                  type="number" 
+                  name="min_order_quantity"
+                  required
+                  min="1"
+                  value={formData.min_order_quantity}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white dark:bg-slate-800 dark:text-white"
                 />

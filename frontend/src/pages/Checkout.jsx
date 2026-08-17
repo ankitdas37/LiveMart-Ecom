@@ -901,7 +901,14 @@ const Checkout = () => {
                         {/* Quantity +/- controls */}
                         <div className="flex items-center space-x-1 mt-1.5">
                           <button
-                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                            onClick={() => {
+                              const minQty = item.min_order_quantity || 1;
+                              if (item.quantity <= minQty) {
+                                toast.error(`Minimum order quantity is ${minQty}.`);
+                              } else {
+                                updateQuantity(item.id, Math.max(minQty, item.quantity - 1));
+                              }
+                            }}
                             className="w-6 h-6 flex items-center justify-center rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-white hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-colors font-bold text-sm leading-none"
                           >−</button>
                           <span className="w-7 text-center text-sm font-bold text-slate-900 dark:text-white">{item.quantity}</span>

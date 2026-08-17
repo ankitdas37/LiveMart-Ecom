@@ -518,7 +518,7 @@ const UserProfile = () => {
         <Link to={`/order/${order.id}`} key={order.id} className="bg-white dark:bg-slate-800 transition-colors rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-600 p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-indigo-300 hover:shadow-md transition-all block active:scale-[0.98]">
           <div className="flex-1 w-full">
             <div className="flex items-center justify-between md:justify-start gap-3 flex-wrap mb-2">
-              <span className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Order #LIVEMART{String(order.id).padStart(6, '0')}</span>
+              <span className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Order #W!FOMART{String(order.id).padStart(6, '0')}</span>
               <span className={`px-2.5 py-1 rounded-md text-[10px] sm:text-xs font-bold ${order.status==='Delivered'?'bg-emerald-100 text-emerald-700':order.status==='Cancelled'?'bg-red-100 text-red-700':order.status==='Processing'?'bg-blue-100 text-blue-700':'bg-amber-100 text-amber-700'}`}>{order.status}</span>
             </div>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Placed {new Date(order.createdAt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} · <span className="font-semibold text-slate-700 dark:text-slate-200">₹{order.total_amount}</span></p>
@@ -1167,3 +1167,4 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+

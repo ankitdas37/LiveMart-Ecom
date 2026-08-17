@@ -18,8 +18,8 @@ const loadPdfJs = () => {
 export const generatePDFInvoice = async (order) => {
   if (!order) return;
 
-  const order_id = 'LIVEMART' + (order.id || '0').toString().padStart(6, '0');
-  const invoice_no = `AKKU-${new Date().getFullYear()}-${order_id}`;
+  const order_id = 'W!FOMART' + (order.id || '0').toString().padStart(6, '0');
+  const invoice_no = `BASRIC-${new Date().getFullYear()}-${order_id}`;
   const subtotal = (order.OrderItems || []).reduce((sum, item) => sum + (item.quantity * item.price), 0);
   const discount = Number(order.discountAmount) || 0;
   const total = Number(order.total_amount) || 0;
@@ -35,11 +35,11 @@ export const generatePDFInvoice = async (order) => {
   const statusText = isCOD ? 'Confirmed' : orderStatus;
 
   // Fetch admin contact settings
-  let contactPhone = '', contactEmail = 'support@livemart.in', contactAddress = '';
+  let contactPhone = '', contactEmail = 'support@W!FOMART.in', contactAddress = '';
   try {
     const { data } = await axios.get('/api/settings');
     contactPhone = data.CONTACT_PHONE || '';
-    contactEmail = data.CONTACT_EMAIL || 'support@livemart.in';
+    contactEmail = data.CONTACT_EMAIL || 'support@W!FOMART.in';
     contactAddress = data.CONTACT_ADDRESS || '';
   } catch (e) { /* use defaults */ }
 
@@ -230,7 +230,7 @@ export const generatePDFInvoice = async (order) => {
   <!-- Header -->
   <div class="header">
     <div class="logo-area">
-      ${logoBase64 ? '<img src="' + logoBase64 + '" class="logo-img" alt="LiveMart Logo" />' : ''}
+      ${logoBase64 ? '<img src="' + logoBase64 + '" class="logo-img" alt="W!FOMART Logo" />' : ''}
       <div>
         <div class="brand-name"><span class="live">Live</span><span class="mart">Mart</span></div>
         <div class="brand-tagline">Live Better, Shop Smarter</div>
@@ -303,8 +303,8 @@ export const generatePDFInvoice = async (order) => {
   <div class="totals-wrap">
     <div class="totals-box">
       <div class="t-row"><span>Subtotal</span><span>&#8377;${subtotal.toFixed(2)}</span></div>
-      ${charges > 0 ? '<div class="t-row"><span>Delivery &amp; Extra Charges</span><span>+&#8377;' + charges.toFixed(2) + '</span></div>' : ''}
-      ${discount > 0 ? '<div class="t-row" style="color:#16a34a;"><span>Discount' + (order.couponCode ? ' (' + order.couponCode + ')' : '') + '</span><span>-&#8377;' + discount.toFixed(2) + '</span></div>' : ''}
+      <div class="t-row"><span>Delivery &amp; Extra Charges</span><span>+&#8377;${charges.toFixed(2)}</span></div>
+      <div class="t-row" style="color:#16a34a;"><span>Discount${order.couponCode ? ' (' + order.couponCode + ')' : ''}</span><span>-&#8377;${discount.toFixed(2)}</span></div>
       <div class="t-final"><span>Grand Total</span><span>&#8377;${total.toFixed(2)}</span></div>
     </div>
   </div>
@@ -341,7 +341,7 @@ ${orderNotesHTML}
     <div style="border-top: 1.5px dashed #cbd5e1; margin: 24px 0;"></div>
     
     <div style="text-align: center; margin-bottom: 12px;">
-      <span style="font-size: 20px; font-weight: 900; color: #1e293b;">LiveMart</span>
+      <span style="font-size: 20px; font-weight: 900; color: #1e293b;">W!FOMART</span>
       <span style="font-size: 16px; color: #64748b; margin: 0 8px;">—</span>
       <span style="font-size: 20px; font-weight: 900; color: #f97316;">Live Better, Shop Smarter 🛍️</span>
     </div>
@@ -442,3 +442,5 @@ ${orderNotesHTML}
     doc.close();
   });
 };
+
+

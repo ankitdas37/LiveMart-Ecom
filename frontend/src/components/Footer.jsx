@@ -97,25 +97,19 @@ const Footer = () => {
                 </span>
               </summary>
               <ul className="space-y-3 pt-4 text-slate-400">
-                <li><a href="#" className="hover:text-white transition-colors text-sm">FAQ</a></li>
-                <li><a href="#" className="hover:text-white transition-colors text-sm">Shipping & Returns</a></li>
-                <li>
-                  <a href="#" onClick={(e) => { e.preventDefault(); toast('Coming Soon!', { icon: '🚀' }); }} className="hover:text-white transition-colors text-sm">
-                    Track Order
-                  </a>
-                </li>
+                <li><Link to="/faq" className="hover:text-white transition-colors text-sm">FAQ</Link></li>
+                <li><Link to="/shipping-policy" className="hover:text-white transition-colors text-sm">Shipping & Returns</Link></li>
+                <li><Link to="/tech-support" className="hover:text-white transition-colors text-sm">Tech Support</Link></li>
+                <li><Link to="/track-order" className="hover:text-white transition-colors text-sm">Track Order</Link></li>
                 <li><Link to="/privacy-policy" className="hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
                 <li><Link to="/terms-of-service" className="hover:text-white transition-colors text-sm">Terms of Service</Link></li>
               </ul>
             </details>
             <ul className="hidden md:block space-y-3">
-              <li><a href="#" className="hover:text-white transition-colors text-sm">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors text-sm">Shipping & Returns</a></li>
-              <li>
-                <a href="#" onClick={(e) => { e.preventDefault(); toast('Coming Soon!', { icon: '🚀' }); }} className="hover:text-white transition-colors text-sm">
-                  Track Order
-                </a>
-              </li>
+              <li><Link to="/faq" className="hover:text-white transition-colors text-sm">FAQ</Link></li>
+              <li><Link to="/shipping-policy" className="hover:text-white transition-colors text-sm">Shipping & Returns</Link></li>
+              <li><Link to="/tech-support" className="hover:text-white transition-colors text-sm">Tech Support</Link></li>
+              <li><Link to="/track-order" className="hover:text-white transition-colors text-sm">Track Order</Link></li>
               <li><Link to="/privacy-policy" className="hover:text-white transition-colors text-sm">Privacy Policy</Link></li>
               <li><Link to="/terms-of-service" className="hover:text-white transition-colors text-sm">Terms of Service</Link></li>
             </ul>

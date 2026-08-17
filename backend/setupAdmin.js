@@ -1,6 +1,6 @@
 /**
  * Admin Setup Script
- * - Sets livemart.support@gmail.com as the SUPER ADMIN
+ * - Sets W!FOMART.support@gmail.com as the SUPER ADMIN
  * - Demotes sjmusic00a@gmail.com to regular user
  * - Creates the super admin account if it doesn't exist yet
  */
@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
 
 // These values MUST be set in your .env file — never hardcode them
 const SUPER_ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const SUPER_ADMIN_NAME  = process.env.ADMIN_NAME || 'LiveMart Admin';
+const SUPER_ADMIN_NAME  = process.env.ADMIN_NAME || 'W!FOMART Admin';
 const SUPER_ADMIN_PASS  = process.env.ADMIN_PASSWORD;
 const DEMOTE_EMAIL      = process.env.DEMOTE_EMAIL; // optional
 
@@ -55,7 +55,7 @@ async function setupAdmin() {
       console.log(`ℹ️  ${DEMOTE_EMAIL} not found in DB, skipping.`);
     }
 
-    // ── 3. Create or promote livemart.support@gmail.com to admin ──────────
+    // ── 3. Create or promote W!FOMART.support@gmail.com to admin ──────────
     const [existing] = await sequelize.query(
       `SELECT id, name, email, role FROM Users WHERE email = ?`,
       { replacements: [SUPER_ADMIN_EMAIL] }
@@ -88,7 +88,7 @@ async function setupAdmin() {
     );
     updated.forEach(u => console.log(`  ${u.id}. ${u.name} <${u.email}> — ${u.role}`));
 
-    console.log('\n✅ Done! livemart.support@gmail.com is now the SUPER ADMIN.');
+    console.log('\n✅ Done! W!FOMART.support@gmail.com is now the SUPER ADMIN.');
     console.log('   You can now log in to the Admin Panel with this account.\n');
   } catch (err) {
     console.error('❌ Error:', err.message);
@@ -98,3 +98,4 @@ async function setupAdmin() {
 }
 
 setupAdmin();
+

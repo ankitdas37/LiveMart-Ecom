@@ -137,13 +137,13 @@ const createOrder = async (req, res) => {
           html: emailData.html,
           attachments: [
             {
-              filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+              filename: `Invoice_W!FOMART${String(order.id).padStart(6,'0')}.pdf`,
               content: pdfBuffer,
               contentType: 'application/pdf'
             }
           ]
         });
-        console.log(`📧 Order confirmation email with PDF sent to ${order.customer_email} for LIVEMART${String(order.id).padStart(6,'0')}`);
+        console.log(`📧 Order confirmation email with PDF sent to ${order.customer_email} for W!FOMART${String(order.id).padStart(6,'0')}`);
 
         // --- ADMIN EMAIL NOTIFICATION ---
         try {
@@ -163,7 +163,7 @@ const createOrder = async (req, res) => {
         if (process.env.GOOGLE_SHEET_WEBHOOK_URL) {
           try {
             const sheetData = {
-              orderId: `LIVEMART${String(order.id).padStart(6,'0')}`,
+              orderId: `W!FOMART${String(order.id).padStart(6,'0')}`,
               date: new Date(order.createdAt).toLocaleString(),
               customerName: order.customer_name,
               customerEmail: order.customer_email,
@@ -314,13 +314,13 @@ const updateOrderStatus = async (req, res) => {
             html: emailData.html,
             attachments: [
               {
-                filename: `Invoice_LIVEMART${String(order.id).padStart(6,'0')}.pdf`,
+                filename: `Invoice_W!FOMART${String(order.id).padStart(6,'0')}.pdf`,
                 content: pdfBuffer,
                 contentType: 'application/pdf'
               }
             ]
           });
-          console.log(`📧 Status email [${status}] sent to ${order.customer_email} for LIVEMART${String(order.id).padStart(6,'0')}`);
+          console.log(`📧 Status email [${status}] sent to ${order.customer_email} for W!FOMART${String(order.id).padStart(6,'0')}`);
         } catch (emailErr) {
           console.error('Status update email failed:', emailErr.message);
         }
@@ -341,21 +341,21 @@ const trackOrder = async (req, res) => {
   try {
     let raw = req.params.id.trim();
 
-    // Must start with LIVEMART or #LIVEMART (case-insensitive)
-    if (!/^#?LIVEMART/i.test(raw)) {
-      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. LIVEMART000022)' });
+    // Must start with W!FOMART or #W!FOMART (case-insensitive)
+    if (!/^#?W!FOMART/i.test(raw)) {
+      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. W!FOMART000022)' });
     }
 
     // Strip leading # if present
     raw = raw.replace(/^#/, '');
-    // Strip LIVEMART prefix (case-insensitive)
-    raw = raw.replace(/^LIVEMART/i, '');
+    // Strip W!FOMART prefix (case-insensitive)
+    raw = raw.replace(/^W!FOMART/i, '');
     
     // Parse the remaining digits as the order ID
     const orderId = parseInt(raw, 10);
 
     if (!orderId || isNaN(orderId)) {
-      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. LIVEMART000022)' });
+      return res.status(400).json({ message: 'Invalid Order ID format. Please use the exact order ID provided in your email (e.g. W!FOMART000022)' });
     }
 
     const order = await Order.findByPk(orderId, {
@@ -368,7 +368,7 @@ const trackOrder = async (req, res) => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: `Order not found. Please check your Order ID (e.g. LIVEMART${String(orderId).padStart(6,'0')})` });
+      return res.status(404).json({ message: `Order not found. Please check your Order ID (e.g. W!FOMART${String(orderId).padStart(6,'0')})` });
     }
 
     res.json(order);
@@ -437,7 +437,7 @@ const bulkDeleteOrders = async (req, res) => {
           const urlParts = order.payment_receipt.split('/');
           const filename = urlParts.pop();
           const publicId = filename.split('.')[0];
-          await cloudinary.uploader.destroy(`livemart/receipts/${publicId}`);
+          await cloudinary.uploader.destroy(`W!FOMART/receipts/${publicId}`);
         } catch (err) {
           console.error(`Failed to delete cloudinary image for order ${order.id}:`, err.message);
         }
@@ -512,7 +512,7 @@ const requestItemReturn = async (req, res) => {
       await SupportTicket.create({
         name: order.customer_name,
         email: order.customer_email,
-        subject: `Return Request for ${item.Product.name || 'Item'} (Order #LIVEMART${String(orderId).padStart(6,'0')})`,
+        subject: `Return Request for ${item.Product.name || 'Item'} (Order #W!FOMART${String(orderId).padStart(6,'0')})`,
         message: `Reason: ${reason}`,
         status: 'Open'
       });
@@ -561,3 +561,4 @@ module.exports = {
   requestItemReturn,
   updateItemReturnStatus
 };
+

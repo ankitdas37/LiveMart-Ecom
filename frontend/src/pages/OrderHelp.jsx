@@ -12,11 +12,11 @@ const OrderHelp = () => {
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
-    subject: `Issue with Order #${id}`,
+    subject: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,7 +24,8 @@ const OrderHelp = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await axios.get(`/api/orders/track/${id}`);
+        const config = { headers: { Authorization: `Bearer ${user?.token}` } };
+        const res = await axios.get(`/api/orders/${id}`, config);
         setOrder(res.data);
         if (!formData.name && res.data.customer_name) {
           setFormData(prev => ({
@@ -39,23 +40,46 @@ const OrderHelp = () => {
         setLoading(false);
       }
     };
-    fetchOrder();
-  }, [id, formData.name]);
+    if (user?.token) {
+      fetchOrder();
+    } else {
+      setLoading(false); // Can't fetch without token here
+    }
+  }, [id, user?.token, formData.name]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.subject) {
+      toast.error('Please select a subject.');
+      return;
+    }
     if (!formData.message.trim()) {
       toast.error('Please enter a message describing your issue.');
       return;
     }
-    
+
     setIsSubmitting(true);
     try {
-      await axios.post('/api/support', formData);
-      toast.success('Support request submitted! We will email you back soon.');
-      navigate(`/order/${id}`);
+      const config = { headers: { Authorization: `Bearer ${user?.token}` } };
+      if (formData.subject === 'Cancel Order') {
+        await axios.put(`/api/orders/${id}/cancel`, {}, config);
+
+        try {
+          // Play notification sound
+          const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+          audio.play().catch(e => console.log('Audio play prevented by browser', e));
+        } catch (e) { }
+
+        toast.success('Order Cancelled successfully!', { icon: '❌', duration: 4000 });
+        window.alert('SUCCESS: Your order has been cancelled successfully.');
+        navigate(`/order/${id}`);
+      } else {
+        await axios.post('/api/support', { ...formData, subject: `Issue with Order #${id} - ${formData.subject}` }, config);
+        toast.success('Support request submitted! We will email you back soon.');
+        navigate(`/order/${id}`);
+      }
     } catch (error) {
-      toast.error('Failed to submit request. Please try again later.');
+      toast.error(error.response?.data?.message || 'Failed to submit request. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +96,7 @@ const OrderHelp = () => {
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <button 
+        <button
           onClick={() => navigate(`/order/${id}`)}
           className="flex items-center gap-2 text-slate-500 hover:text-slate-900 mb-8 transition-colors font-semibold text-sm"
         >
@@ -84,7 +108,7 @@ const OrderHelp = () => {
           <div className="bg-slate-900 p-8 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-5 rounded-full blur-2xl"></div>
             <h1 className="text-3xl font-extrabold mb-2 relative z-10">Order Support</h1>
-            <p className="text-slate-400 text-lg relative z-10">We're here to help you with Order #{id}</p>
+            <p className="text-slate-400 text-lg relative z-10">We're here to help you with {order?.orderId || `Order #W!FOMART${id.toString().padStart(6, '0')}`}</p>
           </div>
 
           <div className="p-8">
@@ -95,7 +119,7 @@ const OrderHelp = () => {
                   <Package className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="font-bold text-slate-900">Order #{order.id}</p>
+                  <p className="font-bold text-slate-900">{order.orderId || `Order #W!FOMART${id.toString().padStart(6, '0')}`}</p>
                   <p className="text-sm text-slate-600">Placed on {new Date(order.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="ml-auto">
@@ -129,13 +153,19 @@ const OrderHelp = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Subject</label>
-                <input
-                  type="text"
+                <label className="block text-sm font-bold text-slate-700 mb-2">Subject <span className="text-red-500">*</span></label>
+                <select
                   value={formData.subject}
-                  readOnly
-                  className="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed font-medium"
-                />
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all font-medium text-slate-900"
+                  required
+                >
+                  <option value="" disabled>Select an issue...</option>
+                  {order && order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+                    <option value="Cancel Order">Cancel Order</option>
+                  )}
+                  <option value="Other">Other Issue</option>
+                </select>
               </div>
 
               <div>

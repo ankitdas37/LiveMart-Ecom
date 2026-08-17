@@ -227,7 +227,7 @@ const AdminOnlinePayments = () => {
                 <div className="p-5">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Order #{'LIVEMART' + order.id.toString().padStart(6, '0')}</p>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Order #{'W!FOMART' + order.id.toString().padStart(6, '0')}</p>
                       <h3 className="font-bold text-slate-900 dark:text-white text-lg">{order.customer_name}</h3>
                     </div>
                     <div className="text-right">
@@ -263,7 +263,7 @@ const AdminOnlinePayments = () => {
                   {/* Contact Actions */}
                   <div className="flex gap-3">
                     <a
-                      href={`https://wa.me/91${order.customer_phone.replace(/\D/g, '')}?text=Hi%20${encodeURIComponent(order.customer_name)}!%20%E2%9C%A8%20We%20are%20reaching%20out%20from%20LiveMart%20regarding%20the%20payment%20for%20your%20recent%20Order%20%23${'LIVEMART' + order.id.toString().padStart(6, '0')}.%20Could%20you%20please%20confirm%20a%20few%20details%20with%20us%3F%20Thank%20you!%20%F0%9F%9B%8D%EF%B8%8F`}
+                      href={`https://wa.me/91${order.customer_phone.replace(/\D/g, '')}?text=Hi%20${encodeURIComponent(order.customer_name)}!%20%E2%9C%A8%20We%20are%20reaching%20out%20from%20W!FOMART%20regarding%20the%20payment%20for%20your%20recent%20Order%20%23${'W!FOMART' + order.id.toString().padStart(6, '0')}.%20Could%20you%20please%20confirm%20a%20few%20details%20with%20us%3F%20Thank%20you!%20%F0%9F%9B%8D%EF%B8%8F`}
                       target="_blank"
                       rel="noreferrer"
                       className="flex-1 flex items-center justify-center bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors py-2 rounded-lg font-medium text-sm border border-[#25D366]/20"
@@ -274,7 +274,7 @@ const AdminOnlinePayments = () => {
                       WhatsApp
                     </a>
                     <a
-                      href={`mailto:${order.customer_email}?subject=Action%20Required%3A%20Payment%20Update%20for%20Order%20%23${'LIVEMART' + order.id.toString().padStart(6, '0')}%20%E2%9C%A8&body=Hi%20${encodeURIComponent(order.customer_name)}%2C%0D%0A%0D%0AThank%20you%20for%20shopping%20with%20LiveMart!%20%F0%9F%9B%8D%EF%B8%8F%0D%0A%0D%0AWe%20are%20contacting%20you%20regarding%20the%20payment%20for%20your%20recent%20Order%20%23${'LIVEMART' + order.id.toString().padStart(6, '0')}.%20Could%20you%20please%20reply%20to%20this%20email%20so%20we%20can%20assist%20you%20further%3F%0D%0A%0D%0ABest%20regards%2C%0D%0AThe%20LiveMart%20Team%20%E2%9C%A8`}
+                      href={`mailto:${order.customer_email}?subject=Action%20Required%3A%20Payment%20Update%20for%20Order%20%23${'W!FOMART' + order.id.toString().padStart(6, '0')}%20%E2%9C%A8&body=Hi%20${encodeURIComponent(order.customer_name)}%2C%0D%0A%0D%0AThank%20you%20for%20shopping%20with%20W!FOMART!%20%F0%9F%9B%8D%EF%B8%8F%0D%0A%0D%0AWe%20are%20contacting%20you%20regarding%20the%20payment%20for%20your%20recent%20Order%20%23${'W!FOMART' + order.id.toString().padStart(6, '0')}.%20Could%20you%20please%20reply%20to%20this%20email%20so%20we%20can%20assist%20you%20further%3F%0D%0A%0D%0ABest%20regards%2C%0D%0AThe%20W!FOMART%20Team%20%E2%9C%A8`}
                       className="flex-1 flex items-center justify-center bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors py-2 rounded-lg font-medium text-sm border border-indigo-100"
                     >
                       <Mail className="w-4 h-4 mr-2" />
@@ -304,3 +304,4 @@ const AdminOnlinePayments = () => {
 };
 
 export default AdminOnlinePayments;
+
