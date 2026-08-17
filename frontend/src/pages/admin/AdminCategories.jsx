@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Search, Eye, EyeOff, X } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { compressImage } from '../../utils/imageCompressor';
 import AdminDeleteModal from '../../components/admin/AdminDeleteModal';
 
 const AdminCategories = () => {
@@ -119,17 +120,20 @@ const AdminCategories = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const uploadData = new FormData();
-    uploadData.append('image', file);
-
+    const toastId = toast.loading('Compressing & Uploading image...');
     try {
       setIsUploading(true);
+      const compressedFile = await compressImage(file, 800, 800, 0.7);
+      
+      const uploadData = new FormData();
+      uploadData.append('image', compressedFile);
+
       const res = await axios.post('/api/upload', uploadData);
       setFormData(prev => ({ ...prev, image_url: res.data.url }));
-      toast.success('Image uploaded successfully!');
+      toast.success('Image uploaded successfully!', { id: toastId });
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error('Failed to upload image');
+      toast.error('Failed to upload image', { id: toastId });
     } finally {
       setIsUploading(false);
     }

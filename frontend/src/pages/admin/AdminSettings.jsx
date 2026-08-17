@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Save, Settings as SettingsIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { compressImage } from '../../utils/imageCompressor';
 
 const AdminSettings = () => {
   const [settings, setSettings] = useState({
@@ -53,18 +55,20 @@ const AdminSettings = () => {
     const file = e.target.files[0];
     if (!file) return;
     
-    const uploadData = new FormData();
-    uploadData.append('image', file);
-    
+    const toastId = toast.loading('Compressing & Uploading QR Code...');
     try {
       setIsUploadingQR(true);
+      const compressedFile = await compressImage(file, 800, 800, 0.7);
+      
+      const uploadData = new FormData();
+      uploadData.append('image', compressedFile);
+
       const res = await axios.post('/api/upload', uploadData);
       setSettings(prev => ({ ...prev, PAYMENT_QR_CODE: res.data.url }));
-      setMessage({ type: 'success', text: "QR Code uploaded temporarily. Don't forget to Save Settings!" });
-      setTimeout(() => setMessage(''), 3000);
+      toast.success("QR Code uploaded! Don't forget to Save Settings.", { id: toastId });
     } catch (error) {
       console.error('Upload error:', error);
-      setMessage({ type: 'error', text: 'Failed to upload QR image.' });
+      toast.error('Failed to upload QR image.', { id: toastId });
     } finally {
       setIsUploadingQR(false);
     }
@@ -74,20 +78,22 @@ const AdminSettings = () => {
     const file = e.target.files[0];
     if (!file) return;
     
-    const uploadData = new FormData();
-    uploadData.append('image', file);
-    
     const setUploading = fieldName === 'LOGIN_BG_IMAGE' ? setIsUploadingLogin : setIsUploadingSignup;
+    const toastId = toast.loading(`Compressing & Uploading ${fieldName === 'LOGIN_BG_IMAGE' ? 'Login' : 'Signup'} Background...`);
     
     try {
       setUploading(true);
+      const compressedFile = await compressImage(file, 1920, 1920, 0.7);
+      
+      const uploadData = new FormData();
+      uploadData.append('image', compressedFile);
+
       const res = await axios.post('/api/upload', uploadData);
       setSettings(prev => ({ ...prev, [fieldName]: res.data.url }));
-      setMessage({ type: 'success', text: "Image uploaded temporarily. Don't forget to Save Settings!" });
-      setTimeout(() => setMessage(''), 3000);
+      toast.success("Image uploaded! Don't forget to Save Settings.", { id: toastId });
     } catch (error) {
       console.error('Upload error:', error);
-      setMessage({ type: 'error', text: 'Failed to upload image.' });
+      toast.error('Failed to upload image.', { id: toastId });
     } finally {
       setUploading(false);
     }

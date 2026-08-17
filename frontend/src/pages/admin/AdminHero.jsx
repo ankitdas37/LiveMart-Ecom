@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Plus, Trash2, Save, Image as ImageIcon, ChevronUp, ChevronDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { compressImage } from '../../utils/imageCompressor';
+
 const AdminHero = () => {
   const [slides, setSlides] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,14 +98,17 @@ const AdminHero = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append('image', file);
-
-    const toastId = toast.loading('Uploading image...');
+    const toastId = toast.loading('Compressing & Uploading image...');
     try {
+      // Compress the image locally first for faster upload (max 1920px width/height, 70% quality)
+      const compressedFile = await compressImage(file, 1920, 1920, 0.7);
+      
+      const formData = new FormData();
+      formData.append('image', compressedFile);
+
       const { data } = await axios.post('/api/upload', formData);
       updateSlide(id, 'image_url', data.url);
-      toast.success('Image uploaded', { id: toastId });
+      toast.success('Image uploaded successfully', { id: toastId });
     } catch (error) {
       console.error("Upload error", error);
       toast.error('Failed to upload image', { id: toastId });
