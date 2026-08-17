@@ -843,6 +843,28 @@ const cancelOrderUser = async (req, res) => {
     // Fetch admins for notification and email
     const adminUsers = await User.findAll({ where: { role: 'admin' } });
     
+    // Create Notification for the user who cancelled
+    try {
+      const userNotif = await Notification.create({
+        userId: req.user.id,
+        title: '❌ Order Cancelled',
+        message: `Your order ${order.orderId || ('#W!FOMART' + order.id.toString().padStart(6, '0'))} has been successfully cancelled.`,
+        type: 'order',
+        link: `/order/${order.id}`,
+        isRead: false
+      });
+      emitToUser(req.user.id, {
+        id: userNotif.id,
+        title: userNotif.title,
+        message: userNotif.message,
+        type: userNotif.type,
+        isRead: false,
+        createdAt: userNotif.createdAt
+      });
+    } catch (err) {
+      console.error('Failed to create notification for user:', err);
+    }
+
     // Create Notification for admins and emit real-time event
     for (const admin of adminUsers) {
       try {
