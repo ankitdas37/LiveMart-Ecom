@@ -2,10 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Grid, MessageSquare, User, Info } from 'lucide-react';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 
 const MobileNav = () => {
   const location = useLocation();
   const { user } = useContext(AuthContext);
+
+  const { unreadCount } = useSocket();
 
   const isActive = (path) => {
     if (path === '/' && location.pathname !== '/') return false;
@@ -17,7 +20,7 @@ const MobileNav = () => {
     { name: 'Shop', path: '/shop', icon: Grid },
     { name: 'About', path: '/about', icon: Info },
     { name: 'Contact', path: '/contact', icon: MessageSquare },
-    { name: 'Profile', path: user ? '/profile' : '/login', icon: User },
+    { name: 'Profile', path: user ? '/profile' : '/login', icon: User, badge: unreadCount },
   ];
 
   return (

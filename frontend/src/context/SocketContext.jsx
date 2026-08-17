@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, useCallback } f
 import { io } from 'socket.io-client';
 import { AuthContext } from './AuthContext';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export const SocketContext = createContext(null);
 
@@ -129,6 +130,19 @@ export const SocketProvider = ({ children }) => {
       setUnreadCount(prev => prev + 1);
       // Add to live notifications list (for in-page display if on notifications tab)
       setLiveNotifications(prev => [notif, ...prev]);
+
+      // Show toast popup
+      if (notif && notif.title) {
+        toast(
+          (t) => (
+            <div className="flex flex-col gap-1 cursor-pointer" onClick={() => toast.dismiss(t.id)}>
+              <span className="font-bold text-sm">{notif.title}</span>
+              <span className="text-xs text-slate-500">{notif.message}</span>
+            </div>
+          ),
+          { icon: '🔔', duration: 5000, position: 'top-center' }
+        );
+      }
 
       // Play notification sound
       try {
