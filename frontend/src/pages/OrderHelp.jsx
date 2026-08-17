@@ -21,10 +21,17 @@ const OrderHelp = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchOrder = async () => {
+      if (!user?.token) {
+        setLoading(false);
+        return;
+      }
       try {
-        const config = { headers: { Authorization: `Bearer ${user?.token}` } };
+        setLoading(true);
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
         const res = await axios.get(`/api/orders/${id}`, config);
         setOrder(res.data);
         if (!formData.name && res.data.customer_name) {
@@ -34,18 +41,15 @@ const OrderHelp = () => {
             email: res.data.customer_email
           }));
         }
-      } catch (error) {
-        console.error("Failed to fetch order details:", error);
+      } catch (err) {
+        console.error("Failed to fetch order details:", err);
+        setError(err.response?.data?.message || 'Order not found or unauthorized');
       } finally {
         setLoading(false);
       }
     };
-    if (user?.token) {
-      fetchOrder();
-    } else {
-      setLoading(false); // Can't fetch without token here
-    }
-  }, [id, user?.token, formData.name]);
+    fetchOrder();
+  }, [id, user?.token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,6 +93,24 @@ const OrderHelp = () => {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 flex flex-col items-center justify-center gap-4">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+          <AlertCircle className="w-8 h-8 text-red-500" />
+        </div>
+        <h2 className="text-2xl font-black text-slate-900">Order Not Found</h2>
+        <p className="text-slate-500 text-center max-w-sm">{error || "We couldn't load this order. It might not exist or you don't have permission to view it."}</p>
+        <button
+          onClick={() => navigate('/profile')}
+          className="mt-4 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-colors"
+        >
+          Back to My Orders
+        </button>
       </div>
     );
   }

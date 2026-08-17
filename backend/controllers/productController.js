@@ -1,10 +1,17 @@
 const { Product, Category } = require('../models');
+const { cache, clearProductCache } = require('../utils/cache');
 
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
   try {
+    const cacheKey = 'products_all';
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      return res.json(cachedData);
+    }
+
     const { Review } = require('../models');
     const products = await Product.findAll({
       include: [
@@ -31,6 +38,7 @@ const getProducts = async (req, res) => {
       return productData;
     });
 
+    cache.set(cacheKey, productsWithRating);
     res.json(productsWithRating);
   } catch (error) {
     console.error(error);
@@ -87,7 +95,12 @@ const getProductById = async (req, res) => {
 // @access  Public
 const getFeaturedProducts = async (req, res) => {
   try {
+    const cacheKey = 'products_featured';
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) return res.json(cachedData);
+
     const products = await Product.findAll({ where: { is_featured: true } });
+    cache.set(cacheKey, products);
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -100,7 +113,12 @@ const getFeaturedProducts = async (req, res) => {
 // @access  Public
 const getNewArrivals = async (req, res) => {
   try {
+    const cacheKey = 'products_new_arrivals';
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) return res.json(cachedData);
+
     const products = await Product.findAll({ where: { is_new_arrival: true } });
+    cache.set(cacheKey, products);
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -119,6 +137,7 @@ const createProduct = async (req, res) => {
       data.images = data.images.filter(url => url && url.trim() !== '');
     }
     const product = await Product.create(data);
+    clearProductCache();
     res.status(201).json(product);
   } catch (error) {
     console.error(error);
@@ -141,6 +160,7 @@ const updateProduct = async (req, res) => {
     }
 
     await product.update(data);
+    clearProductCache();
     res.json(product);
   } catch (error) {
     console.error(error);
@@ -157,6 +177,7 @@ const deleteProduct = async (req, res) => {
     if (!product) return res.status(404).json({ message: 'Product not found' });
     
     await product.destroy();
+    clearProductCache();
     res.json({ message: 'Product removed' });
   } catch (error) {
     console.error(error);
@@ -206,6 +227,7 @@ const bulkDeleteProducts = async (req, res) => {
     }
 
     await Product.destroy({ where: { id: ids } });
+    clearProductCache();
     res.json({ message: `${ids.length} product(s) removed successfully` });
   } catch (error) {
     console.error(error);

@@ -1,11 +1,17 @@
 const { Category } = require('../models');
+const { cache, clearCategoryCache } = require('../utils/cache');
 
 // @desc    Get all categories
 // @route   GET /api/categories
 // @access  Public
 const getCategories = async (req, res) => {
   try {
+    const cacheKey = 'categories_all';
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) return res.json(cachedData);
+
     const categories = await Category.findAll();
+    cache.set(cacheKey, categories);
     res.json(categories);
   } catch (error) {
     console.error(error);
@@ -20,6 +26,7 @@ const createCategory = async (req, res) => {
   try {
     const { name, description, image_url } = req.body;
     const category = await Category.create({ name, description, image_url });
+    clearCategoryCache();
     res.status(201).json(category);
   } catch (error) {
     console.error(error);
@@ -36,6 +43,7 @@ const updateCategory = async (req, res) => {
     if (!category) return res.status(404).json({ message: 'Category not found' });
     
     await category.update(req.body);
+    clearCategoryCache();
     res.json(category);
   } catch (error) {
     console.error(error);
@@ -52,6 +60,7 @@ const deleteCategory = async (req, res) => {
     if (!category) return res.status(404).json({ message: 'Category not found' });
     
     await category.destroy();
+    clearCategoryCache();
     res.json({ message: 'Category removed' });
   } catch (error) {
     console.error(error);
@@ -97,6 +106,7 @@ const bulkDeleteCategories = async (req, res) => {
     }
 
     await Category.destroy({ where: { id: ids } });
+    clearCategoryCache();
     res.json({ message: `${ids.length} category(ies) removed successfully` });
   } catch (error) {
     console.error(error);
