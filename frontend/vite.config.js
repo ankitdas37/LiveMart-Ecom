@@ -19,15 +19,15 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Split vendor libraries into separate cached chunks
-        manualChunks: {
-          // Core React runtime — rarely changes, cached aggressively
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // UI/notification libs
-          'vendor-ui': ['react-hot-toast', 'react-helmet-async'],
-          // Auth + HTTP
-          'vendor-auth': ['axios', '@react-oauth/google'],
-          // Socket.IO client
-          'vendor-socket': ['socket.io-client'],
+        // Must be a Function in Vite 8+ (not a plain object)
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor-react';
+            if (id.includes('react/') || id.includes('/react.')) return 'vendor-react';
+            if (id.includes('react-hot-toast') || id.includes('react-helmet-async')) return 'vendor-ui';
+            if (id.includes('@react-oauth') || id.includes('axios')) return 'vendor-auth';
+            if (id.includes('socket.io-client')) return 'vendor-socket';
+          }
         },
       },
     },
