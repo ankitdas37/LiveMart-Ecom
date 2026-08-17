@@ -120,26 +120,27 @@ app.use(
 // General API rate limit
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200,
+  max: 500,                  // Increased from 200: each page load = ~5 API calls
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: 'Too many requests, please try again later.' },
 });
 
-// Auth endpoints: 5 attempts per minute
+// Auth endpoints: max 10 attempts per 2 minutes per IP
+// skipSuccessfulRequests: only failed attempts count toward the limit
 const authLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 5,
+  windowMs: 2 * 60 * 1000, // 2 minutes (was 1 minute)
+  max: 10,                  // Increased from 5: allows for OTP flow + retries
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: 'Too many login attempts. Please wait 1 minute and try again.' },
-  skipSuccessfulRequests: true,
+  message: { message: 'Too many login attempts. Please wait 2 minutes and try again.' },
+  skipSuccessfulRequests: true, // Only count failed (4xx) responses
 });
 
-// OTP / password reset: 3 attempts per 10 minutes
+// OTP / password reset: 5 attempts per 10 minutes
 const otpLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 3,
+  max: 5,                    // Increased from 3: allows for resend OTP
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: 'Too many OTP requests. Please wait before requesting again.' },
