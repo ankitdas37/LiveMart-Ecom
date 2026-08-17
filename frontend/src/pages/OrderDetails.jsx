@@ -69,6 +69,7 @@ export default function OrderDetails() {
   const [returnModal, setReturnModal] = useState(false);
   const [returnItem, setReturnItem] = useState(null);
   const [returnReason, setReturnReason] = useState('');
+  const [returnRequestType, setReturnRequestType] = useState('');
   const [returnSubmitting, setReturnSubmitting] = useState(false);
 
   useEffect(() => {
@@ -83,12 +84,12 @@ export default function OrderDetails() {
     try {
       setLoading(true);
       setError('');
-      
+
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       // Use the authenticated endpoint instead of public track API
       const { data } = await axios.get(`/api/orders/${id}`, config);
       setOrder(data);
-      
+
       // Fetch support tickets for this order
       if (data && data.customer_email) {
         try {
@@ -152,7 +153,7 @@ export default function OrderDetails() {
   const handleReviewSubmit = async () => {
     if (rating === 0) { toast.error('Please select a star rating'); return; }
     if (!reviewText.trim()) { toast.error('Please write a review'); return; }
-    
+
     setReviewSubmitting(true);
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
@@ -173,6 +174,15 @@ export default function OrderDetails() {
   const openReturnModal = (item) => {
     setReturnItem(item);
     setReturnReason('');
+
+    // Auto-select type if only one is available
+    const canReturn = item.Product?.return_policy && item.Product.return_policy !== 'No Return';
+    const canReplace = item.Product?.replacement_policy && item.Product.replacement_policy !== 'No Replacement';
+
+    if (canReturn && !canReplace) setReturnRequestType('Return');
+    else if (!canReturn && canReplace) setReturnRequestType('Replacement');
+    else setReturnRequestType('');
+
     setReturnModal(true);
   };
 
@@ -180,18 +190,22 @@ export default function OrderDetails() {
     setReturnModal(false);
     setReturnItem(null);
     setReturnReason('');
+    setReturnRequestType('');
   };
 
   const handleReturnSubmit = async (e) => {
     e.preventDefault();
-    if (!returnReason.trim()) return toast.error('Please provide a reason for the return');
-    
+    if (!returnRequestType) return toast.error('Please select whether you want a Return or a Replacement');
+    if (!returnReason.trim()) return toast.error('Please provide a reason for your request');
+
     setReturnSubmitting(true);
     try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      const finalReason = `[${returnRequestType}] ${returnReason}`;
       await axios.post(`/api/orders/${order.id}/item/${returnItem.id}/return`, {
-        reason: returnReason
-      });
-      toast.success('Return request submitted successfully');
+        reason: finalReason
+      }, config);
+      toast.success(`${returnRequestType} request submitted successfully`);
       closeReturnModal();
       fetchOrder();
     } catch (error) {
@@ -373,11 +387,10 @@ export default function OrderDetails() {
                   return (
                     <div key={i} className="flex flex-col items-center gap-2" style={{ width: '20%' }}>
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
-                          done
+                        className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${done
                             ? 'bg-amber-500 border-amber-500 text-white shadow-md shadow-amber-500/30'
                             : 'bg-white dark:bg-slate-800 transition-colors border-slate-200 dark:border-slate-600 text-slate-300'
-                        } ${active ? 'scale-125 ring-4 ring-amber-500/20' : ''}`}
+                          } ${active ? 'scale-125 ring-4 ring-amber-500/20' : ''}`}
                       >
                         <Icon className="w-4 h-4" />
                       </div>
@@ -411,14 +424,12 @@ export default function OrderDetails() {
                 return (
                   <div
                     key={i}
-                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                      active ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50' : done ? 'bg-slate-50 dark:bg-slate-900 transition-colors' : ''
-                    }`}
+                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${active ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50' : done ? 'bg-slate-50 dark:bg-slate-900 transition-colors' : ''
+                      }`}
                   >
                     <div
-                      className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${
-                        done ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-700 transition-colors text-slate-300'
-                      }`}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-amber-500 text-white' : 'bg-slate-100 dark:bg-slate-700 transition-colors text-slate-300'
+                        }`}
                     >
                       <Icon className="w-4 h-4" />
                     </div>
@@ -523,21 +534,28 @@ export default function OrderDetails() {
                           </button>
                         )}
                         {/* Return Logic */}
-                        {order.status === 'Delivered' && item.Product?.return_policy && item.return_status === 'None' && (
-                          <button
-                            onClick={() => openReturnModal(item)}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 px-2.5 py-1 rounded-lg transition-colors"
-                          >
-                            <RefreshCw className="w-3 h-3" /> Return Item
-                          </button>
-                        )}
+                        {order.status === 'Delivered' && item.return_status === 'None' &&
+                          ((item.Product?.return_policy && item.Product.return_policy !== 'No Return') ||
+                            (item.Product?.replacement_policy && item.Product.replacement_policy !== 'No Replacement')) && (
+                            <button
+                              onClick={() => openReturnModal(item)}
+                              className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 px-2.5 py-1 rounded-lg transition-colors"
+                            >
+                              <RefreshCw className="w-3 h-3" />
+                              {item.Product?.return_policy && item.Product.return_policy !== 'No Return' && item.Product?.replacement_policy && item.Product.replacement_policy !== 'No Replacement'
+                                ? 'Return / Replace'
+                                : item.Product?.replacement_policy && item.Product.replacement_policy !== 'No Replacement'
+                                  ? 'Replace Item'
+                                  : 'Return Item'
+                              }
+                            </button>
+                          )}
                         {item.return_status !== 'None' && item.return_status !== undefined && (
-                          <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg ${
-                            item.return_status === 'Requested' ? 'bg-amber-100 text-amber-700' :
-                            item.return_status === 'Approved' ? 'bg-emerald-100 text-emerald-700' :
-                            item.return_status === 'Returned' ? 'bg-blue-100 text-blue-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
+                          <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg ${item.return_status === 'Requested' ? 'bg-amber-100 text-amber-700' :
+                              item.return_status === 'Approved' ? 'bg-emerald-100 text-emerald-700' :
+                                item.return_status === 'Returned' ? 'bg-blue-100 text-blue-700' :
+                                  'bg-red-100 text-red-700'
+                            }`}>
                             <RefreshCw className="w-3 h-3" /> Return {item.return_status}
                           </span>
                         )}
@@ -575,7 +593,7 @@ export default function OrderDetails() {
                     const discount = Number(order.discountAmount) || 0;
                     const totalPaid = Number(order.total_amount) || 0;
                     const otherCharges = totalPaid - (subtotal - discount);
-                    
+
                     if (otherCharges > 0.01) {
                       return (
                         <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
@@ -728,7 +746,7 @@ export default function OrderDetails() {
                   </div>
                   <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
                 </div>
-                
+
                 {order.payment_receipt && (
                   <div className="mt-2 bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-100 dark:border-slate-700/50 rounded-xl p-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -737,9 +755,9 @@ export default function OrderDetails() {
                       </div>
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-200">Payment Screenshot</span>
                     </div>
-                    <a 
-                      href={order.payment_receipt} 
-                      target="_blank" 
+                    <a
+                      href={order.payment_receipt}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                     >
@@ -818,11 +836,10 @@ export default function OrderDetails() {
                     <div key={ticket.id} className="border border-slate-100 dark:border-slate-700/50 rounded-xl overflow-hidden text-sm">
                       <div className="bg-slate-50 dark:bg-slate-900 transition-colors p-3 flex justify-between items-center border-b border-slate-100 dark:border-slate-700/50">
                         <span className="font-bold text-slate-700 dark:text-slate-200">Ticket #{ticket.id}</span>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                          ticket.status === 'Open' ? 'bg-amber-100 text-amber-700' :
-                          ticket.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' :
-                          'bg-blue-100 text-blue-700'
-                        }`}>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${ticket.status === 'Open' ? 'bg-amber-100 text-amber-700' :
+                            ticket.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' :
+                              'bg-blue-100 text-blue-700'
+                          }`}>
                           {ticket.status}
                         </span>
                       </div>
@@ -840,9 +857,9 @@ export default function OrderDetails() {
                                   </div>
                                   <span className="text-xs text-slate-600 dark:text-slate-300 truncate font-medium">Attachment File</span>
                                 </div>
-                                <a 
-                                  href={ticket.admin_attachment_url} 
-                                  target="_blank" 
+                                <a
+                                  href={ticket.admin_attachment_url}
+                                  target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-amber-600 hover:text-amber-700 text-xs font-bold px-3 py-1.5 rounded-md hover:bg-amber-50 transition-colors shrink-0"
                                 >
@@ -879,7 +896,7 @@ export default function OrderDetails() {
                 <MessageSquare className="w-4 h-4 text-slate-400" />
                 Need help with this order?
               </Link>
-              
+
               {order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Shipped' && (
                 <button
                   onClick={handleCancelOrder}
@@ -942,11 +959,10 @@ export default function OrderDetails() {
                       onMouseLeave={() => setHoverRating(0)}
                     >
                       <Star
-                        className={`w-10 h-10 transition-all duration-200 ${
-                          s <= (hoverRating || rating)
+                        className={`w-10 h-10 transition-all duration-200 ${s <= (hoverRating || rating)
                             ? 'text-amber-400 fill-amber-400 scale-110 drop-shadow'
                             : 'text-slate-200 hover:text-amber-200'
-                        }`}
+                          }`}
                       />
                     </button>
                   ))}
@@ -989,69 +1005,104 @@ export default function OrderDetails() {
       )}
 
       {/* ── RETURN MODAL ── */}
-        {returnModal && returnItem && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm sm:animate-in sm:fade-in duration-200">
-            <div className="bg-white dark:bg-slate-800 transition-colors rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
-              <div className="p-5 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
-                <h3 className="font-black text-slate-900 dark:text-white text-lg flex items-center gap-2">
-                  <RefreshCw className="w-5 h-5 text-red-500" /> Return Item
-                </h3>
-                <button
-                  onClick={closeReturnModal}
-                  className="w-8 h-8 flex items-center justify-center bg-white dark:bg-slate-800 transition-colors rounded-full text-slate-400 hover:text-slate-600 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-600 transition-all hover:rotate-90"
-                >
-                  <XCircle className="w-5 h-5" />
-                </button>
-              </div>
+      {returnModal && returnItem && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm sm:animate-in sm:fade-in duration-200">
+          <div className="bg-white dark:bg-slate-800 transition-colors rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+            <div className="p-5 border-b border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50 dark:bg-slate-900 transition-colors">
+              <h3 className="font-black text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <RefreshCw className="w-5 h-5 text-red-500" />
+                {returnItem?.Product?.return_policy && returnItem.Product.return_policy !== 'No Return' && returnItem?.Product?.replacement_policy && returnItem.Product.replacement_policy !== 'No Replacement'
+                  ? 'Return / Replace Item'
+                  : returnItem?.Product?.replacement_policy && returnItem.Product.replacement_policy !== 'No Replacement'
+                    ? 'Replace Item'
+                    : 'Return Item'
+                }
+              </h3>
+              <button
+                onClick={closeReturnModal}
+                className="w-8 h-8 flex items-center justify-center bg-white dark:bg-slate-800 transition-colors rounded-full text-slate-400 hover:text-slate-600 dark:text-slate-300 shadow-sm border border-slate-200 dark:border-slate-600 transition-all hover:rotate-90"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
 
-              <div className="p-6">
-                <div className="flex items-center gap-4 mb-6 p-3 bg-slate-50 dark:bg-slate-900 transition-colors rounded-xl border border-slate-100 dark:border-slate-700/50">
-                  <img src={returnItem.Product?.images?.[0] || 'https://via.placeholder.com/60'} alt={returnItem.Product?.title} className="w-12 h-12 rounded-lg object-cover" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-slate-900 dark:text-white text-sm truncate">{returnItem.Product?.title}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {returnItem.quantity}</p>
-                  </div>
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-6 p-3 bg-slate-50 dark:bg-slate-900 transition-colors rounded-xl border border-slate-100 dark:border-slate-700/50">
+                <img src={returnItem.Product?.images?.[0] || 'https://via.placeholder.com/60'} alt={returnItem.Product?.title} className="w-12 h-12 rounded-lg object-cover" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-slate-900 dark:text-white text-sm truncate">{returnItem.Product?.title}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {returnItem.quantity}</p>
                 </div>
-
-                <form onSubmit={handleReturnSubmit}>
-                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">
-                    Why are you returning this item? <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    value={returnReason}
-                    onChange={(e) => setReturnReason(e.target.value)}
-                    placeholder="E.g. Item is defective, wrong size, etc."
-                    className="w-full bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-200 dark:border-slate-600 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:bg-slate-800 transition-colors transition-all h-28 resize-none mb-6"
-                    required
-                  ></textarea>
-
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={closeReturnModal}
-                      className="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-600 transition-colors text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={returnSubmitting}
-                      className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-red-600/20 disabled:opacity-70 flex items-center justify-center"
-                    >
-                      {returnSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ) : (
-                        'Submit Request'
-                      )}
-                    </button>
-                  </div>
-                </form>
               </div>
+
+              <form onSubmit={handleReturnSubmit}>
+
+                {returnItem?.Product?.return_policy && returnItem.Product.return_policy !== 'No Return' && returnItem?.Product?.replacement_policy && returnItem.Product.replacement_policy !== 'No Replacement' && (
+                  <div className="mb-5">
+                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-3">
+                      Request Type <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex gap-4">
+                      <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${returnRequestType === 'Return' ? 'border-amber-500 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-amber-500/50'}`}>
+                        <input type="radio" name="requestType" value="Return" className="hidden" checked={returnRequestType === 'Return'} onChange={() => setReturnRequestType('Return')} />
+                        <RefreshCw className="w-4 h-4" />
+                        <span className="font-bold text-sm">Return Item</span>
+                      </label>
+                      <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${returnRequestType === 'Replacement' ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-indigo-500/50'}`}>
+                        <input type="radio" name="requestType" value="Replacement" className="hidden" checked={returnRequestType === 'Replacement'} onChange={() => setReturnRequestType('Replacement')} />
+                        <RefreshCw className="w-4 h-4" />
+                        <span className="font-bold text-sm">Replace Item</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                <label className="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-2">
+                  {returnItem?.Product?.return_policy && returnItem.Product.return_policy !== 'No Return' && returnItem?.Product?.replacement_policy && returnItem.Product.replacement_policy !== 'No Replacement'
+                    ? 'Please specify if you want a Return or Replacement, and describe the issue...'
+                    : returnItem?.Product?.replacement_policy && returnItem.Product.replacement_policy !== 'No Replacement'
+                      ? 'Please describe the issue and why you need a replacement...'
+                      : 'Please describe the issue and why you are returning this item...'
+                  } <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={returnReason}
+                  onChange={(e) => setReturnReason(e.target.value)}
+                  placeholder="E.g. Item is defective, wrong size, etc."
+                  className="w-full bg-slate-50 dark:bg-slate-900 transition-colors border border-slate-200 dark:border-slate-600 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white dark:bg-slate-800 transition-colors transition-all h-28 resize-none mb-6"
+                  required
+                ></textarea>
+                <p className="text-xs text-slate-400 mb-6">
+                  Please note: We will review your request according to the product's return & replacement policy.
+                </p>
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={closeReturnModal}
+                    className="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 transition-colors hover:bg-slate-200 dark:bg-slate-600 transition-colors text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={returnSubmitting}
+                    className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-red-600/20 disabled:opacity-70 flex items-center justify-center"
+                  >
+                    {returnSubmitting ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      'Submit Request'
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-      </div>
+    </div>
   );
 }
 

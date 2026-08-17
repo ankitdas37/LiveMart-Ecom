@@ -54,6 +54,7 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminNotifications = lazy(() => import('./pages/admin/AdminNotifications'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const AdminSupport = lazy(() => import('./pages/admin/AdminSupport'));
+const ReturnsList = lazy(() => import('./pages/admin/ReturnsList'));
 
 // Layout for the main storefront
 const StoreLayout = () => {
@@ -86,80 +87,104 @@ const StoreLayout = () => {
   );
 };
 
+import { ServerStatusProvider, ServerStatusContext } from './context/ServerStatusContext';
+const ServerDownPage = lazy(() => import('./components/ServerDownPage'));
+
+// A wrapper to handle the global offline state without polluting the main App render function
+const AppContent = () => {
+  const { isServerDown, checkServerStatus } = React.useContext(ServerStatusContext);
+
+  if (isServerDown) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ServerDownPage onRetry={checkServerStatus} />
+      </Suspense>
+    );
+  }
+
+  return (
+    <Router>
+      <ScrollToTop />
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#333',
+            color: '#fff',
+            borderRadius: '10px',
+            padding: '16px',
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Storefront Routes */}
+          <Route path="/" element={<StoreLayout />}>
+            <Route index element={<Home />} />
+            <Route path="shop" element={<Shop />} />
+            <Route path="product/:id" element={<ProductDetails />} />
+            <Route path="about" element={<About />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="payment" element={<Payment />} />
+            <Route path="order-success" element={<OrderSuccess />} />
+            <Route path="track-order" element={<TrackOrder />} />
+            <Route path="order/:id" element={<OrderDetails />} />
+            <Route path="order-help/:id" element={<OrderHelp />} />
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
+            <Route path="profile" element={<UserProfile />} />
+            <Route path="contact" element={<ContactUs />} />
+            <Route path="privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="terms-of-service" element={<TermsOfService />} />
+            <Route path="shipping-policy" element={<ShippingPolicy />} />
+            <Route path="faq" element={<FAQ />} />
+            <Route path="tech-support" element={<TechSupport />} />
+          </Route>
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="products/new" element={<ProductForm />} />
+            <Route path="products/:id/edit" element={<ProductForm />} />
+            <Route path="categories" element={<AdminCategories />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="orders/:id" element={<AdminOrders />} />
+            <Route path="online-payments" element={<AdminOnlinePayments />} />
+            <Route path="coupons" element={<AdminCoupons />} />
+            <Route path="pincodes" element={<AdminPincodes />} />
+            <Route path="reviews" element={<ReviewsAdmin />} />
+            <Route path="hero" element={<AdminHero />} />
+            <Route path="bestsellers" element={<AdminBestSellers />} />
+            <Route path="extracharges" element={<AdminExtraCharges />} />
+            <Route path="notes" element={<AdminNotes />} />
+            <Route path="support" element={<AdminSupport />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="notifications" element={<AdminNotifications />} />
+            <Route path="settings" element={<AdminSettings />} />
+            <Route path="returns" element={<ReturnsList />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </Router>
+  );
+};
+
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <SocketProvider>
-          <CartProvider>
-            <Router>
-              <ScrollToTop />
-              <Toaster
-                position="bottom-center"
-                toastOptions={{
-                  duration: 3000,
-                  style: {
-                    background: '#333',
-                    color: '#fff',
-                    borderRadius: '10px',
-                    padding: '16px',
-                    fontWeight: 'bold',
-                  },
-                }}
-              />
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  {/* Storefront Routes */}
-                  <Route path="/" element={<StoreLayout />}>
-                    <Route index element={<Home />} />
-                    <Route path="shop" element={<Shop />} />
-                    <Route path="product/:id" element={<ProductDetails />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="checkout" element={<Checkout />} />
-                    <Route path="payment" element={<Payment />} />
-                    <Route path="order-success" element={<OrderSuccess />} />
-                    <Route path="track-order" element={<TrackOrder />} />
-                    <Route path="order/:id" element={<OrderDetails />} />
-                    <Route path="order-help/:id" element={<OrderHelp />} />
-                    <Route path="login" element={<Login />} />
-                    <Route path="signup" element={<Signup />} />
-                    <Route path="forgot-password" element={<ForgotPassword />} />
-                    <Route path="profile" element={<UserProfile />} />
-                    <Route path="contact" element={<ContactUs />} />
-                    <Route path="privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="terms-of-service" element={<TermsOfService />} />
-                    <Route path="shipping-policy" element={<ShippingPolicy />} />
-                    <Route path="faq" element={<FAQ />} />
-                    <Route path="tech-support" element={<TechSupport />} />
-                  </Route>
-
-                  {/* Admin Routes */}
-                  <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<AdminDashboard />} />
-                    <Route path="products" element={<AdminProducts />} />
-                    <Route path="products/new" element={<ProductForm />} />
-                    <Route path="products/:id/edit" element={<ProductForm />} />
-                    <Route path="categories" element={<AdminCategories />} />
-                    <Route path="orders" element={<AdminOrders />} />
-                    <Route path="online-payments" element={<AdminOnlinePayments />} />
-                    <Route path="coupons" element={<AdminCoupons />} />
-                    <Route path="pincodes" element={<AdminPincodes />} />
-                    <Route path="reviews" element={<ReviewsAdmin />} />
-                    <Route path="hero" element={<AdminHero />} />
-                    <Route path="bestsellers" element={<AdminBestSellers />} />
-                    <Route path="extracharges" element={<AdminExtraCharges />} />
-                    <Route path="notes" element={<AdminNotes />} />
-                    <Route path="support" element={<AdminSupport />} />
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="notifications" element={<AdminNotifications />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                  </Route>
-                </Routes>
-              </Suspense>
-            </Router>
-          </CartProvider>
-        </SocketProvider>
+        <ServerStatusProvider>
+          <SocketProvider>
+            <CartProvider>
+              <AppContent />
+            </CartProvider>
+          </SocketProvider>
+        </ServerStatusProvider>
       </AuthProvider>
     </ThemeProvider>
   );

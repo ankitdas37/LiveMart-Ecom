@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { ChevronDown, ChevronUp, MapPin, Phone, Mail, CheckCircle, XCircle, Trash2, Edit2, RefreshCw, Download, FileText, Upload, Image as ImageIcon } from 'lucide-react';
@@ -25,7 +25,9 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
-  const [expandedOrderId, setExpandedOrderId] = useState(location.state?.highlightOrderId || null);
+  const { id: urlOrderId } = useParams();
+  const navigate = useNavigate();
+  const [expandedOrderId, setExpandedOrderId] = useState(urlOrderId ? parseInt(urlOrderId) : location.state?.highlightOrderId || null);
   const [activeTab, setActiveTab] = useState('Pending Confirmation');
   const [selectedOrders, setSelectedOrders] = useState([]);
 
@@ -120,8 +122,9 @@ const AdminOrders = () => {
   }, []);
 
   useEffect(() => {
-    if (location.state?.highlightOrderId && orders.length > 0) {
-      const targetOrder = orders.find(o => o.id === location.state.highlightOrderId);
+    const targetId = urlOrderId ? parseInt(urlOrderId) : location.state?.highlightOrderId;
+    if (targetId && orders.length > 0) {
+      const targetOrder = orders.find(o => o.id === targetId);
       if (targetOrder) {
         setActiveTab(targetOrder.status);
         setTimeout(() => {

@@ -1,4 +1,5 @@
 const { Order, OrderItem, Product, User, Pincode, Notification } = require('../models');
+const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
 const { orderConfirmationEmail, orderStatusEmail, adminNewOrderEmail } = require('../utils/orderEmailTemplates');
@@ -703,7 +704,7 @@ const requestItemReturn = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-    if (order.userId !== req.user.id) {
+    if (order.userId !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'You are not authorized to manage this order' });
     }
 
@@ -716,8 +717,8 @@ const requestItemReturn = async (req, res) => {
       return res.status(404).json({ message: 'Order item not found' });
     }
 
-    if (!item.Product.return_policy) {
-      return res.status(400).json({ message: 'Item is not returnable' });
+    if (!item.Product.return_policy && !item.Product.replacement_policy) {
+      return res.status(400).json({ message: 'Item is not returnable or replaceable' });
     }
 
     item.return_status = 'Requested';
@@ -745,6 +746,32 @@ const requestItemReturn = async (req, res) => {
     }
 
     await item.save();
+
+    // Fetch all admins to notify them
+    const adminUsers = await User.findAll({ where: { role: 'admin' } });
+    const { getIO } = require('../socket/socketManager');
+    const io = getIO();
+
+    // Create Notification for Admins
+    for (const admin of adminUsers) {
+      const notif = await Notification.create({
+        userId: admin.id,
+        title: 'New Return/Replacement Request',
+        message: `Customer ${order.customer_name} has requested a return/replacement for Order #W!FOMART${String(orderId).padStart(6, '0')}.`,
+        type: 'Order',
+        isRead: false
+      });
+      if (io) {
+        io.to(`user_${admin.id}`).emit('notification', {
+          id: notif.id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          url: `/admin/returns`,
+          playSound: true
+        });
+      }
+    }
 
     // Optionally generate a support ticket automatically for the admin
     const { SupportTicket } = require('../models');
@@ -784,6 +811,31 @@ const updateItemReturnStatus = async (req, res) => {
 
     item.return_status = status;
     await item.save();
+
+    // Notify the user about their return status
+    const order = await Order.findByPk(orderId);
+    if (order) {
+      const notif = await Notification.create({
+        userId: order.userId,
+        title: `Return Request ${status}`,
+        message: `Your return/replacement request for an item in Order #W!FOMART${String(order.id).padStart(6, '0')} has been marked as ${status}.`,
+        type: 'Order',
+        isRead: false
+      });
+
+      const { getIO } = require('../socket/socketManager');
+      const io = getIO();
+      if (io && order.userId) {
+        io.to(`user_${order.userId}`).emit('notification', {
+          id: notif.id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          url: `/order/${order.id}`,
+          playSound: true
+        });
+      }
+    }
 
     res.json({ message: 'Return status updated', item });
   } catch (error) {
@@ -842,7 +894,7 @@ const cancelOrderUser = async (req, res) => {
 
     // Fetch admins for notification and email
     const adminUsers = await User.findAll({ where: { role: 'admin' } });
-    
+
     // Create Notification for the user who cancelled
     try {
       const userNotif = await Notification.create({
@@ -918,6 +970,34 @@ const cancelOrderUser = async (req, res) => {
   }
 };
 
+// @desc    Get all return and replacement requests across all orders
+// @route   GET /api/orders/admin/returns/all
+// @access  Private/Admin
+const getAllReturnRequests = async (req, res) => {
+  try {
+    const returnItems = await OrderItem.findAll({
+      where: {
+        return_status: { [Op.ne]: 'None' }
+      },
+      include: [
+        {
+          model: Order,
+          attributes: ['id', 'order_id', 'customer_name', 'customer_email', 'customer_address', 'customer_phone', 'createdAt', 'status', 'total_amount']
+        },
+        {
+          model: Product,
+          attributes: ['id', 'title', 'price', 'images']
+        }
+      ],
+      order: [['updatedAt', 'DESC']] // Show most recently updated requests first
+    });
+
+    res.json(returnItems);
+  } catch (error) {
+    console.error('Error fetching all return requests:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
 
 module.exports = {
   createOrder,
@@ -930,6 +1010,7 @@ module.exports = {
   requestItemReturn,
   updateItemReturnStatus,
   getOrderById,
-  cancelOrderUser
+  cancelOrderUser,
+  getAllReturnRequests
 };
 

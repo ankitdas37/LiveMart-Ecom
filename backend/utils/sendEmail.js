@@ -59,7 +59,7 @@ const sendEmail = async (options) => {
     }
 
     const mailOptions = {
-      from: `"W!FO MART Support" <${emailUser}>`,
+      from: `"W!FOMART Support" <${emailUser}>`,
       to: options.email,
       cc: options.cc,
       replyTo: emailUser,

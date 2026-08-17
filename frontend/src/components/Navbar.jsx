@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRight, Package, Shield, Heart, HelpCircle, Activity, MessageSquare, Clock, Settings, Bell, Globe, Grid, Sparkles, Tag, Sun, Moon } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, LogOut, MapPin, Truck, ChevronRight, Package, Shield, Heart, HelpCircle, Activity, MessageSquare, Clock, Settings, Bell, Globe, Grid, Sparkles, Tag, Sun, Moon, Gamepad2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import { ThemeContext } from '../context/ThemeContext';
+import { ServerStatusContext } from '../context/ServerStatusContext';
 import { useSocket } from '../context/SocketContext';
 import axios from 'axios';
 
@@ -24,6 +25,7 @@ const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { itemCount } = useContext(CartContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { setIsServerDown } = useContext(ServerStatusContext);
   const { unreadCount } = useSocket();
   const navigate = useNavigate();
 
@@ -245,6 +247,15 @@ const Navbar = () => {
 
           {/* Icons and Auth */}
           <div className="hidden md:flex items-center space-x-5">
+
+            {/* Cute Gamepad Button */}
+            <button
+              onClick={() => setIsServerDown(true)}
+              title="Play Mini Game"
+              className="text-slate-400 hover:text-amber-500 hover:scale-110 active:scale-95 transition-all"
+            >
+              <Gamepad2 className="w-5 h-5" />
+            </button>
 
             {/* Dark Mode Toggle — Premium Pill */}
             <button
@@ -522,8 +533,14 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Icons (Auth & Cart & Theme) */}
+          {/* Mobile Icons (Auth & Cart & Theme & Game) */}
           <div className="md:hidden flex items-center space-x-3">
+            <button
+              onClick={() => setIsServerDown(true)}
+              className="text-slate-600 dark:text-slate-300 p-1 hover:text-amber-600 transition-colors"
+            >
+              <Gamepad2 className="w-5 h-5" />
+            </button>
             <button
               onClick={toggleTheme}
               className="text-slate-600 dark:text-slate-300 p-1 hover:text-amber-600 transition-colors"

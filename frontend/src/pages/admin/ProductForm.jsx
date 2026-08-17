@@ -508,11 +508,11 @@ const ProductForm = () => {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Store Policy</label>
-                <div className="flex items-center space-x-6 mb-3">
+                <div className="flex flex-wrap items-center gap-4 mb-3">
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input 
                       type="checkbox" 
-                      checked={!!formData.return_policy} 
+                      checked={!!formData.return_policy && formData.return_policy !== 'No Return'} 
                       onChange={(e) => setFormData({...formData, return_policy: e.target.checked ? '7 Days Return' : ''})} 
                       className="text-amber-600 focus:ring-amber-500 rounded border-slate-300 dark:border-slate-600" 
                     />
@@ -521,15 +521,34 @@ const ProductForm = () => {
                   <label className="flex items-center space-x-2 cursor-pointer">
                     <input 
                       type="checkbox" 
-                      checked={!!formData.replacement_policy} 
+                      checked={formData.return_policy === 'No Return'} 
+                      onChange={(e) => setFormData({...formData, return_policy: e.target.checked ? 'No Return' : ''})} 
+                      className="text-red-500 focus:ring-red-500 rounded border-slate-300 dark:border-slate-600" 
+                    />
+                    <span className="text-sm text-red-500 font-medium">No Return</span>
+                  </label>
+                  <div className="w-px h-4 bg-slate-300 mx-2"></div>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={!!formData.replacement_policy && formData.replacement_policy !== 'No Replacement'} 
                       onChange={(e) => setFormData({...formData, replacement_policy: e.target.checked ? '7 Days Replacement' : ''})} 
                       className="text-amber-600 focus:ring-amber-500 rounded border-slate-300 dark:border-slate-600" 
                     />
                     <span className="text-sm">Replacement Policy</span>
                   </label>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.replacement_policy === 'No Replacement'} 
+                      onChange={(e) => setFormData({...formData, replacement_policy: e.target.checked ? 'No Replacement' : ''})} 
+                      className="text-red-500 focus:ring-red-500 rounded border-slate-300 dark:border-slate-600" 
+                    />
+                    <span className="text-sm text-red-500 font-medium">No Replacement</span>
+                  </label>
                 </div>
                 
-                {!!formData.return_policy && (
+                {!!formData.return_policy && formData.return_policy !== 'No Return' && (
                   <input 
                     type="text" 
                     name="return_policy"
@@ -539,7 +558,7 @@ const ProductForm = () => {
                     placeholder="e.g. 7 Days Return"
                   />
                 )}
-                {!!formData.replacement_policy && (
+                {!!formData.replacement_policy && formData.replacement_policy !== 'No Replacement' && (
                   <input 
                     type="text" 
                     name="replacement_policy"

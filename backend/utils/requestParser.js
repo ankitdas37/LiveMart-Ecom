@@ -42,5 +42,5 @@ exports.parseRequestData = async (req) => {
     }
   }
 
-  return { ip, ip_address: ip, device_type, os, browser, location };
+  return { ip, ip_address: ip, device_type, os, browser, location, backendUrl: req.get('host') ? `${req.protocol}://${req.get('host')}` : '' };
 };

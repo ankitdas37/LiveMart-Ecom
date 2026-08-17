@@ -53,20 +53,20 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
               </p>
               <!-- Action Button -->
               <div style="text-align:center;margin-bottom:10px;">
-                <a href="${process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/revoke-device/${session.id}" style="display:inline-block;background:#ef4444;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:600;font-size:16px;">Log out this device</a>
+                <a href="${reqData.backendUrl || process.env.BACKEND_URL || 'http://localhost:5000'}/api/auth/revoke-device/${session.id}" style="display:inline-block;background:#ef4444;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:600;font-size:16px;">Log out this device</a>
               </div>
               <!-- Footer with Anti-Spam Measures -->
               <div style="margin-top:20px;padding-top:20px;border-top:1px solid #334155;text-align:center;">
                 <p style="margin:0 0 5px;color:#64748b;font-size:12px;">This is an automated security notice. Please do not reply directly to this email.</p>
-                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">You received this because a new login was detected on your W!FO MART account.</p>
-                <p style="margin:0;color:#64748b;font-size:12px;">W!FO MART Inc. • A BASRIC Company • <a href="#" style="color:#3b82f6;text-decoration:none;">Unsubscribe from alerts</a></p>
+                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">You received this because a new login was detected on your W!FOMART account.</p>
+                <p style="margin:0;color:#64748b;font-size:12px;">W!FOMART Inc. • A BASRIC Company • <a href="#" style="color:#3b82f6;text-decoration:none;">Unsubscribe from alerts</a></p>
               </div>
             </td>
           </tr>
           <!-- Footer -->
           <tr>
             <td style="background:#0f172a;padding:20px 40px;text-align:center;">
-              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FO MART. All rights reserved.</p>
+              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FOMART. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -77,11 +77,11 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
 </html>`;
 
   try {
-  const plainText = `Hi ${user.name}, your W!FO MART account was just accessed from a new device.\n\nDevice: ${reqData.device_type} - ${reqData.browser}\nOS: ${reqData.os}\nIP: ${reqData.ip_address}\nLocation: ${reqData.location}\n\nIf this wasn't you, log into your account immediately and revoke this device.`;
+  const plainText = `Hi ${user.name}, your W!FOMART account was just accessed from a new device.\n\nDevice: ${reqData.device_type} - ${reqData.browser}\nOS: ${reqData.os}\nIP: ${reqData.ip_address}\nLocation: ${reqData.location}\n\nIf this wasn't you, log into your account immediately and revoke this device.`;
 
     await sendEmail({
       email: user.email,
-      subject: `W!FO MART: New sign-in on ${reqData.os}`,
+      subject: `W!FOMART: New sign-in on ${reqData.os}`,
       message: plainText,
       html: htmlBody,
     });

@@ -11,7 +11,8 @@ const {
   updateItemReturnStatus,
   bulkDeleteOrders,
   getOrderById,
-  cancelOrderUser
+  cancelOrderUser,
+  getAllReturnRequests
 } = require('../controllers/orderController');
 
 const { protect, admin } = require('../middleware/authMiddleware');
@@ -19,6 +20,9 @@ const { protect, admin } = require('../middleware/authMiddleware');
 // Public: Create order (guest or logged-in), Track order by ID
 router.post('/', createOrder);
 router.get('/track/:id', trackOrder);
+
+// Admin: Get all returns globally
+router.get('/admin/returns/all', protect, admin, getAllReturnRequests);
 
 // User: Get single order details (must own the order)
 router.get('/:id', protect, getOrderById);
