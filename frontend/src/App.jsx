@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
@@ -56,16 +56,34 @@ const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
 const AdminSupport = lazy(() => import('./pages/admin/AdminSupport'));
 
 // Layout for the main storefront
-const StoreLayout = () => (
-  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300">
-    <Navbar />
-    <main className="flex-grow pt-[84px] md:pt-24 pb-20 md:pb-0">
-      <Outlet />
-    </main>
-    <Footer />
-    <MobileNav />
-  </div>
-);
+const StoreLayout = () => {
+  const location = useLocation();
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  useEffect(() => {
+    // If language is not English, briefly fade out the main content on navigation
+    // This gives Google Translate time to translate the new DOM nodes without showing a flash of English
+    const lang = localStorage.getItem('appLanguage');
+    if (lang && lang !== 'English') {
+      setIsTranslating(true);
+      const timer = setTimeout(() => {
+        setIsTranslating(false);
+      }, 400); // 400ms is exactly enough for Google Translate to finish
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname]);
+
+  return (
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <Navbar />
+      <main className={`flex-grow pt-[84px] md:pt-24 pb-20 md:pb-0 transition-opacity duration-300 ${isTranslating ? 'opacity-0' : 'opacity-100'}`}>
+        <Outlet />
+      </main>
+      <Footer />
+      <MobileNav />
+    </div>
+  );
+};
 
 function App() {
   return (
