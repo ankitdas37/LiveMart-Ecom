@@ -51,8 +51,8 @@ const AdminHero = () => {
   };
 
   const addSlide = () => {
-    setSlides([
-      ...slides,
+    setSlides(prev => [
+      ...prev,
       {
         id: Date.now().toString(),
         image_url: '',
@@ -69,27 +69,27 @@ const AdminHero = () => {
   };
 
   const removeSlide = (id) => {
-    setSlides(slides.filter(s => s.id !== id));
+    setSlides(prev => prev.filter(s => s.id !== id));
   };
 
   const updateSlide = (id, field, value) => {
-    setSlides(slides.map(s => s.id === id ? { ...s, [field]: value } : s));
+    setSlides(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
 
   const moveSlide = (index, direction) => {
-    if (direction === 'up' && index > 0) {
-      const newSlides = [...slides];
-      const temp = newSlides[index];
-      newSlides[index] = newSlides[index - 1];
-      newSlides[index - 1] = temp;
-      setSlides(newSlides);
-    } else if (direction === 'down' && index < slides.length - 1) {
-      const newSlides = [...slides];
-      const temp = newSlides[index];
-      newSlides[index] = newSlides[index + 1];
-      newSlides[index + 1] = temp;
-      setSlides(newSlides);
-    }
+    setSlides(prev => {
+      const newSlides = [...prev];
+      if (direction === 'up' && index > 0) {
+        const temp = newSlides[index];
+        newSlides[index] = newSlides[index - 1];
+        newSlides[index - 1] = temp;
+      } else if (direction === 'down' && index < prev.length - 1) {
+        const temp = newSlides[index];
+        newSlides[index] = newSlides[index + 1];
+        newSlides[index + 1] = temp;
+      }
+      return newSlides;
+    });
   };
 
   const handleImageUpload = async (e, id) => {

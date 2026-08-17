@@ -141,6 +141,7 @@ const ProductForm = () => {
     }
 
     // Filter out any empty strings that might be left if we appended
+    // Filter out any empty strings that might be left if we appended
     currentImages = currentImages.filter(img => img.trim() !== '');
     if (currentImages.length === 0) currentImages.push(''); // Always keep at least one field
 
