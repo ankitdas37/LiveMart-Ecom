@@ -26,12 +26,12 @@ export function cloudinaryUrl(url, width, quality = 'auto') {
   if (!url.includes('res.cloudinary.com')) return url;
 
   // Build transformation string
-  const transforms = [`f_auto`, `q_${quality}`];
+  const transforms = [`f_auto`, `q_${quality}`, `c_limit`];
   if (width) transforms.push(`w_${width}`);
 
   // Insert transforms after /upload/ in the URL
   // e.g. https://res.cloudinary.com/demo/image/upload/v1/sample.jpg
-  //   -> https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,w_400/v1/sample.jpg
+  //   -> https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,c_limit,w_400/v1/sample.jpg
   const uploadMarker = '/upload/';
   const idx = url.indexOf(uploadMarker);
   if (idx === -1) return url; // malformed URL, return as-is
@@ -44,7 +44,7 @@ export function cloudinaryUrl(url, width, quality = 'auto') {
     return url;
   }
 
-  return `${base}${transforms.join(',')}/c_limit,${rest}`;
+  return `${base}${transforms.join(',')}/${rest}`;
 }
 
 /**
