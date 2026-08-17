@@ -35,7 +35,9 @@ export const SocketProvider = ({ children }) => {
   const fetchUnreadCount = useCallback(async () => {
     if (!activeUser) { setUnreadCount(0); return; }
     try {
-      const { data } = await axios.get('/api/notifications/unread-count');
+      const { data } = await axios.get('/api/notifications/unread-count', {
+        headers: { Authorization: `Bearer ${activeUser.token}` }
+      });
       setUnreadCount(data.count || 0);
     } catch (err) {
       // Silently fail — not critical
