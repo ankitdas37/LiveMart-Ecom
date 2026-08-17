@@ -50,13 +50,13 @@ const ContactUs = () => {
               </div>
 
               <div className="space-y-4">
-                <a href="mailto:livemart.support@gmail.com" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
+                <a href="mailto:wifomart.support@gmail.com" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
                   <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <Mail className="w-6 h-6" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-slate-400 font-medium group-hover:text-amber-400 transition-colors">Email us</p>
-                    <p className="text-white font-medium break-all text-sm sm:text-base">livemart.support@gmail.com</p>
+                    <p className="text-white font-medium break-all text-sm sm:text-base">wifomart.support@gmail.com</p>
                   </div>
                   <div className="text-slate-500 group-hover:text-amber-500 transition-colors">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -76,13 +76,13 @@ const ContactUs = () => {
                   </div>
                 </a>
 
-                <a href="https://maps.google.com/?q=Hooghly,West Bengal,INDIA" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
+                <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/5 hover:border-amber-500/30 group cursor-pointer">
                   <div className="w-12 h-12 bg-amber-500/20 text-amber-500 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                     <MapPin className="w-6 h-6" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-slate-400 font-medium group-hover:text-amber-400 transition-colors">Visit us</p>
-                    <p className="text-white font-medium text-sm">Hooghly, West Bengal, INDIA</p>
+                    <p className="text-white font-medium text-sm">P6F7+VPQ, Krishna Ram Pur, West Bengal 712702</p>
                   </div>
                   <div className="text-slate-500 group-hover:text-amber-500 transition-colors">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>

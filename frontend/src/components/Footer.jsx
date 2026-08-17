@@ -134,7 +134,7 @@ const Footer = () => {
               <ul className="space-y-4 pt-4 text-slate-400">
                 <li className="flex items-start">
                   <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
-                  <span className="text-sm">Online.<br />Hooghly, West Bengal</span>
+                  <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors">P6F7+VPQ, Krishna Ram Pur,<br />West Bengal 712702</a>
                 </li>
                 <li className="flex items-center">
                   <Phone className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
@@ -142,14 +142,14 @@ const Footer = () => {
                 </li>
                 <li className="flex items-center">
                   <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                  <a href="mailto:livemart.support@gmail.com" className="text-sm hover:text-white transition-colors">livemart.support@gmail.com</a>
+                  <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors">wifomart.support@gmail.com</a>
                 </li>
               </ul>
             </details>
             <ul className="hidden md:block space-y-4">
               <li className="flex items-start">
                 <MapPin className="w-5 h-5 mr-3 text-slate-400 shrink-0 mt-0.5" />
-                <span className="text-sm">Online.<br />Hooghly, West Bengal</span>
+                <a href="https://maps.google.com/?q=P6F7+VPQ,+Krishna+Ram+Pur,+West+Bengal+712702" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-white transition-colors">P6F7+VPQ, Krishna Ram Pur,<br />West Bengal 712702</a>
               </li>
               <li className="flex items-center">
                 <Phone className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
@@ -157,7 +157,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-3 text-slate-400 shrink-0" />
-                <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors">livemart.support@gmail.com</a>
+                <a href="mailto:wifomart.support@gmail.com" className="text-sm hover:text-white transition-colors">wifomart.support@gmail.com</a>
               </li>
             </ul>
           </div>
