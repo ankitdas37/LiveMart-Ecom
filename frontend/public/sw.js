@@ -42,3 +42,10 @@ self.addEventListener('notificationclick', function(event) {
     })
   );
 });
+
+// Minimal fetch listener for PWA compliance (PWABuilder requirement)
+self.addEventListener('fetch', function(event) {
+  // We can add offline caching logic here later if needed
+  // For now, just pass the request through to satisfy PWA install requirements
+  event.respondWith(fetch(event.request));
+});
