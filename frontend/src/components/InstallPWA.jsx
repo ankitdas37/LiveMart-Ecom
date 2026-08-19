@@ -1,9 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Download, X } from 'lucide-react';
 
 const InstallPWA = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setShowPrompt(false);
+      }
+    };
+    
+    if (showPrompt) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [showPrompt]);
 
   useEffect(() => {
     // Check if the app is already installed
@@ -40,13 +59,13 @@ const InstallPWA = () => {
   if (!showPrompt) return null;
 
   return (
-    <div className="md:hidden fixed bottom-[80px] left-4 right-4 z-[9999] bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col gap-3 animate-slide-up">
+    <div ref={popupRef} className="md:hidden fixed bottom-[80px] left-4 right-4 z-[9999] bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col gap-3 animate-slide-up">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="W!FOMART" className="w-12 h-12 rounded-xl shadow-sm" />
+          <img src="/logo.png" alt="WIFO Mart" className="w-12 h-12 rounded-xl shadow-sm" />
           <div>
-            <h3 className="font-bold text-slate-900 dark:text-white">Install W!FOMART App</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">For a faster, native experience</p>
+            <h3 className="font-bold text-slate-900 dark:text-white">Install WIFO Mart App</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">For quick updates and native experience</p>
           </div>
         </div>
         <button 
