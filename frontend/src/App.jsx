@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import MobileNav from './components/MobileNav';
 import PageLoader from './components/PageLoader';
 import ScrollToTop from './components/ScrollToTop';
+import InstallPWA from './components/InstallPWA';
 
 // Lazy load standard pages
 const Home = lazy(() => import('./pages/Home'));
@@ -83,6 +84,7 @@ const StoreLayout = () => {
       {isTranslating && <PageLoader />}
       <Footer />
       <MobileNav />
+      <InstallPWA />
     </div>
   );
 };

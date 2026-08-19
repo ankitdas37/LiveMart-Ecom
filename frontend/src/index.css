@@ -13,6 +13,19 @@
 html, body {
   top: 0px !important;
   position: static !important;
+  
+  /* Native App Feel Resets */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none; /* Prevent pull-to-refresh bounce */
+}
+
+/* Re-enable text selection for inputs so users can type normally */
+input, textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
 }
 .skiptranslate iframe,
 .goog-te-banner-frame.skiptranslate,
@@ -42,4 +55,19 @@ html, body {
     letter-spacing: -0.015em;
     @apply transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100;
   }
+}
+
+/* Animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
