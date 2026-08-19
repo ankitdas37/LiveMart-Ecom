@@ -5,7 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import './index.css'
 import App from './App.jsx'
 import axios from 'axios'
-
+import { checkForAppUpdate } from './utils/appUpdate.js'
 // Check for required update on every app launch (only fires on Android/iOS)
 checkForAppUpdate();
 
