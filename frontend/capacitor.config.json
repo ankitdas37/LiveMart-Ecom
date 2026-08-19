@@ -1,6 +1,6 @@
 {
   "appId": "com.basric.wifomart.user",
-  "appName": "W!FOMART",
+  "appName": "WIFO Mart",
   "webDir": "dist",
   "server": {
     "androidScheme": "https",
