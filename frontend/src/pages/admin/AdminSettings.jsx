@@ -54,12 +54,12 @@ const AdminSettings = () => {
   const handleQRUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     const toastId = toast.loading('Compressing & Uploading QR Code...');
     try {
       setIsUploadingQR(true);
       const compressedFile = await compressImage(file, 800, 800, 0.7);
-      
+
       const uploadData = new FormData();
       uploadData.append('image', compressedFile);
 
@@ -77,14 +77,14 @@ const AdminSettings = () => {
   const handleAuthImageUpload = async (e, fieldName) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     const setUploading = fieldName === 'LOGIN_BG_IMAGE' ? setIsUploadingLogin : setIsUploadingSignup;
     const toastId = toast.loading(`Compressing & Uploading ${fieldName === 'LOGIN_BG_IMAGE' ? 'Login' : 'Signup'} Background...`);
-    
+
     try {
       setUploading(true);
       const compressedFile = await compressImage(file, 1920, 1920, 0.7);
-      
+
       const uploadData = new FormData();
       uploadData.append('image', compressedFile);
 
@@ -103,7 +103,7 @@ const AdminSettings = () => {
     e.preventDefault();
     setIsSaving(true);
     setMessage('');
-    
+
     try {
       const payload = Object.keys(settings).map(key => {
         let type = 'STRING';
@@ -152,7 +152,7 @@ const AdminSettings = () => {
       <form onSubmit={handleSave} className="space-y-6">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Checkout Settings</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -162,12 +162,12 @@ const AdminSettings = () => {
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 dark:text-slate-400 font-medium">
                   ₹
                 </span>
-                <input 
-                  type="number" 
-                  name="SHIPPING_CHARGE" 
-                  value={settings.SHIPPING_CHARGE} 
-                  onChange={handleChange} 
-                  required 
+                <input
+                  type="number"
+                  name="SHIPPING_CHARGE"
+                  value={settings.SHIPPING_CHARGE}
+                  onChange={handleChange}
+                  required
                   min="0"
                   step="0.01"
                   className="w-full pl-8 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -177,7 +177,7 @@ const AdminSettings = () => {
                 This amount will be added to every order as a shipping fee if order value is below minimum. Set to 0 for free shipping on all orders.
               </p>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Min. Order Value for Free Delivery (₹)
@@ -186,12 +186,12 @@ const AdminSettings = () => {
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 dark:text-slate-400 font-medium">
                   ₹
                 </span>
-                <input 
-                  type="number" 
-                  name="FREE_SHIPPING_MIN_ORDER_VALUE" 
-                  value={settings.FREE_SHIPPING_MIN_ORDER_VALUE !== undefined ? settings.FREE_SHIPPING_MIN_ORDER_VALUE : 200} 
-                  onChange={handleChange} 
-                  required 
+                <input
+                  type="number"
+                  name="FREE_SHIPPING_MIN_ORDER_VALUE"
+                  value={settings.FREE_SHIPPING_MIN_ORDER_VALUE !== undefined ? settings.FREE_SHIPPING_MIN_ORDER_VALUE : 200}
+                  onChange={handleChange}
+                  required
                   min="0"
                   step="0.01"
                   className="w-full pl-8 pr-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -201,23 +201,23 @@ const AdminSettings = () => {
                 Orders above this amount will get free shipping (for global shipping items).
               </p>
             </div>
-            
+
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Payment Settings</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Merchant UPI ID
               </label>
-              <input 
-                type="text" 
-                name="PAYMENT_UPI_ID" 
-                value={settings.PAYMENT_UPI_ID || ''} 
-                onChange={handleChange} 
+              <input
+                type="text"
+                name="PAYMENT_UPI_ID"
+                value={settings.PAYMENT_UPI_ID || ''}
+                onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="e.g. merchant@upi"
               />
@@ -231,9 +231,9 @@ const AdminSettings = () => {
                 {settings.PAYMENT_QR_CODE && (
                   <div className="relative w-16 h-16 border rounded-lg overflow-hidden flex-shrink-0">
                     <img src={settings.PAYMENT_QR_CODE} alt="QR Code" className="w-full h-full object-cover" />
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setSettings({...settings, PAYMENT_QR_CODE: ''})}
+                      onClick={() => setSettings({ ...settings, PAYMENT_QR_CODE: '' })}
                       className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-xs font-bold"
                     >
                       X
@@ -241,8 +241,8 @@ const AdminSettings = () => {
                   </div>
                 )}
                 <div className="flex-1">
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={handleQRUpload}
                     disabled={isUploadingQR}
@@ -258,8 +258,8 @@ const AdminSettings = () => {
             <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200 mb-4">Enabled Payment Methods</h3>
             <div className="flex flex-col space-y-3">
               <label className="flex items-center space-x-3 cursor-pointer">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   name="PAYMENT_COD_ENABLED"
                   checked={settings.PAYMENT_COD_ENABLED}
                   onChange={handleChange}
@@ -269,8 +269,8 @@ const AdminSettings = () => {
               </label>
 
               <label className="flex items-center space-x-3 cursor-pointer">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   name="PAYMENT_ONLINE_ENABLED"
                   checked={settings.PAYMENT_ONLINE_ENABLED}
                   onChange={handleChange}
@@ -302,7 +302,7 @@ const AdminSettings = () => {
 
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Authentication Pages</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -312,9 +312,9 @@ const AdminSettings = () => {
                 {settings.LOGIN_BG_IMAGE && (
                   <div className="relative w-16 h-16 border rounded-lg overflow-hidden flex-shrink-0">
                     <img src={settings.LOGIN_BG_IMAGE} alt="Login BG" className="w-full h-full object-cover" />
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setSettings({...settings, LOGIN_BG_IMAGE: ''})}
+                      onClick={() => setSettings({ ...settings, LOGIN_BG_IMAGE: '' })}
                       className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-xs font-bold"
                     >
                       X
@@ -322,8 +322,8 @@ const AdminSettings = () => {
                   </div>
                 )}
                 <div className="flex-1">
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={(e) => handleAuthImageUpload(e, 'LOGIN_BG_IMAGE')}
                     disabled={isUploadingLogin}
@@ -333,7 +333,7 @@ const AdminSettings = () => {
                 </div>
               </div>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Signup Page Background Image
@@ -342,9 +342,9 @@ const AdminSettings = () => {
                 {settings.SIGNUP_BG_IMAGE && (
                   <div className="relative w-16 h-16 border rounded-lg overflow-hidden flex-shrink-0">
                     <img src={settings.SIGNUP_BG_IMAGE} alt="Signup BG" className="w-full h-full object-cover" />
-                    <button 
+                    <button
                       type="button"
-                      onClick={() => setSettings({...settings, SIGNUP_BG_IMAGE: ''})}
+                      onClick={() => setSettings({ ...settings, SIGNUP_BG_IMAGE: '' })}
                       className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-xs font-bold"
                     >
                       X
@@ -352,8 +352,8 @@ const AdminSettings = () => {
                   </div>
                 )}
                 <div className="flex-1">
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     onChange={(e) => handleAuthImageUpload(e, 'SIGNUP_BG_IMAGE')}
                     disabled={isUploadingSignup}
@@ -368,31 +368,31 @@ const AdminSettings = () => {
 
         <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b pb-4">Home Page Settings</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Best Sellers Section Title
               </label>
-              <input 
-                type="text" 
-                name="BEST_SELLER_TITLE" 
-                value={settings.BEST_SELLER_TITLE || ''} 
-                onChange={handleChange} 
+              <input
+                type="text"
+                name="BEST_SELLER_TITLE"
+                value={settings.BEST_SELLER_TITLE || ''}
+                onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="e.g. Best Sellers"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Best Sellers Section Subtitle
               </label>
-              <input 
-                type="text" 
-                name="BEST_SELLER_SUBTITLE" 
-                value={settings.BEST_SELLER_SUBTITLE || ''} 
-                onChange={handleChange} 
+              <input
+                type="text"
+                name="BEST_SELLER_SUBTITLE"
+                value={settings.BEST_SELLER_SUBTITLE || ''}
+                onChange={handleChange}
                 className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
                 placeholder="e.g. Our most loved products"
               />
@@ -400,8 +400,8 @@ const AdminSettings = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isSaving}
           className="bg-slate-900 text-white px-8 py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors flex items-center disabled:opacity-70"
         >

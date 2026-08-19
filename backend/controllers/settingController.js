@@ -6,7 +6,7 @@ const { Setting } = require('../models');
 const getSettings = async (req, res) => {
   try {
     const settingsList = await Setting.findAll();
-    
+
     // Convert array to object { KEY: value }
     const settings = {};
     settingsList.forEach(setting => {
