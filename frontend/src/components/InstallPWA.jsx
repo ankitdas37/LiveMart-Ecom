@@ -12,12 +12,12 @@ const InstallPWA = () => {
         setShowPrompt(false);
       }
     };
-    
+
     if (showPrompt) {
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('touchstart', handleClickOutside);
@@ -46,10 +46,10 @@ const InstallPWA = () => {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
-    
+
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    
+
     if (outcome === 'accepted') {
       setShowPrompt(false);
     }
@@ -65,18 +65,18 @@ const InstallPWA = () => {
           <img src="/logo.png" alt="WIFO Mart" className="w-12 h-12 rounded-xl shadow-sm" />
           <div>
             <h3 className="font-bold text-slate-900 dark:text-white">Install WIFO Mart App</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">For quick updates and native experience</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">For quick updates and premimum experience</p>
           </div>
         </div>
-        <button 
+        <button
           onClick={() => setShowPrompt(false)}
           className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
         >
           <X className="w-5 h-5" />
         </button>
       </div>
-      
-      <button 
+
+      <button
         onClick={handleInstallClick}
         className="w-full bg-amber-500 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-amber-600 transition-colors"
       >
