@@ -306,17 +306,17 @@ export default function OrderDetails() {
             </div>
 
             {/* Right: Actions */}
-            <div className="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-col sm:items-end">
+            <div className="flex flex-col gap-3 w-full sm:w-auto sm:items-end mt-2 sm:mt-0">
               <button
                 onClick={() => copyToClipboard(orderId)}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all backdrop-blur"
+                className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/20 px-4 py-3 sm:py-2.5 rounded-xl text-sm font-semibold transition-all backdrop-blur w-full sm:w-auto"
               >
                 <Copy className="w-4 h-4" /> Copy Order ID
               </button>
               <button
                 onClick={handleDownloadInvoice}
                 disabled={genPdf}
-                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-5 py-2.5 rounded-xl text-sm font-black transition-all shadow-lg shadow-amber-500/30 disabled:opacity-70"
+                className="hidden sm:flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-white px-5 py-2.5 rounded-xl text-sm font-black transition-all shadow-lg shadow-amber-500/30 disabled:opacity-70"
               >
                 {genPdf
                   ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -877,36 +877,38 @@ export default function OrderDetails() {
             )}
 
             {/* CTA buttons */}
-            <div className="fixed sm:relative bottom-0 left-0 right-0 p-4 sm:p-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl sm:backdrop-blur-none border-t sm:border-t-0 border-slate-200/50 dark:border-slate-700/50 z-40 sm:z-auto space-y-3 shadow-[0_-10px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_30px_rgba(0,0,0,0.4)] sm:shadow-none animate-in slide-in-from-bottom-full sm:animate-none pb-safe">
-              <button
-                onClick={handleDownloadInvoice}
-                disabled={genPdf}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 sm:py-4 rounded-2xl font-black transition-all shadow-lg hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-70 text-[15px]"
-              >
-                {genPdf
-                  ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  : <Download className="w-5 h-5" />}
-                {genPdf ? 'Generating PDF…' : 'Download Invoice PDF'}
-              </button>
-
-              <Link
-                to={`/order-help/${id}`}
-                className="w-full flex items-center justify-center gap-2 bg-white/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none"
-              >
-                <MessageSquare className="w-4 h-4 text-slate-400" />
-                Need help with this order?
-              </Link>
-
-              {order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Shipped' && (
+            <div className="fixed sm:relative bottom-16 sm:bottom-auto left-0 right-0 p-4 pb-4 sm:p-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl sm:backdrop-blur-none border-t sm:border-t-0 border-slate-200/50 dark:border-slate-700/50 z-40 sm:z-auto shadow-[0_-10px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_30px_rgba(0,0,0,0.4)] sm:shadow-none animate-in slide-in-from-bottom-full sm:animate-none">
+              <div className="flex flex-col gap-3 max-w-5xl mx-auto">
                 <button
-                  onClick={handleCancelOrder}
-                  disabled={isCancelling}
-                  className="w-full mt-3 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 border border-red-200 dark:border-red-800/50 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none disabled:opacity-70"
+                  onClick={handleDownloadInvoice}
+                  disabled={genPdf}
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 sm:py-4 rounded-2xl font-black transition-all shadow-lg hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-70 text-[15px]"
                 >
-                  {isCancelling ? <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" /> : <XCircle className="w-4 h-4" />}
-                  {isCancelling ? 'Cancelling...' : 'Cancel Order'}
+                  {genPdf
+                    ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    : <Download className="w-5 h-5" />}
+                  {genPdf ? 'Generating PDF…' : 'Download Invoice PDF'}
                 </button>
-              )}
+
+                <Link
+                  to={`/order-help/${id}`}
+                  className="w-full flex items-center justify-center gap-2 bg-white/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 hover:border-slate-300 dark:border-slate-500 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none"
+                >
+                  <MessageSquare className="w-4 h-4 text-slate-400" />
+                  Need help with this order?
+                </Link>
+
+                {order.status !== 'Delivered' && order.status !== 'Cancelled' && order.status !== 'Shipped' && (
+                  <button
+                    onClick={handleCancelOrder}
+                    disabled={isCancelling}
+                    className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 border border-red-200 dark:border-red-800/50 py-3.5 sm:py-3.5 rounded-2xl font-bold text-sm transition-all shadow-sm sm:shadow-none disabled:opacity-70"
+                  >
+                    {isCancelling ? <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" /> : <XCircle className="w-4 h-4" />}
+                    {isCancelling ? 'Cancelling...' : 'Cancel Order'}
+                  </button>
+                )}
+              </div>
             </div>
 
           </div>

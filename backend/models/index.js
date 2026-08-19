@@ -6,8 +6,7 @@ const Category = require('./Category');
 const User = require('./User');
 const Coupon = require('./Coupon');
 const Setting = require('./Setting');
-const Brand = require('./Brand');
-const ProductDetail = require('./ProductDetail');
+
 const Review = require('./Review');
 const Address = require('./Address');
 const Wishlist = require('./Wishlist');
@@ -28,11 +27,6 @@ const PushSubscription = require('./PushSubscription');
 Category.hasMany(Product, { foreignKey: 'categoryId' });
 Product.belongsTo(Category, { foreignKey: 'categoryId' });
 
-Brand.hasMany(Product, { foreignKey: 'brandId' });
-Product.belongsTo(Brand, { foreignKey: 'brandId' });
-
-Product.hasOne(ProductDetail, { foreignKey: 'productId' });
-ProductDetail.belongsTo(Product, { foreignKey: 'productId' });
 
 Product.hasMany(Review, { foreignKey: 'productId' });
 Review.belongsTo(Product, { foreignKey: 'productId' });
@@ -83,8 +77,6 @@ module.exports = {
   User,
   Coupon,
   Setting,
-  Brand,
-  ProductDetail,
   Review,
   Address,
   Wishlist,

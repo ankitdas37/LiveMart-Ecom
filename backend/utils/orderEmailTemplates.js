@@ -38,7 +38,7 @@ const emailWrapper = (content, accentColor = '#f472b6') => `
           <tr>
             <td style="background:linear-gradient(135deg,#fdf2f8,#eff6ff);padding:20px 40px;text-align:center;border-top:2px dashed ${accentColor}40;">
               <p style="margin:0;font-size:16px;">🌸 💜 🌸</p>
-              <p style="margin:6px 0 0;color:#a78bfa;font-size:12px;font-weight:700;">© ${new Date().getFullYear()} W!FO MART · Made with lots of ♥</p>
+              <p style="margin:6px 0 0;color:#a78bfa;font-size:12px;font-weight:700;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
               <p style="margin:4px 0 0;color:#c084fc;font-size:11px;">This is an automated email, please do not reply (≧◡≦)</p>
             </td>
           </tr>
@@ -165,7 +165,7 @@ const orderConfirmationEmail = (order, orderItems) => {
     </tr>`;
 
   return {
-    subject: `🎀 Order Confirmed ${orderId} – Thank you! | W!FO MART`,
+    subject: `🎀 Order Confirmed ${orderId} – Thank you! | W!FOMART`,
     html: emailWrapper(content, '#f472b6'),
     text: `Your order ${orderId} has been placed! Total: ${formatCurrency(order.total_amount)}. Track it on our website.`,
   };
@@ -203,6 +203,26 @@ const orderStatusEmail = (order) => {
       emoji: '😢', kaomoji: '(╥_╥)', color: '#ef4444', accent: '#fca5a5',
       bg: '#fff1f2', title: 'Order Cancelled',
       desc: "We're so sorry your order was cancelled. Please contact us if you need help! 🌸",
+    },
+    'Pickup': {
+      emoji: '🛍️', kaomoji: '(ﾉ´ヮ`)ﾉ*: ･ﾟ', color: '#f59e0b', accent: '#fcd34d',
+      bg: '#fffbeb', title: 'Ready for Pickup!',
+      desc: "Your order is ready to be picked up! We can't wait to see you! 🌟",
+    },
+    'Replacement Successful': {
+      emoji: '🔄', kaomoji: '(✧ω✧)', color: '#3b82f6', accent: '#93c5fd',
+      bg: '#eff6ff', title: 'Replacement Successful!',
+      desc: "Your replacement has been processed successfully. Enjoy! 🌸",
+    },
+    'Return Successful': {
+      emoji: '💵', kaomoji: '(*^‿^*)', color: '#10b981', accent: '#6ee7b7',
+      bg: '#ecfdf5', title: 'Return Successful!',
+      desc: "Your return has been processed. The refund should reach you soon! 💖",
+    },
+    'Payment Successful': {
+      emoji: '💳', kaomoji: '(☆ω☆)', color: '#8b5cf6', accent: '#c4b5fd',
+      bg: '#f5f3ff', title: 'Payment Successful!',
+      desc: "Your payment was successful. Thank you for your purchase! ✨",
     },
   };
 
@@ -294,7 +314,7 @@ const orderStatusEmail = (order) => {
     </tr>`;
 
   return {
-    subject: `${cfg.emoji} Order ${status} – ${orderId} | W!FO MART`,
+    subject: `${cfg.emoji} Order ${status} – ${orderId} | W!FOMART`,
     html: emailWrapper(content, cfg.accent),
     text: `Your order ${orderId} status: ${status}. ${cfg.desc}`,
   };
@@ -327,7 +347,7 @@ const adminNewOrderEmail = (order, orderItems) => {
     <tr>
       <td style="padding: 30px;">
         <h2 style="color: #333; margin-top:0;">New Order Received: ${orderId}</h2>
-        <p style="color: #555;">A new order has been placed on W!FO MART. Here are the details:</p>
+        <p style="color: #555;">A new order has been placed on W!FOMART. Here are the details:</p>
         
         <table width="100%" cellpadding="5" cellspacing="0" style="margin-bottom: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px;">
           <tr>
@@ -397,13 +417,13 @@ const adminNewOrderEmail = (order, orderItems) => {
           <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
             <tr style="background:#1f2937;">
               <td style="padding:20px;text-align:center;color:#fff;">
-                <h1 style="margin:0;font-size:24px;">W!FO MART Admin</h1>
+                <h1 style="margin:0;font-size:24px;">W!FOMART Admin</h1>
               </td>
             </tr>
             ${content}
             <tr style="background:#f9fafb;border-top:1px solid #eee;">
               <td style="padding:15px;text-align:center;color:#6b7280;font-size:12px;">
-                Automated System Notification &bull; W!FO MART E-Commerce
+                Automated System Notification &bull; W!FOMART E-Commerce
               </td>
             </tr>
           </table>

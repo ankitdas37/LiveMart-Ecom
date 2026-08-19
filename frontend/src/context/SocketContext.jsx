@@ -145,11 +145,13 @@ export const SocketProvider = ({ children }) => {
       }
 
       // Play notification sound
-      try {
-        const audio = new Audio('/sounds/notification.mp3');
-        audio.play().catch(e => console.log('Audio autoplay prevented by browser', e));
-      } catch (err) {
-        console.error('Error playing sound', err);
+      if (notif && notif.playSound) {
+        try {
+          const audio = new Audio('/sounds/notification.mp3');
+          audio.play().catch(e => console.log('Audio autoplay prevented by browser', e));
+        } catch (err) {
+          console.error('Error playing sound', err);
+        }
       }
     });
 

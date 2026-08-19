@@ -152,7 +152,8 @@ exports.sendNotification = async (req, res) => {
         message,
         type: type || 'admin',
         isRead: false,
-        createdAt: new Date()
+        createdAt: new Date(),
+        playSound: true
       };
       broadcastToAll(notifPayload);
 
@@ -188,7 +189,8 @@ exports.sendNotification = async (req, res) => {
       message: notification.message,
       type: notification.type,
       isRead: false,
-      createdAt: notification.createdAt
+      createdAt: notification.createdAt,
+      playSound: true
     });
 
     // Send Web Push

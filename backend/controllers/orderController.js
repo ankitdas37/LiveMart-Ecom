@@ -476,7 +476,11 @@ const updateOrderStatus = async (req, res) => {
           'Processing': { emoji: '📦', msg: 'Your order is now being processed. We are packing it up carefully!' },
           'Shipped': { emoji: '🚚', msg: 'Good news! Your order is on the way. Keep an eye out for the delivery.' },
           'Delivered': { emoji: '🎉', msg: 'Yay! Your order has been delivered. We hope you love it!' },
-          'Cancelled': { emoji: '❌', msg: 'Your order has been cancelled. If you have any questions, please contact support.' }
+          'Cancelled': { emoji: '❌', msg: 'Your order has been cancelled. If you have any questions, please contact support.' },
+          'Pickup': { emoji: '🛍️', msg: 'Your order is ready for pickup! Please collect it at your earliest convenience.' },
+          'Replacement Successful': { emoji: '🔄', msg: 'Your replacement has been processed successfully.' },
+          'Return Successful': { emoji: '💵', msg: 'Your return has been processed and is successful.' },
+          'Payment Successful': { emoji: '💳', msg: 'Your payment was successful. Thank you for your purchase!' }
         };
         const s = statusDetails[status] || { emoji: '🔔', msg: `Your order is now ${status}.` };
 
@@ -492,7 +496,8 @@ const updateOrderStatus = async (req, res) => {
             message: notif.message,
             type: notif.type,
             isRead: false,
-            createdAt: notif.createdAt
+            createdAt: notif.createdAt,
+            playSound: true
           });
 
           // Send Web Push notification
@@ -849,7 +854,12 @@ const updateItemReturnStatus = async (req, res) => {
 // @access  Private
 const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findByPk(req.params.id, {
+    let orderId = req.params.id;
+    if (orderId && typeof orderId === 'string') {
+      orderId = orderId.replace(/\D/g, '');
+    }
+
+    const order = await Order.findByPk(orderId, {
       include: [
         {
           model: OrderItem,

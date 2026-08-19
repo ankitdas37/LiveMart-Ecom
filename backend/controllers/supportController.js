@@ -27,20 +27,21 @@ const createTicket = async (req, res) => {
         <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
           <h2 style="color: #FF8C00;">Support Ticket Received</h2>
           <p>Hi <strong>${name}</strong>,</p>
-          <p>Thank you for contacting W!FO MART Support. We have received your message regarding <strong>${subject}</strong>.</p>
+          <p>Thank you for contacting W!FOMART Support. We have received your message regarding <strong>${subject}</strong>.</p>
           <p>Our team is reviewing your request and will get back to you as soon as possible.</p>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
           <p style="font-size: 12px; color: #777;">Your message:</p>
           <blockquote style="font-size: 12px; color: #555; background: #fafafa; padding: 10px; border-left: 2px solid #ccc; margin: 0; white-space: pre-wrap;">
             ${message}
           </blockquote>
-          <p style="margin-top: 20px;">Best regards,<br/><strong>W!FO MART Support Team</strong></p>
+          <p style="margin-top: 20px;">Best regards,<br/><strong>W!FOMART Support Team</strong></p>
+          <p style="margin-top:20px;font-size:12px;color:#777;text-align:center;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
         </div>
       `;
       sendEmail({
         email,
         subject: `Ticket Received: ${subject}`,
-        text: `Hi ${name},\n\nWe have received your support request regarding "${subject}". Our team will get back to you shortly.\n\nW!FO MART Support`,
+        text: `Hi ${name},\n\nWe have received your support request regarding "${subject}". Our team will get back to you shortly.\n\nW!FOMART Support`,
         html: userHtml
       }).catch(e => console.error('Failed to send ticket confirmation to user', e));
     } catch (e) { console.error('Failed to prepare ticket confirmation', e); }
@@ -134,7 +135,7 @@ const replyToTicket = async (req, res) => {
       <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
         <h2 style="color: #FF8C00;">Support Reply: ${ticket.subject}</h2>
         <p>Hi <strong>${ticket.name}</strong>,</p>
-        <p>Thank you for reaching out to W!FO MART Support. Here is the response to your inquiry:</p>
+        <p>Thank you for reaching out to W!FOMART Support. Here is the response to your inquiry:</p>
         <div style="background: #f9f9f9; padding: 15px; border-left: 4px solid #FF8C00; margin: 20px 0;">
           <p style="white-space: pre-wrap; margin: 0;">${replyMessage}</p>
           ${attachmentHtml}
@@ -144,16 +145,46 @@ const replyToTicket = async (req, res) => {
         <blockquote style="font-size: 12px; color: #555; background: #fafafa; padding: 10px; border-left: 2px solid #ccc; margin: 0; white-space: pre-wrap;">
           ${ticket.message}
         </blockquote>
-        <p style="margin-top: 20px;">Best regards,<br/><strong>W!FO MART Support Team</strong></p>
+        <p style="margin-top: 20px;">Best regards,<br/><strong>W!FOMART Support Team</strong></p>
+        <p style="margin-top:20px;font-size:12px;color:#777;text-align:center;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
       </div>
     `;
 
     sendEmail({
       email: ticket.email,
       subject: `RE: ${ticket.subject}`,
-      text: `Hi ${ticket.name},\n\nThank you for reaching out to W!FO MART Support. Here is the response to your inquiry:\n\n${replyMessage}\n\nBest regards,\nW!FO MART Support Team`,
+      text: `Hi ${ticket.name},\n\nThank you for reaching out to W!FOMART Support. Here is the response to your inquiry:\n\n${replyMessage}\n\nBest regards,\nW!FOMART Support Team`,
       html: htmlEmail
     }).catch(err => console.error('Failed to send background email:', err));
+
+    // Send a real-time notification to the user if they are registered (matching email)
+    const { User, Notification } = require('../models');
+    const { emitToUser } = require('../socket/socketManager');
+    
+    try {
+      const user = await User.findOne({ where: { email: ticket.email } });
+      if (user) {
+        const notif = await Notification.create({
+          userId: user.id,
+          title: '💬 Support Ticket Reply',
+          message: `Admin has replied to your ticket: "${ticket.subject}"`,
+          type: 'support',
+          isRead: false
+        });
+        
+        emitToUser(user.id, {
+          id: notif.id,
+          title: notif.title,
+          message: notif.message,
+          type: notif.type,
+          isRead: false,
+          createdAt: notif.createdAt,
+          playSound: true
+        });
+      }
+    } catch (notifErr) {
+      console.error('Failed to send support ticket notification:', notifErr);
+    }
 
     res.json({ message: 'Reply sent successfully', ticket });
   } catch (error) {
@@ -183,7 +214,7 @@ const sendDirectEmail = async (req, res) => {
           <div style="padding: 30px; line-height: 1.8; font-size: 15px;">
             <p style="font-size: 18px; font-weight: bold; color: #f472b6; margin-top: 0;">Hello there! 👋</p>
             
-            <p>Our admin team at <strong>W!FO MART</strong> wanted to reach out to you directly with a special message.</p>
+            <p>Our admin team at <strong>W!FOMART</strong> wanted to reach out to you directly with a special message.</p>
             
             <div style="background: #f8fafc; border-left: 4px solid #f472b6; padding: 20px; border-radius: 12px 12px 12px 0; margin: 20px 0; font-weight: 500; white-space: pre-wrap;">${message}</div>
             
@@ -192,9 +223,10 @@ const sendDirectEmail = async (req, res) => {
           
           <div style="background: #fff1f2; padding: 20px; text-align: center; border-top: 2px dashed #fce7f3;">
             <p style="margin: 0; font-size: 14px; font-weight: bold; color: #64748b;">
-              Sent with <span style="color: #f472b6; font-size: 18px;">❤️</span> from the W!FO MART Team!
+              Sent with <span style="color: #f472b6; font-size: 18px;">❤️</span> from the W!FOMART Team!
             </p>
             <p style="margin: 5px 0 0; font-size: 12px; color: #94a3b8;">(You can reply directly to this email if you need anything!)</p>
+            <p style="margin-top: 20px; font-size: 12px; color: #94a3b8;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
           </div>
         </div>
       </div>
@@ -228,6 +260,29 @@ const sendDirectEmail = async (req, res) => {
           message,
           hasAttachment: !!req.file
         });
+
+        // Send a real-time notification to the user if they are registered
+        const { User, Notification } = require('../models');
+        const { emitToUser } = require('../socket/socketManager');
+        const user = await User.findOne({ where: { email: toEmail } });
+        if (user) {
+          const notif = await Notification.create({
+            userId: user.id,
+            title: '💌 Message from Admin',
+            message: `Admin has sent you a direct message: "${subject}"`,
+            type: 'admin',
+            isRead: false
+          });
+          emitToUser(user.id, {
+            id: notif.id,
+            title: notif.title,
+            message: notif.message,
+            type: notif.type,
+            isRead: false,
+            createdAt: notif.createdAt,
+            playSound: true
+          });
+        }
 
         await sendEmail(mailOptions);
       } catch (err) {

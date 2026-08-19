@@ -66,7 +66,7 @@ const sendLoginAlertEmail = async (user, session, reqData) => {
           <!-- Footer -->
           <tr>
             <td style="background:#0f172a;padding:20px 40px;text-align:center;">
-              <p style="margin:0;color:#475569;font-size:12px;">© ${new Date().getFullYear()} W!FOMART. All rights reserved.</p>
+              <p style="margin:0;color:#475569;font-size:12px;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
             </td>
           </tr>
         </table>
@@ -114,23 +114,65 @@ exports.sendSignupOTP = async (req, res) => {
 
     // Build a beautiful HTML email
     const htmlBody = `
-<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
-  <h2>W!FO MART - Account Verification</h2>
-  <p>Hello,</p>
-  <p>Your email verification code for W!FO MART is:</p>
-  <div style="font-size: 32px; font-weight: bold; padding: 15px; margin: 15px 0; background-color: #f3f4f6; border-radius: 8px; text-align: center; letter-spacing: 5px; color: #d97706;">
-    ${otpCode}
-  </div>
-  <p>This code will expire in 10 minutes.</p>
-  <p>If you didn't request this code, you can safely ignore this email.</p>
-  <br/>
-  <p style="font-size: 14px; color: #666;">Thanks,<br/>The W!FO MART Team</p>
-</div>`;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Verification – W!FOMART</title>
+</head>
+<body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#3b82f6,#2563eb);padding:36px 40px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:32px;font-weight:900;letter-spacing:-1px;">Account <span style="color:#bfdbfe;">Verification</span></h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">W!FOMART Verification</h2>
+              <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
+                Hello, your email verification code for W!FOMART is:
+              </p>
+              <!-- Details Box -->
+              <div style="background:#0f172a;border-radius:12px;padding:20px;margin-bottom:28px;text-align:center;">
+                <div style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3b82f6;">
+                  ${otpCode}
+                </div>
+              </div>
+              <p style="margin:0 0 24px;color:#94a3b8;font-size:15px;line-height:1.6;">
+                This code will expire in 10 minutes.<br/>
+                If you didn't request this code, you can safely ignore this email.
+              </p>
+              <!-- Footer with Anti-Spam Measures -->
+              <div style="margin-top:20px;padding-top:20px;border-top:1px solid #334155;text-align:center;">
+                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">This is an automated security notice. Please do not reply directly to this email.</p>
+                <p style="margin:0;color:#64748b;font-size:12px;">W!FOMART Inc. • A BASRIC Company</p>
+              </div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0f172a;padding:20px 40px;text-align:center;">
+              <p style="margin:0;color:#475569;font-size:12px;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 
     // Send email asynchronously in the background to speed up frontend response
     sendEmail({
       email,
-      subject: 'Verify your W!FO MART account',
+      subject: 'Verify your W!FOMART account',
       message: `Your signup verification code is: ${otpCode}. It expires in 10 minutes.`,
       html: htmlBody,
     }).catch(emailError => {
@@ -349,22 +391,64 @@ exports.loginUser = async (req, res) => {
 
       // Send OTP via email (reusing the clean HTML template pattern)
       const htmlBody = `
-<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
-  <h2>W!FO MART - Login Verification</h2>
-  <p>Hello,</p>
-  <p>You are trying to log in to your W!FO MART account. Here is your verification code:</p>
-  <div style="font-size: 32px; font-weight: bold; padding: 15px; margin: 15px 0; background-color: #f3f4f6; border-radius: 8px; text-align: center; letter-spacing: 5px; color: #d97706;">
-    ${otpCode}
-  </div>
-  <p>This code will expire in 10 minutes.</p>
-  <p>If you didn't request this login, please secure your account immediately.</p>
-  <br/>
-  <p style="font-size: 14px; color: #666;">Thanks,<br/>The W!FO MART Team</p>
-</div>`;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Verification – W!FOMART</title>
+</head>
+<body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#3b82f6,#2563eb);padding:36px 40px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:32px;font-weight:900;letter-spacing:-1px;">Login <span style="color:#bfdbfe;">Verification</span></h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">W!FOMART Login</h2>
+              <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
+                Hello, you are trying to log in to your W!FOMART account. Here is your verification code:
+              </p>
+              <!-- Details Box -->
+              <div style="background:#0f172a;border-radius:12px;padding:20px;margin-bottom:28px;text-align:center;">
+                <div style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3b82f6;">
+                  ${otpCode}
+                </div>
+              </div>
+              <p style="margin:0 0 24px;color:#94a3b8;font-size:15px;line-height:1.6;">
+                This code will expire in 10 minutes.<br/>
+                If you didn't request this login, please secure your account immediately.
+              </p>
+              <!-- Footer with Anti-Spam Measures -->
+              <div style="margin-top:20px;padding-top:20px;border-top:1px solid #334155;text-align:center;">
+                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">This is an automated security notice. Please do not reply directly to this email.</p>
+                <p style="margin:0;color:#64748b;font-size:12px;">W!FOMART Inc. • A BASRIC Company</p>
+              </div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0f172a;padding:20px 40px;text-align:center;">
+              <p style="margin:0;color:#475569;font-size:12px;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 
       sendEmail({
         email,
-        subject: 'Your W!FO MART login code',
+        subject: 'Your W!FOMART login code',
         message: `Your login verification code is: ${otpCode}. It expires in 10 minutes.`,
         html: htmlBody,
       }).catch(emailError => {
@@ -480,22 +564,64 @@ exports.forgotPassword = async (req, res) => {
     // OTP sent via email. Removed console.log to prevent OTP exposure in logs.
 
     const htmlBody = `
-<div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
-  <h2>W!FO MART - Password Reset</h2>
-  <p>Hi ${user.name},</p>
-  <p>You recently requested to reset your password for your W!FO MART account. Use the following code to proceed:</p>
-  <div style="font-size: 32px; font-weight: bold; padding: 15px; margin: 15px 0; background-color: #f3f4f6; border-radius: 8px; text-align: center; letter-spacing: 5px; color: #4f46e5;">
-    ${resetOTP}
-  </div>
-  <p>This code expires in 10 minutes. If you didn't request this, please safely ignore this email.</p>
-  <br/>
-  <p style="font-size: 14px; color: #666;">Thanks,<br/>The W!FO MART Team</p>
-</div>`;
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Reset – W!FOMART</title>
+</head>
+<body style="margin:0;padding:0;background:#0f172a;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="520" cellpadding="0" cellspacing="0" style="background:#1e293b;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#3b82f6,#2563eb);padding:36px 40px;text-align:center;">
+              <h1 style="margin:0;color:#ffffff;font-size:32px;font-weight:900;letter-spacing:-1px;">Password <span style="color:#bfdbfe;">Reset</span></h1>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;">
+              <h2 style="margin:0 0 8px;color:#f1f5f9;font-size:22px;font-weight:700;">W!FOMART Password Reset</h2>
+              <p style="margin:0 0 28px;color:#94a3b8;font-size:15px;line-height:1.6;">
+                Hi ${user.name}, you recently requested to reset your password for your W!FOMART account. Use the following code to proceed:
+              </p>
+              <!-- Details Box -->
+              <div style="background:#0f172a;border-radius:12px;padding:20px;margin-bottom:28px;text-align:center;">
+                <div style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #3b82f6;">
+                  ${resetOTP}
+                </div>
+              </div>
+              <p style="margin:0 0 24px;color:#94a3b8;font-size:15px;line-height:1.6;">
+                This code expires in 10 minutes. If you didn't request this, please safely ignore this email.
+              </p>
+              <!-- Footer with Anti-Spam Measures -->
+              <div style="margin-top:20px;padding-top:20px;border-top:1px solid #334155;text-align:center;">
+                <p style="margin:0 0 5px;color:#64748b;font-size:12px;">This is an automated security notice. Please do not reply directly to this email.</p>
+                <p style="margin:0;color:#64748b;font-size:12px;">W!FOMART Inc. • A BASRIC Company</p>
+              </div>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0f172a;padding:20px 40px;text-align:center;">
+              <p style="margin:0;color:#475569;font-size:12px;">© 2026 W!FOMART. A BASRIC Company. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Your W!FO MART password reset code',
+        subject: 'Your W!FOMART password reset code',
         message: `Your OTP is: ${resetOTP}`,
         html: htmlBody,
       });

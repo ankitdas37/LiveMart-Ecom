@@ -160,6 +160,29 @@ const UserProfile = () => {
     } catch(e) { console.error('Failed to mark read', e); }
   };
 
+  const handleNotificationClick = (notif) => {
+    if (!notif.isRead) markAsRead(notif.id);
+    
+    if (notif.link) {
+      navigate(notif.link);
+      return;
+    }
+
+    const orderMatch = notif.message.match(/Order #W!FOMART(\d+)/i) || notif.message.match(/Order #(\d+)/i);
+    if (orderMatch && orderMatch[1]) {
+      // Use the numeric part (orderMatch[1]) instead of the full matched string
+      const matchText = orderMatch[1];
+      navigate(`/order/${matchText}`);
+      return;
+    }
+    
+    if (notif.type === 'order') {
+      setActiveTab('orders');
+    } else if (notif.type === 'support') {
+      setActiveTab('support');
+    }
+  };
+
   const deleteNotification = async (id) => {
     try {
       await axios.delete(`/api/notifications/${id}`, cfg());
@@ -793,10 +816,11 @@ const UserProfile = () => {
               return (
                 <div
                   key={notif.id}
-                  className={`p-4 rounded-xl border transition-all flex items-start gap-4 group ${
+                  onClick={() => handleNotificationClick(notif)}
+                  className={`p-4 rounded-xl border transition-all flex items-start gap-4 group cursor-pointer hover:shadow-md ${
                     notif.isRead
-                      ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-700'
-                      : `bg-white dark:bg-slate-900 border-l-4 ${style.border} shadow-sm`
+                      ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+                      : `bg-white dark:bg-slate-900 border-l-4 ${style.border} shadow-sm hover:border-l-[6px]`
                   }`}
                 >
                   {/* Icon */}
@@ -820,14 +844,14 @@ const UserProfile = () => {
                     <div className="flex items-center gap-3">
                       {!notif.isRead && (
                         <button
-                          onClick={() => markAsRead(notif.id)}
+                          onClick={(e) => { e.stopPropagation(); markAsRead(notif.id); }}
                           className="text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
                         >
                           ✓ Mark as read
                         </button>
                       )}
                       <button
-                        onClick={() => deleteNotification(notif.id)}
+                        onClick={(e) => { e.stopPropagation(); deleteNotification(notif.id); }}
                         className="text-xs font-bold text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
                       >
                         🗑 Delete

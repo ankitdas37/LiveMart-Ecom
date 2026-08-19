@@ -735,13 +735,21 @@ ${orderNotesHTML}
         return <span className="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">Delivered</span>;
       case 'Cancelled':
         return <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Cancelled</span>;
+      case 'Pickup':
+        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-fuchsia-100 text-fuchsia-800 border border-fuchsia-200">Pickup</span>;
+      case 'Replacement Successful':
+        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 border border-cyan-200">Replacement Successful</span>;
+      case 'Return Successful':
+        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800 border border-teal-200">Return Successful</span>;
+      case 'Payment Successful':
+        return <span className="px-3 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800 border border-sky-200">Payment Successful</span>;
       default:
         return <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">{status}</span>;
     }
   };
 
   const filteredOrders = activeTab === 'All Orders' ? orders : orders.filter(o => o.status === activeTab);
-  const tabs = ['Pending Confirmation', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+  const tabs = ['Pending Confirmation', 'Confirmed', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Pickup', 'Replacement Successful', 'Return Successful', 'Payment Successful'];
 
   if (isLoading) {
     return <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading orders...</div>;
@@ -1190,6 +1198,10 @@ ${orderNotesHTML}
                       <option value="Shipped">Shipped</option>
                       <option value="Delivered">Delivered</option>
                       <option value="Cancelled">Cancelled</option>
+                      <option value="Pickup">Pickup</option>
+                      <option value="Replacement Successful">Replacement Successful</option>
+                      <option value="Return Successful">Return Successful</option>
+                      <option value="Payment Successful">Payment Successful</option>
                     </select>
                   </div>
 
