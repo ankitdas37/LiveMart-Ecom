@@ -40,7 +40,7 @@ const InstallPWA = () => {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed bottom-[80px] left-4 right-4 z-[9999] bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col gap-3 animate-slide-up">
+    <div className="md:hidden fixed bottom-[80px] left-4 right-4 z-[9999] bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col gap-3 animate-slide-up">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="W!FOMART" className="w-12 h-12 rounded-xl shadow-sm" />
