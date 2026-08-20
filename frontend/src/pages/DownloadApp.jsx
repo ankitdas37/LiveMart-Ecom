@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import SEO from '../components/SEO';
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
@@ -432,11 +433,33 @@ const DownloadApp = () => {
     }
 
     if (!deferredPrompt) {
-      alert(
-        'To install this app:\n\n' +
-        '• Chrome/Edge: Click the install icon (⊕) in your address bar\n' +
-        '• Or: Open browser Menu → "Install W!FO Mart"\n\n' +
-        'Make sure you are on https:// and try refreshing the page.'
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-1">
+            <p className="font-bold text-white text-sm">Install via Browser Menu</p>
+            <p className="text-slate-300 text-xs leading-relaxed">
+              Click the <strong>install icon (⊕)</strong> in your address bar,
+              or open <strong>Browser Menu → "Install W!FO Mart"</strong>
+            </p>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="mt-1 text-xs text-[#FF8C00] font-semibold self-start"
+            >
+              Got it ✕
+            </button>
+          </div>
+        ),
+        {
+          duration: 6000,
+          style: {
+            background: '#1e293b',
+            border: '1px solid #334155',
+            borderRadius: '16px',
+            padding: '14px 16px',
+            maxWidth: '340px',
+          },
+          icon: '📲',
+        }
       );
       return;
     }
