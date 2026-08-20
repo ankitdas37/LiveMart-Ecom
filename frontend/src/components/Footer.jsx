@@ -76,6 +76,11 @@ const Footer = () => {
                 <li><Link to="/categories/bestsellers" className="hover:text-white transition-colors text-sm">Best Sellers</Link></li>
                 <li><Link to="/about" className="hover:text-white transition-colors text-sm">About Us</Link></li>
                 <li><Link to="/contact" className="hover:text-white transition-colors text-sm">Contact</Link></li>
+                <li>
+                  <Link to="/download-app" className="hover:text-white transition-colors text-sm flex items-center gap-1.5">
+                    <span>📲</span> Download Our App
+                  </Link>
+                </li>
               </ul>
             </details>
             <ul className="hidden md:block space-y-3">
@@ -83,6 +88,11 @@ const Footer = () => {
               <li><Link to="/categories/bestsellers" className="hover:text-white transition-colors text-sm">Best Sellers</Link></li>
               <li><Link to="/about" className="hover:text-white transition-colors text-sm">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-white transition-colors text-sm">Contact</Link></li>
+              <li>
+                <Link to="/download-app" className="hover:text-white transition-colors text-sm flex items-center gap-1.5">
+                  <span>📲</span> Download Our App
+                </Link>
+              </li>
             </ul>
           </div>
 

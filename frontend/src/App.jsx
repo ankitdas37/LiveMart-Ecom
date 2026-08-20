@@ -28,6 +28,7 @@ const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const ShippingPolicy = lazy(() => import('./pages/ShippingPolicy'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const TechSupport = lazy(() => import('./pages/TechSupport'));
+const DownloadApp = lazy(() => import('./pages/DownloadApp'));
 
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -144,6 +145,7 @@ const AppContent = () => {
             <Route path="shipping-policy" element={<ShippingPolicy />} />
             <Route path="faq" element={<FAQ />} />
             <Route path="tech-support" element={<TechSupport />} />
+            <Route path="download-app" element={<DownloadApp />} />
           </Route>
 
           {/* Admin Routes */}
