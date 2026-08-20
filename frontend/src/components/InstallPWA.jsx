@@ -32,6 +32,7 @@ const InstallPWA = () => {
 
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
+      window._pwaPrompt = e; // Share globally so DownloadApp can use it
       setDeferredPrompt(e);
       // Show prompt after 3 seconds so it's not instantly annoying
       setTimeout(() => setShowPrompt(true), 3000);

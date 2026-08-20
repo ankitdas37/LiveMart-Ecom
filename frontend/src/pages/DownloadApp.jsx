@@ -401,6 +401,11 @@ const DownloadApp = () => {
       return;
     }
 
+    // Pick up prompt already captured by InstallPWA component
+    if (window._pwaPrompt) {
+      setDeferredPrompt(window._pwaPrompt);
+    }
+
     setCardStatus({
       android: isAndroid ? 'ready' : 'unavailable',
       windows: isDesktop ? 'ready' : 'unavailable',
@@ -411,6 +416,7 @@ const DownloadApp = () => {
   useEffect(() => {
     const handler = (e) => {
       e.preventDefault();
+      window._pwaPrompt = e; // Keep in sync
       setDeferredPrompt(e);
 
       const isAndroid = /android/i.test(navigator.userAgent);
@@ -432,14 +438,18 @@ const DownloadApp = () => {
       return;
     }
 
-    if (!deferredPrompt) {
+    // Use local state OR the globally cached prompt from InstallPWA
+    const prompt = deferredPrompt || window._pwaPrompt || null;
+
+    if (!prompt) {
       toast(
         (t) => (
           <div className="flex flex-col gap-1">
-            <p className="font-bold text-white text-sm">Install via Browser Menu</p>
+            <p className="font-bold text-white text-sm">Use Browser Menu to Install</p>
             <p className="text-slate-300 text-xs leading-relaxed">
-              Click the <strong>install icon (⊕)</strong> in your address bar,
-              or open <strong>Browser Menu → "Install W!FO Mart"</strong>
+              Tap the browser <strong>menu (⋮)</strong> and choose
+              <strong> &quot;Add to Home Screen&quot;</strong> or
+              <strong> &quot;Install App&quot;</strong>.
             </p>
             <button
               onClick={() => toast.dismiss(t.id)}
@@ -467,11 +477,12 @@ const DownloadApp = () => {
     setCardStatus((prev) => ({ ...prev, [app.id]: 'loading' }));
 
     try {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      await prompt.prompt();
+      const { outcome } = await prompt.userChoice;
       if (outcome === 'accepted') {
-        setCardStatus((prev) => ({ ...prev, [app.id]: 'installed' }));
+        window._pwaPrompt = null;
         setDeferredPrompt(null);
+        setCardStatus((prev) => ({ ...prev, [app.id]: 'installed' }));
       } else {
         setCardStatus((prev) => ({ ...prev, [app.id]: 'ready' }));
       }
